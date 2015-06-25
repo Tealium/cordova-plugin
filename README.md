@@ -30,8 +30,7 @@ From the Command-Line Interface (CLI), first:
 1. ```cordova create </PATH_TO_PROJECT>```
 2. ```cd in to project```
 3. ```cordova platform add <PLATFORM>```
-4a. ```cordova plugin add com.tealium.cordova.compact```  OR
-4b. ```cordova plugin add </LOCAL_PATH_TO_TEALIUM_PLUGIN/>```
+4. ```cordova plugin add com.tealium.cordova.compact```  OR  ```cordova plugin add </LOCAL_PATH_TO_TEALIUM_PLUGIN/>```
 5. ```cordova build <PLATFORM>```
 
 Then init the library in your project:
