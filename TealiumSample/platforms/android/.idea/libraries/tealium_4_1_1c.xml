@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="tealium.4.1.1c">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/tealium.4.1.1c.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

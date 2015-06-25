@@ -1,0 +1,26 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {
+            "config.xml": {
+                "parents": {
+                    "/*": [
+                        {
+                            "xml": "<feature name=\"TealiumPg\"><param name=\"android-package\" value=\"org.apache.cordova.plugin.TealiumPg\" /></feature>",
+                            "count": 1
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "installed_plugins": {
+        "com.phonegap.plugins.tealiumpg": {
+            "PACKAGE_NAME": "com.tealium.sample"
+        }
+    },
+    "dependent_plugins": {}
+}

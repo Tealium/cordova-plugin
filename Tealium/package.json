@@ -1,0 +1,17 @@
+{
+    "version": "0.9.0",
+    "name": "com.tealium.cordova.compact",
+    "cordova_name": "TealiumCompact",
+    "description": "\n        Tealium Tag Management\n    ",
+    "license": "Commercial",
+    "platforms": [
+        "ios",
+        "android"
+    ],
+    "engines": [
+        {
+            "name": "cordova",
+            "version": ">=3.8.0"
+        }
+    ]
+}

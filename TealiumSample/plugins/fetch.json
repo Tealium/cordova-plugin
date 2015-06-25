@@ -1,0 +1,18 @@
+{
+    "cordova-plugin-whitelist": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-whitelist@1"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "com.tealium.cordova.compact": {
+        "source": {
+            "type": "registry",
+            "id": "com.tealium.cordova.compact"
+        },
+        "is_top_level": true,
+        "variables": {}
+    }
+}
