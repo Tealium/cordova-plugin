@@ -1,4 +1,4 @@
-Cordova Plugin 0.9.0
+Cordova Plugin 0.9.2
 ====================
 
 ### Brief ###
@@ -63,10 +63,12 @@ cordova plugin remove cordova-plugin-tealium
 
 ### Known Issues ###
 
+- 0.9.0 Plugman remote plugin add to iOS project does not properly add framework to project
 - 0.9.0 Calls may queue in Android until first wake after launch
 
 ### Change Log ###
 
+- 0.9.2 Update to Plugin.xml
 - 0.9.0 Update of older phonegap-plugin to Cordova 5.1.1
 
 
