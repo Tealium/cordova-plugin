@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-        id="com.tealium.cordova.compact" version="0.9.2" name="tealium-compact">
+        id="com.tealium.cordova.compact" version="0.9.3" name="tealium-compact">
 
     <name>TealiumCompact</name>
     <description>Tealium Tag Management</description>

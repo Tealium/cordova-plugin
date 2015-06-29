@@ -24,7 +24,7 @@ module.exports.metadata =
 // TOP OF METADATA
 {
     "cordova-plugin-whitelist": "1.0.0",
-    "com.tealium.cordova.compact": "0.9.0"
+    "com.tealium.cordova.compact": "0.9.3"
 }
 // BOTTOM OF METADATA
 });
