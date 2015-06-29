@@ -39,11 +39,11 @@
 		7E7966E61810823500FA85AD /* icon-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966DC1810823500FA85AD /* icon-small.png */; };
 		7E7966E71810823500FA85AD /* icon-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966DD1810823500FA85AD /* icon-small@2x.png */; };
 		D4A0D8761607E02300AEF8BB /* Default-568h@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = D4A0D8751607E02300AEF8BB /* Default-568h@2x~iphone.png */; };
-		C22378AFE7554FA4B0AFF9F8 /* tealium_int.m in Sources */ = {isa = PBXBuildFile; fileRef = E094298E58BA47EEB521EF2A /* tealium_int.m */; };
-		2CD6D9B0175B4C709A5604B0 /* TealiumLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43E95788427F43CD8DAC896D /* TealiumLibrary.framework */; };
-		E56AFA8F31F8464EAF51282E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33776CDDD12B45FBBF101940 /* Foundation.framework */; };
-		2F4DDEBF10E04C0FBE43ADBA /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17B54B1FC6EF4651ADC7C1F1 /* CoreTelephony.framework */; };
-		751AC4ABA60A4CCD8C2D5C04 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDAFE19B444643279B1067A9 /* SystemConfiguration.framework */; };
+		CDCC9CA767A941FB908F3179 /* tealium_int.m in Sources */ = {isa = PBXBuildFile; fileRef = 9900CA2807294D10ADF2CA94 /* tealium_int.m */; };
+		81402E43B44E4F1698778EA3 /* TealiumLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB6CD30DA0AE493BB8F9A432 /* TealiumLibrary.framework */; };
+		2E2F04670D8B4A39ADE3C721 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F16C2396158941D08042C796 /* Foundation.framework */; };
+		BDB8B8B7BDC64C899F5F9B70 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD92370F79574D798D997589 /* CoreTelephony.framework */; };
+		C9330F93B0CD4171802F51A2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97DF0CC172214BA9AF8BCE61 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -109,12 +109,12 @@
 		EB87FDF31871DA8E0020F90C /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; name = www; path = ../../www; sourceTree = "<group>"; };
 		EB87FDF41871DAF40020F90C /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = ../../config.xml; sourceTree = "<group>"; };
 		F840E1F0165FE0F500CFE078 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = "TealiumSample/config.xml"; sourceTree = "<group>"; };
-		E094298E58BA47EEB521EF2A /* tealium_int.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "tealium_int.m"; path = "com.tealium.cordova.compact/tealium_int.m"; sourceTree = "<group>"; fileEncoding = 4; };
-		DD3FB6F41CB54044B54280BE /* tealium_int.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "tealium_int.h"; path = "com.tealium.cordova.compact/tealium_int.h"; sourceTree = "<group>"; fileEncoding = 4; };
-		43E95788427F43CD8DAC896D /* TealiumLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "TealiumLibrary.framework"; path = "TealiumSample/Plugins/com.tealium.cordova.compact/TealiumLibrary.framework"; sourceTree = "<group>"; };
-		33776CDDD12B45FBBF101940 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "System/Library/Frameworks/Foundation.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
-		17B54B1FC6EF4651ADC7C1F1 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "CoreTelephony.framework"; path = "System/Library/Frameworks/CoreTelephony.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
-		DDAFE19B444643279B1067A9 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "SystemConfiguration.framework"; path = "System/Library/Frameworks/SystemConfiguration.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
+		9900CA2807294D10ADF2CA94 /* tealium_int.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "tealium_int.m"; path = "com.tealium.cordova.compact/tealium_int.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		750C639216E64513834D9957 /* tealium_int.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "tealium_int.h"; path = "com.tealium.cordova.compact/tealium_int.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		FB6CD30DA0AE493BB8F9A432 /* TealiumLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "TealiumLibrary.framework"; path = "TealiumSample/Plugins/com.tealium.cordova.compact/TealiumLibrary.framework"; sourceTree = "<group>"; };
+		F16C2396158941D08042C796 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "System/Library/Frameworks/Foundation.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
+		FD92370F79574D798D997589 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "CoreTelephony.framework"; path = "System/Library/Frameworks/CoreTelephony.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
+		97DF0CC172214BA9AF8BCE61 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "SystemConfiguration.framework"; path = "System/Library/Frameworks/SystemConfiguration.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,10 +126,10 @@
 				301BF552109A68D80062928A /* libCordova.a in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
 				305D5FD1115AB8F900A74A75 /* MobileCoreServices.framework in Frameworks */,
-				2CD6D9B0175B4C709A5604B0 /* TealiumLibrary.framework in Frameworks */,
-				E56AFA8F31F8464EAF51282E /* Foundation.framework in Frameworks */,
-				2F4DDEBF10E04C0FBE43ADBA /* CoreTelephony.framework in Frameworks */,
-				751AC4ABA60A4CCD8C2D5C04 /* SystemConfiguration.framework in Frameworks */,
+				81402E43B44E4F1698778EA3 /* TealiumLibrary.framework in Frameworks */,
+				2E2F04670D8B4A39ADE3C721 /* Foundation.framework in Frameworks */,
+				BDB8B8B7BDC64C899F5F9B70 /* CoreTelephony.framework in Frameworks */,
+				C9330F93B0CD4171802F51A2 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -202,10 +202,10 @@
 				5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */,
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
 				305D5FD0115AB8F900A74A75 /* MobileCoreServices.framework */,
-				43E95788427F43CD8DAC896D /* TealiumLibrary.framework */,
-				33776CDDD12B45FBBF101940 /* Foundation.framework */,
-				17B54B1FC6EF4651ADC7C1F1 /* CoreTelephony.framework */,
-				DDAFE19B444643279B1067A9 /* SystemConfiguration.framework */,
+				FB6CD30DA0AE493BB8F9A432 /* TealiumLibrary.framework */,
+				F16C2396158941D08042C796 /* Foundation.framework */,
+				FD92370F79574D798D997589 /* CoreTelephony.framework */,
+				97DF0CC172214BA9AF8BCE61 /* SystemConfiguration.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -221,8 +221,8 @@
 		307C750510C5A3420062BCA9 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
-				E094298E58BA47EEB521EF2A /* tealium_int.m */,
-				DD3FB6F41CB54044B54280BE /* tealium_int.h */,
+				9900CA2807294D10ADF2CA94 /* tealium_int.m */,
+				750C639216E64513834D9957 /* tealium_int.h */,
 			);
 			name = Plugins;
 			path = "TealiumSample/Plugins";
@@ -407,7 +407,7 @@
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				1D3623260D0F684500981E51 /* AppDelegate.m in Sources */,
 				302D95F114D2391D003F00A1 /* MainViewController.m in Sources */,
-				C22378AFE7554FA4B0AFF9F8 /* tealium_int.m in Sources */,
+				CDCC9CA767A941FB908F3179 /* tealium_int.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -501,6 +501,8 @@
 					"\"TealiumSample/Plugins/com.tealium.cordova.compact\"",
 					"\"TealiumSample/Plugins/com.tealium.cordova.compact\"",
 					"\"TealiumSample/Plugins/com.tealium.cordova.compact\"",
+					"\"TealiumSample/Plugins/com.tealium.cordova.compact\"",
+					"\"TealiumSample/Plugins/com.tealium.cordova.compact\"",
 				);
 			};
 			name = Debug;
@@ -575,6 +577,8 @@
 					"\"TealiumSample/Plugins/cordova-plugin-tealium\"",
 					"\"TealiumSample/Plugins/cordova-plugin-tealium\"",
 					"\"TealiumSample/Plugins/cordova-plugin-tealium\"",
+					"\"TealiumSample/Plugins/com.tealium.cordova.compact\"",
+					"\"TealiumSample/Plugins/com.tealium.cordova.compact\"",
 					"\"TealiumSample/Plugins/com.tealium.cordova.compact\"",
 					"\"TealiumSample/Plugins/com.tealium.cordova.compact\"",
 					"\"TealiumSample/Plugins/com.tealium.cordova.compact\"",

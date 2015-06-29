@@ -1,9 +1,18 @@
 {
-    "version": "0.9.0",
+    "version": "0.9.3",
     "name": "com.tealium.cordova.compact",
     "cordova_name": "TealiumCompact",
-    "description": "\n        Tealium Tag Management\n    ",
+    "description": "Tealium Tag Management",
     "license": "Commercial",
+    "repo": "https://github.com/Tealium/cordova-plugin.git",
+    "issue": "https://github.com/Tealium/cordova-plugin/issues",
+    "keywords": [
+        "tealium",
+        "tag",
+        "management",
+        "iOS",
+        "Android"
+    ],
     "platforms": [
         "ios",
         "android"
