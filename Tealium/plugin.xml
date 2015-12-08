@@ -43,7 +43,7 @@
     <!-- android -->
     <platform name="android">
         <config-file target="config.xml" parent="/*">
-            <feature name="TealiumCompact">
+            <feature name="TealiumPg">
                 <param name="android-package" value="org.apache.cordova.plugin.TealiumPg"/>
             </feature>
         </config-file>
