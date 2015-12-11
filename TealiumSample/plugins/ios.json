@@ -32,11 +32,11 @@
                     "plugins": [
                         {
                             "xml": "<plugin name=\"TealiumPg\" value=\"TealiumPg\" />",
-                            "count": 2
+                            "count": 1
                         },
                         {
                             "xml": "<feature name=\"TealiumPg\"><param name=\"ios-package\" value=\"TealiumPg\" /></feature>",
-                            "count": 2
+                            "count": 1
                         }
                     ]
                 }

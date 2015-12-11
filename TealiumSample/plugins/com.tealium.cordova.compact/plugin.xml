@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-        id="com.tealium.cordova.compact" version="0.9.3" name="tealium-compact">
+        id="com.tealium.cordova.compact" version="0.9.4" name="tealium-compact">
 
     <name>TealiumCompact</name>
     <description>Tealium Tag Management</description>
@@ -43,7 +43,7 @@
     <!-- android -->
     <platform name="android">
         <config-file target="config.xml" parent="/*">
-            <feature name="TealiumCompact">
+            <feature name="TealiumPg">
                 <param name="android-package" value="org.apache.cordova.plugin.TealiumPg"/>
             </feature>
         </config-file>

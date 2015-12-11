@@ -5,25 +5,21 @@
     },
     "config_munge": {
         "files": {
-            "res/xml/config.xml": {
-                "parents": {
-                    "/*": [
-                        {
-                            "xml": "<feature name=\"Whitelist\"><param name=\"android-package\" value=\"org.apache.cordova.whitelist.WhitelistPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
-                            "count": 1
-                        }
-                    ]
-                }
-            },
             "config.xml": {
                 "parents": {
                     "/*": [
                         {
                             "xml": "<feature name=\"TealiumPg\"><param name=\"android-package\" value=\"org.apache.cordova.plugin.TealiumPg\" /></feature>",
                             "count": 1
-                        },
+                        }
+                    ]
+                }
+            },
+            "res/xml/config.xml": {
+                "parents": {
+                    "/*": [
                         {
-                            "xml": "<feature name=\"TealiumCompact\"><param name=\"android-package\" value=\"org.apache.cordova.plugin.TealiumPg\" /></feature>",
+                            "xml": "<feature name=\"Whitelist\"><param name=\"android-package\" value=\"org.apache.cordova.whitelist.WhitelistPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
                             "count": 1
                         }
                     ]

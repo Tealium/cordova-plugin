@@ -1,4 +1,4 @@
-Cordova Plugin 0.9.2
+Cordova Plugin 0.9.4
 ====================
 
 ### Brief ###
@@ -30,7 +30,7 @@ From the Command-Line Interface (CLI), first:
 1. ```cordova create </PATH_TO_PROJECT>```
 2. ```cd in to project```
 3. ```cordova platform add <PLATFORM>```
-4. ```cordova plugin add com.tealium.cordova.compact```  OR  ```cordova plugin add </LOCAL_PATH_TO_TEALIUM_PLUGIN/>```
+4. ```cordova plugin add </LOCAL_PATH_TO_TEALIUM_PLUGIN/>```
 5. ```cordova build <PLATFORM>```
 
 Then init the library in your project:
@@ -68,6 +68,7 @@ cordova plugin remove cordova-plugin-tealium
 
 ### Change Log ###
 
+- 0.9.4 Fixed Typo in config.xml
 - 0.9.2 Update to Plugin.xml
 - 0.9.0 Update of older phonegap-plugin to Cordova 5.1.1
 

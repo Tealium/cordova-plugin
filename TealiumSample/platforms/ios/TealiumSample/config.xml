@@ -14,12 +14,6 @@
     <feature name="LocalStorage">
         <param name="ios-package" value="CDVLocalStorage" />
     </feature>
-    <plugins>
-        <plugin name="TealiumPg" value="TealiumPg" />
-        <feature name="TealiumPg">
-            <param name="ios-package" value="TealiumPg" />
-        </feature>
-    </plugins>
     <allow-intent href="itms:*" />
     <allow-intent href="itms-apps:*" />
     <name>TealiumSample</name>
@@ -37,4 +31,10 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+    <plugins>
+        <plugin name="TealiumPg" value="TealiumPg" />
+        <feature name="TealiumPg">
+            <param name="ios-package" value="TealiumPg" />
+        </feature>
+    </plugins>
 </widget>

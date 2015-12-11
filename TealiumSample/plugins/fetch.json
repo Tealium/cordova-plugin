@@ -9,8 +9,8 @@
     },
     "com.tealium.cordova.compact": {
         "source": {
-            "type": "registry",
-            "id": "com.tealium.cordova.compact"
+            "type": "local",
+            "path": "/Users/chadhartman/Documents/repos/tealium/cordova-plugin/Tealium"
         },
         "is_top_level": true,
         "variables": {}
