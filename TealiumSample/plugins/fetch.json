@@ -10,7 +10,7 @@
     "com.tealium.cordova.compact": {
         "source": {
             "type": "local",
-            "path": "/Users/chadhartman/Documents/repos/tealium/cordova-plugin/Tealium"
+            "path": "/Users/chadhartman/Desktop/cordova-plugin/Tealium"
         },
         "is_top_level": true,
         "variables": {}

@@ -1,4 +1,4 @@
-Cordova Plugin 0.9.4
+Cordova Plugin 0.9.5
 ====================
 
 ### Brief ###
