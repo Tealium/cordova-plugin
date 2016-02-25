@@ -4,50 +4,13 @@
         "uninstalled": []
     },
     "config_munge": {
-        "files": {
-            "framework": {
-                "parents": {
-                    "Foundation.framework": [
-                        {
-                            "xml": false,
-                            "count": 1
-                        }
-                    ],
-                    "CoreTelephony.framework": [
-                        {
-                            "xml": false,
-                            "count": 1
-                        }
-                    ],
-                    "SystemConfiguration.framework": [
-                        {
-                            "xml": false,
-                            "count": 1
-                        }
-                    ]
-                }
-            },
-            "config.xml": {
-                "parents": {
-                    "plugins": [
-                        {
-                            "xml": "<plugin name=\"TealiumPg\" value=\"TealiumPg\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"TealiumPg\"><param name=\"ios-package\" value=\"TealiumPg\" /></feature>",
-                            "count": 1
-                        }
-                    ]
-                }
-            }
-        }
+        "files": {}
     },
     "installed_plugins": {
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.tealium.sample"
         },
-        "com.tealium.cordova.compact": {
+        "com.tealium.cordova.v5": {
             "PACKAGE_NAME": "com.tealium.sample"
         }
     },

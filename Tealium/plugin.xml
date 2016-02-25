@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-        id="com.tealium.cordova.compact" version="0.9.4" name="tealium-compact">
+        id="com.tealium.cordova.v5" version="1.0.1" name="tealium-v5">
 
-    <name>TealiumCompact</name>
+    <name>TealiumCordova</name>
     <description>Tealium Tag Management</description>
     <keywords>tealium, tag, management,iOS,Android</keywords>
     <repo>https://github.com/Tealium/cordova-plugin.git</repo>
@@ -16,9 +16,6 @@
 
     <js-module src="www/tealium.js" name="tealium">
         <clobbers target="window.tealium" />
-    </js-module>
-    <js-module src="www/auto_track.js" name="auto_track">
-        <clobbers target="window.auto_track" />
     </js-module>
 
     <!-- ios -->
@@ -37,7 +34,8 @@
         <framework src="Foundation.framework" />
         <framework src="CoreTelephony.framework" />
         <framework src="SystemConfiguration.framework" />
-        <framework src="src/ios/TealiumLibrary.framework" custom="true" compiler-flags="-ObjC"/>
+        <framework src="src/ios/TealiumIOS.framework" custom="true" compiler-flags="-ObjC"/>
+        <framework src="src/ios/TealiumIOSLifecycle.framework" custom="true" compiler-flags="-ObjC"/>
     </platform>
 		
     <!-- android -->
@@ -47,7 +45,10 @@
                 <param name="android-package" value="org.apache.cordova.plugin.TealiumPg"/>
             </feature>
         </config-file>
-        <source-file src="src/android/tealium.4.1.1c.jar" target-dir="libs" />
-				<source-file src="src/android/TealiumPg.java" target-dir="src/org/apache/cordova/plugin" />
+        <framework src="src/android/tealium.gradle" custom="true" type="gradleReference" />
+
+        <resource-file src="src/android/tealium-5.0.2.aar" target="src/android/tealium-5.0.2.aar" />
+        <resource-file src="src/android/tealium.lifecycle-5.0.0.aar" target="src/android/tealium.lifecycle-5.0.0.aar" />
+		<source-file src="src/android/TealiumPg.java" target-dir="src/org/apache/cordova/plugin" />
      </platform>
 </plugin>

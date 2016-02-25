@@ -9,39 +9,51 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-
+// this var acts as a constant to reference the name of the Tealium instance we will create later.
+// if you have multiple instances, you will need to pass in a custom instance name for each one, so don't use a constant.
+window.tealium_instance = "tealium_main";
+// init tealium plugin onDeviceReady
 document.addEventListener("deviceready", onDeviceReady, false);
+// add a tealium event call (utag.link) to the "Event Button"
 document.getElementById("event_button").addEventListener("click", function(){
-                                                         tealium.track("link",{"link_id":"testEvent"});
-                                                         alert("Event Dispatched");
+                                                        // call our custom trackEvent function and pass in some data. not specifying an instance id, so the global constant "tealium_main" will be used
+                                                         trackEvent('{"link_id" : "Event Button", "link_name" : "Event Button"}');
                                                          });
+// add a tealium view call (utag.view) to the "View Button"
 document.getElementById("view_button").addEventListener("click", function(){
                                                         // View events should normally be tracked through a view change callback, rather than through a button trigger as demonstrated here
-                                                        trackView('{"screen_title":"testView"}')
+                                                        // call our custom trackView function and pass in some data, this time explicitly specifying the instance id
+                                                        trackView('{"screen_title":"Craig Test Homescreen"}', "tealium_main");
                                                         });
 function onDeviceReady() {
-    tealium.init({
-                 account : "tealiummobile"       // REQUIRED: Your account.
-                 , profile : "demo"              // REQUIRED: Profile you wish to use.
-                 , environment : "dev"           // REQUIRED: "dev", "qa", or "prod".
-                 , disableHTTPS : false          // OPTIONAL: Default is false.
-                 , suppressLogs : false           // OPTIONAL: Default is true.
-                 , suppressErrors : false        // OPTIONAL: Default is false, effects only Android builds.
-                 });
+    // call our custom tealiumInit function
+    tealiumInit("tealium", "mobile", "dev", "tealium_main");
     console.log("onDeviceReady")
 }
 
-function trackEvent(){
-    // Tealium example with data directly provided in call
-    tealium.track("link",{"link_id":"testEvent"});
-    alert("Event Dispatched");
+function tealiumInit(accountName, profileName, environmentName, instanceName){
+        tealium.init({
+                 account : accountName       // REQUIRED: Your account.
+                 , profile : profileName              // REQUIRED: Profile you wish to use.
+                 , environment : environmentName         // REQUIRED: "dev", "qa", or "prod".
+                 , instance : instanceName || window.tealium_instance // instance name used to refer to the current tealium instance
+                 });
 }
 
-function trackView(data){
+function trackEvent(data, instance){
     // Tealium example with custom data passed in as a wrapper argument
     // Custom data must be a dictionary
     data = JSON.parse(data);
-    tealium.track("view", data);
+    // this will be a "link" event. Accepts either a custom instance name, or defaults to window.tealium_instance
+    tealium.track("link", data, instance || window.tealium_instance);
+    alert("Event Dispatched");
+}
+
+function trackView(data, instance){
+    // Tealium example with custom data passed in as a wrapper argument
+    // Custom data must be a dictionary
+    data = JSON.parse(data);
+    // this will be a "view" event. Accepts either a custom instance name, or defaults to window.tealium_instance
+    tealium.track("view", data, instance || window.tealium_instance);
     alert("View Dispatched");
 }
