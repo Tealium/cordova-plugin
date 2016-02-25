@@ -31,7 +31,7 @@
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.tealium.sample"
         },
-        "com.tealium.cordova.compact": {
+        "com.tealium.cordova.v5": {
             "PACKAGE_NAME": "com.tealium.sample"
         }
     },
