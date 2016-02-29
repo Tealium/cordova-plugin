@@ -1,12 +1,4 @@
 var Tealium =  {
-	/*
-	account : "your-account",
-    profile : "your-profile",
-    environment : "dev", 
-    disableHTTPS : false,
-    suppressLogs : true,
-    suppressErrors : false
-	*/
     init: function(config) {
 
 		if(typeof config != "object") {
@@ -27,6 +19,11 @@ var Tealium =  {
 		if(!('environment' in config) || typeof config.environment != 'string') {
 			messages.push('"environment" must be supplied with a string of "dev", "qa", or "prod"');
 		}
+
+        if (!config.instance) {
+            console.log("instance name not specified. using default instance name of tealium_cordova.");
+            config.instance = "tealium_cordova";
+        }
 	
 		if(messages.length > 0) {
 			console.log("Error initializing Tealium:\r\n\t" + messages.join('\r\n\t'));
@@ -36,12 +33,12 @@ var Tealium =  {
         cordova.exec(
             tealium.successCallback, // success callback function
             tealium.errorCallback, // error callback function
-            'TealiumPg', // mapped to our native class called "Calendar"
+            'TealiumPg', // plugin name
             'init', // with this action name
             [ config ]
         );
     },
-    track: function(type,data) {
+    track: function(type,data, instance) {
 			if (typeof type != "string"){
 				console.log("please make sure type is a string, 'view' or 'link'")
 			}
@@ -50,24 +47,32 @@ var Tealium =  {
 			}
 			if (typeof data != "object" || typeof type != "string"){
 				console.log("please make sure to use tealium.track(String type, Object data)");
-				return
+				return;
 			}
+            if (typeof instance != "string"){
+                console.log("instance name not specified. using default instance name of tealium_cordova.");
+                instance = "tealium_cordova";
+            }   
         cordova.exec(
             tealium.successCallback, // success callback function
             tealium.errorCallback, // error callback function
-            'TealiumPg', // mapped to our native class called "Calendar"
+            'TealiumPg', // plugin name
             'track', // with this action name
             [{                  // and this array of custom arguments to create our entry
                 "eventType": type,
                 "eventData": data,
+                "instance" : instance
             }]
         );
     },
-    successCallback: function(){
+    successCallback: function(e){
             console.log("tealium call successful");
+            console.log(e);
     },
-    errorCallback: function(){
+    errorCallback: function(e){
             console.log("Fail, check syntax of tealium.init(String account, String profile, String target) or tealium.track(String type, Object data)");
+            console.log(e);
+            window.tealium_cordova_error = e;
     }
 }
 

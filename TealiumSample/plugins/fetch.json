@@ -7,10 +7,10 @@
         "is_top_level": true,
         "variables": {}
     },
-    "com.tealium.cordova.compact": {
+    "com.tealium.cordova.v5": {
         "source": {
             "type": "local",
-            "path": "/Users/chadhartman/Documents/repos/tealium/cordova-plugin/Tealium"
+            "path": "../Tealium"
         },
         "is_top_level": true,
         "variables": {}
