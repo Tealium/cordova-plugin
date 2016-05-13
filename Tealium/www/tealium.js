@@ -1,5 +1,5 @@
 var Tealium =  {
-    init: function(config) {
+    init: function(config, successCallback) {
 
 		if(typeof config != "object") {
 			console.log("Error initializing Tealium: please ensure config is an object of key:value pairs.");
@@ -29,9 +29,14 @@ var Tealium =  {
 			console.log("Error initializing Tealium:\r\n\t" + messages.join('\r\n\t'));
 			return;
 		}
+
+        var onSuccess = successCallback
+        if (!successCallback) {
+            onSuccess = tealium.successCallback
+        }
 		
         cordova.exec(
-            tealium.successCallback, // success callback function
+            onSuccess, // success callback function
             tealium.errorCallback, // error callback function
             'TealiumPg', // plugin name
             'init', // with this action name
@@ -52,7 +57,7 @@ var Tealium =  {
             if (typeof instance != "string"){
                 console.log("instance name not specified. using default instance name of tealium_cordova.");
                 instance = "tealium_cordova";
-            }   
+            }
         cordova.exec(
             tealium.successCallback, // success callback function
             tealium.errorCallback, // error callback function
