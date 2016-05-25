@@ -28,6 +28,7 @@ static NSString * const Tealium_MobileBaseURL = @"https://tags.tiqcdn.com/utag/%
 	    profileName = [arguments objectForKey:@"profile"];
 	    environmentName = [arguments objectForKey:@"environment"];
         instanceName = [arguments objectForKey:@"instance"];
+        isLifecycleEnabled = [arguments objectForKey:@"isLifecycleEnabled"];
 	}
 	@catch (NSException *exception) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];

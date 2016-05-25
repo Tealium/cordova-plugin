@@ -27,7 +27,7 @@ document.getElementById("view_button").addEventListener("click", function(){
                                                         });
 function onDeviceReady() {
     // call our custom tealiumInit function
-    tealiumInit("tealium", "mobile", "dev", "tealium_main");
+    tealiumInit("services-crouse", "mobile", "dev", "tealium_main");
     console.log("onDeviceReady")
 }
 

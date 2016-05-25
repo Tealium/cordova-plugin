@@ -71,7 +71,7 @@ public class TealiumPg extends CordovaPlugin {
             config.setOverrideTagManagementUrl(override);
             config.setOverridePublishSettingsUrl(override);
             
-            boolean isAutoTracking = (isLifecycleEnabled != false) ? true : false;
+            boolean isAutoTracking = (isLifecycleEnabled != "false") ? true : false;
             LifeCycle.setupInstance(instanceName, config, isAutoTracking);
 
             // create the Tealium instance using the instance name provided

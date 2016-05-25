@@ -11,6 +11,10 @@ var Tealium =  {
 	
 		var messages = [];
 	
+        if (!config.isLifecycleEnabled) {
+            config.isLifecycleEnabled = "true";
+        }
+
 		if(!('account' in config) || typeof config.account != 'string') {
 			messages.push('"account" must be supplied with a string');
 		}
