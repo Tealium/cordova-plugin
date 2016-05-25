@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.tealium.library.Tealium;
+import com.tealium.lifecycle.LifeCycle;
 
 import android.content.Context;
 import android.app.Activity;
@@ -61,14 +62,18 @@ public class TealiumPg extends CordovaPlugin {
             String profileName = arguments.optString("profile", null);
             String environmentName = arguments.optString("environment", null);
             String instanceName = arguments.optString("instance", null);
+            String isLifecycleEnabled = arguments.optString("isLifecycleEnabled", null);
             
             Tealium.Config config = Tealium.Config.create(app, accountName, profileName, environmentName);
             
-            String libVersion = "5.0.0";
+            String libVersion = "5.0.2";
             String override = this.mobileUrlOverride(accountName, profileName, environmentName, libVersion);
             config.setOverrideTagManagementUrl(override);
             config.setOverridePublishSettingsUrl(override);
             
+            boolean isAutoTracking = (isLifecycleEnabled != "false") ? true : false;
+            LifeCycle.setupInstance(instanceName, config, isAutoTracking);
+
             // create the Tealium instance using the instance name provided
             Tealium.createInstance(instanceName, config);
         } catch (Throwable t){

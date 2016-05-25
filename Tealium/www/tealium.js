@@ -1,13 +1,20 @@
 var Tealium =  {
-    init: function(config) {
+    // new param config.isLifecycleEnabled
+    init: function(config, successCallback) {
 
 		if(typeof config != "object") {
 			console.log("Error initializing Tealium: please ensure config is an object of key:value pairs.");
 			return;
 		}
+
+        var onSuccess = successCallback || tealium.successCallback;
 	
 		var messages = [];
 	
+        if (!config.isLifecycleEnabled) {
+            config.isLifecycleEnabled = "true";
+        }
+
 		if(!('account' in config) || typeof config.account != 'string') {
 			messages.push('"account" must be supplied with a string');
 		}
@@ -25,20 +32,24 @@ var Tealium =  {
             config.instance = "tealium_cordova";
         }
 	
-		if(messages.length > 0) {
+		if (config.isLifecycleEnabled === "false") {
+            console.log("Lifecycle tracking has been explicitly disabled.");
+        }
+
+        if(messages.length > 0) {
 			console.log("Error initializing Tealium:\r\n\t" + messages.join('\r\n\t'));
 			return;
 		}
 		
         cordova.exec(
-            tealium.successCallback, // success callback function
+            onSuccess, // success callback function
             tealium.errorCallback, // error callback function
             'TealiumPg', // plugin name
             'init', // with this action name
             [ config ]
         );
     },
-    track: function(type,data, instance) {
+    track: function(type, data, instance) {
 			if (typeof type != "string"){
 				console.log("please make sure type is a string, 'view' or 'link'")
 			}
