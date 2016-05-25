@@ -1,11 +1,11 @@
 #import "tealium_int.h"
 #import <Cordova/CDV.h>
-@import TealiumIOS;
+@import TealiumIOSLifecycle;
 
 @implementation TealiumPg
 
 static NSString * const Tealium_Platform = @"ios_cordova";
-static NSString * const Tealium_LibVersion = @"5.0.1";
+static NSString * const Tealium_LibVersion = @"5.0.3";
 static NSString * const Tealium_MobileBaseURL = @"https://tags.tiqcdn.com/utag/%@/%@/%@/mobile.html?%@=%@&%@=%@&%@=%@&%@=%@";
 
 - (void) init: (CDVInvokedUrlCommand*)command {
@@ -15,6 +15,7 @@ static NSString * const Tealium_MobileBaseURL = @"https://tags.tiqcdn.com/utag/%
     NSString* profileName;
     NSString* environmentName;
     NSString* instanceName;
+    NSString* isLifecycleEnabled;
     // Below functions did not work as regular methods during Cordova build - added inline below
     NSTimeInterval ti = [[NSDate date] timeIntervalSince1970];
     long tiLong = (long)ti;
@@ -27,6 +28,7 @@ static NSString * const Tealium_MobileBaseURL = @"https://tags.tiqcdn.com/utag/%
 	    profileName = [arguments objectForKey:@"profile"];
 	    environmentName = [arguments objectForKey:@"environment"];
         instanceName = [arguments objectForKey:@"instance"];
+        isLifecycleEnabled = [arguments objectForKey:@"isLifecycleEnabled"];
 	}
 	@catch (NSException *exception) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
@@ -55,6 +57,10 @@ static NSString * const Tealium_MobileBaseURL = @"https://tags.tiqcdn.com/utag/%
         configuration.overrideTagManagementURL = configuration.overridePublishSettingsURL = mobileURLString;
         // create a new Tealium instance using the instance name passed in
         [Tealium newInstanceForKey:instanceName configuration:configuration];
+        // enable lifecycle tracking
+        if (![isLifecycleEnabled isEqualToString:@"false"]){
+            [[Tealium instanceForKey:instanceName] setLifecycleAutotrackingIsEnabled:YES];
+        }
         // set success response - we initialized successfully with no reported errors
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Tealium: Tealium init successful!"];
     }
