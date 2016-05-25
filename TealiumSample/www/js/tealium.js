@@ -23,11 +23,11 @@ document.getElementById("event_button").addEventListener("click", function(){
 document.getElementById("view_button").addEventListener("click", function(){
                                                         // View events should normally be tracked through a view change callback, rather than through a button trigger as demonstrated here
                                                         // call our custom trackView function and pass in some data, this time explicitly specifying the instance id
-                                                        trackView('{"screen_title":"Craig Test Homescreen"}', "tealium_main");
+                                                        trackView('{"screen_title":"Test Homescreen"}', "tealium_main");
                                                         });
 function onDeviceReady() {
     // call our custom tealiumInit function
-    tealiumInit("services-crouse", "mobile", "dev", "tealium_main");
+    tealiumInit("tealiummobile", "demo", "dev", "tealium_main");
     console.log("onDeviceReady")
 }
 
@@ -37,6 +37,7 @@ function tealiumInit(accountName, profileName, environmentName, instanceName){
                  , profile : profileName              // REQUIRED: Profile you wish to use.
                  , environment : environmentName         // REQUIRED: "dev", "qa", or "prod".
                  , instance : instanceName || window.tealium_instance // instance name used to refer to the current tealium instance
+                 , isLifecycleEnabled: "true" // explicitly enabling lifecycle tracking. Note string value required, not boolean
                  });
 }
 
