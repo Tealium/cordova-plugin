@@ -25,10 +25,24 @@ document.getElementById("view_button").addEventListener("click", function(){
                                                         // call our custom trackView function and pass in some data, this time explicitly specifying the instance id
                                                         trackView('{"screen_title":"Test Homescreen"}', "tealium_main");
                                                         });
+
+document.getElementById("persist_button").addEventListener("click", function(){
+    tealium.addPersistent("persist", "testpersist", window.tealium_instance);
+});
+document.getElementById("remove_persist_button").addEventListener("click", function(){
+    tealium.removePersistent("persist", window.tealium_instance);
+});
+document.getElementById("volatile_button").addEventListener("click", function(){
+    tealium.addVolatile("volatile", "testvolatile", window.tealium_instance);
+});
+document.getElementById("remove_volatile_button").addEventListener("click", function(){
+    tealium.removeVolatile("volatile", window.tealium_instance);
+});
+
 function onDeviceReady() {
     // call our custom tealiumInit function
     tealiumInit("tealiummobile", "demo", "dev", "tealium_main");
-    console.log("onDeviceReady")
+    console.log("onDeviceReady");
 }
 
 function tealiumInit(accountName, profileName, environmentName, instanceName){
@@ -38,6 +52,8 @@ function tealiumInit(accountName, profileName, environmentName, instanceName){
                  , environment : environmentName         // REQUIRED: "dev", "qa", or "prod".
                  , instance : instanceName || window.tealium_instance // instance name used to refer to the current tealium instance
                  , isLifecycleEnabled: "true" // explicitly enabling lifecycle tracking. Note string value required, not boolean
+                 // , collectDispatchURL:"https://collect.tealiumiq.com/vdata/i.gif?tealium_account=services-crouse&tealium_profile=mobile"
+                 , collectDispatchProfile:"demo"
                  });
 }
 
@@ -47,7 +63,7 @@ function trackEvent(data, instance){
     data = JSON.parse(data);
     // this will be a "link" event. Accepts either a custom instance name, or defaults to window.tealium_instance
     tealium.track("link", data, instance || window.tealium_instance);
-    alert("Event Dispatched");
+    // alert("Event Dispatched");
 }
 
 function trackView(data, instance){
@@ -56,5 +72,5 @@ function trackView(data, instance){
     data = JSON.parse(data);
     // this will be a "view" event. Accepts either a custom instance name, or defaults to window.tealium_instance
     tealium.track("view", data, instance || window.tealium_instance);
-    alert("View Dispatched");
+    // alert("View Dispatched");
 }

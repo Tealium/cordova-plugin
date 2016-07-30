@@ -1,4 +1,4 @@
-Cordova Plugin 1.0.1
+Cordova Plugin 1.0.2
 ====================
 ## Brief
 
@@ -11,6 +11,7 @@ This plugin provides the means to tag Cordova built applications for the purpose
 - [Upgrade Notice](#upgrade-notice)
 - [Add Plugin](#add-plugin)
 - [Add Tracking](#add-tracking)
+- [Lifecycle Tracking](#lifecycle-tracking)
 - [Removing Tealium (optional)](#removing-tealium-optional)
 - [Troubleshooting](#troubleshooting)
 - [Known Issues](#known-issues)
@@ -22,12 +23,12 @@ This plugin provides the means to tag Cordova built applications for the purpose
 
 ## Embedded Tealium Libraries
 
-* [Tealium iOS 5.0.3](https://www.github.com/Tealium/tealium-ios) including lifecycle module (TealiumIOSLifecycle.framework)
-* [Tealium Android 5.0.2](https://www.github.com/Tealium/tealium-android) including lifecycle module (tealium.lifecycle-5.0.0.aar)
+* [Tealium iOS 5.0.4](https://www.github.com/Tealium/tealium-ios) including lifecycle module (TealiumIOSLifecycle.framework)
+* [Tealium Android 5.0.4](https://www.github.com/Tealium/tealium-android) including lifecycle module (tealium.lifecycle-5.0.4.aar)
 
 ## Upgrade Notice
 
-If upgrading from the previous Cordova Tealium plugin (pre 0.9.6), first issue the following commands:
+If upgrading from a Cordova Tealium plugin prior to 0.9.6, first issue the following commands:
 
 ```cordova plugin rm com.tealium.cordova.compact```
 
@@ -56,6 +57,41 @@ account : "tealiummobile" 		// CHANGE REQUIRED: Your account.
 });
 ```
 Please note: Lifecycle tracking is enabled by default if you do not pass any value for isLifecycleEnabled. You must pass the string value "false" to disable lifecycle tracking.
+
+#### Overriding the Tealium Collect Dispatch URL (AudienceStream)
+
+By default, the core iOS and Android libraries send Tealium Collect data to the "main" profile in your Tealium account if you do not specify an alternative. The Cordova plugin now allows you to do this by passing one of two options at init time:
+
+collectDispatchURL - This must be passed a full URL in the format:
+
+```https://datacloud.tealiumiq.com/vdata/i.gif?tealium_account=<ACCOUNT>&tealium_profile=<PROFILE>```
+
+Sample code (not production ready):
+
+```javascript
+function tealInit (accountName, profileName, environmentName, instanceName) {
+tealium.init({account : accountName, 
+				profile : profileName, 
+				environment : environmentName, 
+				instance : instanceName || window.tealium_instance 				, isLifecycleEnabled: "true"
+             , collectDispatchURL:collectDispatchURL:"https://datacloud.tealiumiq.com/vdata/i.gif?tealium_account="+accountName+"&tealium_profile="+profileName
+            });
+}
+```
+collectDispatchProfile - This is only effective if no value has been passed for the collectDispatchURL parameter. Simply pass the profile name as a string to which you would like the data sent. The account name will be the same account you use to initialize Tealium.
+Sample code (not production ready):
+
+```javascript
+function tealInit (accountName, profileName, environmentName, instanceName) {
+tealium.init({account : accountName, 
+                profile : profileName, 
+                environment : environmentName, 
+                instance : instanceName || window.tealium_instance              , isLifecycleEnabled: "true"
+             , collectDispatchProfile:profileName
+            });
+}
+```
+
 ### Add Tracking
 The following is an example of how to track events or view changes:
 
@@ -69,7 +105,30 @@ tealium.track("view", // "view" or "link"
 Note: As a rule of thumb, "view" should be used whenever a screen view takes place, while "link" is used to track user interaction events, such as button clicks. These methods correspond directly to "utag.view" and "utag.link" in Tealium IQ desktop implementations.
 
 #### The "instance" Argument
-In the previous version of the plugin, only a single instance of Tealium was supported. In the new version, multiple instances of Tealium can be created. The new plugin therefore requires an instance ID to be passed at initialization time, and with each subsequent tracking request. If you are upgrading, you will therefore need to modify your code to specify a tracking instance. If you only require a single instance, it is recommended to create a global variable to store your instance ID, and pass this variable on each tracking call. An example of this is shown in the sample app.
+In previous versions of the plugin (pre 0.9.6), only a single instance of Tealium was supported. In the new version, multiple instances of Tealium can be created. The new plugin therefore requires an instance ID to be passed at initialization time, and with each subsequent tracking request. If you are upgrading, you will therefore need to modify your code to specify a tracking instance. If you only require a single instance, it is recommended to create a global variable to store your instance ID, and pass this variable on each tracking call. An example of this is shown in the sample app.
+
+### Sending data with every hit
+Some data sources may be required on every hit generated by an app (e.g. user id). To save having to manually add this data to every hit, the Cordova plugin gives you the option to store the data as either "volatile" (deleted at app termination), or "persistent" (stored permanently until manually deleted). From the point the data is added, it will be appended to every hit, including lifecycle hits.
+
+API usage:
+
+- ```tealium.addPersistent("<keyname>", "<value>", window.tealium_instance);```
+*Adds a persistent data source named <keyname> with value <value> to the persistent data store*
+- ```tealium.removePersistent("<keyname>", window.tealium_instance);```
+*Removes a persistent data source named <keyname> from the persistent data store*
+- ```tealium.addVolatile("<keyname>", "<value>", window.tealium_instance);```
+*Adds a volatile data source named <keyname> with value <value> to the persistent data store*
+- ```tealium.removeVolatile("<keyname>", window.tealium_instance);```
+*Removes a volatile data source named <keyname> from the volatile data store*
+
+## Lifecycle tracking
+This plugin includes automatic tracking for lifecycle events (launch, wake, sleep). Due to some peculiarities with the Cordova app lifecycle, this is accomplished by hooking into some helper methods that Cordova provides at the JavaScript level. In the interests of absolute clarity and transparency, here are the events we are using:
+
+- "deviceready" - Tealium event "launch": Triggered when the app is launched from a "cold" launch, i.e. app not started from background. On Android, this event could also occur if the OS has destroyed the app's activity whilst in the background due to low memory on the device. This may result in the launch and wake events being fired in quick succession. Additionally, due to a race condition at launch, the launch event has an artificial 700ms timeout before it fires, to allow the Tealium SDK to fully initialize.
+
+- "pause" - Tealium event "sleep": Triggered when the app is put into the background
+
+- "resume" - Tealium event "wake": Triggered when the app is brought back into the foreground 
 
 ## Building The Sample App
 
@@ -111,16 +170,26 @@ Any errors logged during Tealium initialization will be stored on the global var
 
 Substitute "platform" for either "android" or ios as appropriate.
 
+This usually also resolves spurious XCode code signing errors when building for a physical device. 
+
 ## Known Issues
-- Lifecycle tracking: Android => Lifecycle tracking (launch, wake, sleep) is currently inconsistent on Android. Often, wake events are counted as launch events, which may skew tracking. We are working on a fix for the next release, but for now, we recommend disabling lifecycle tracking.
-- Lifecycle tracking: iOS => Launch event is currently not tracked, but wake and sleep events are tracked successfully. At this time, we recommend disabling lifecycle tracking for this reason. We hope to have this fixed for the next release.
+- (Affects Tealium Collect ONLY - not IQ) Arrays are not processed correctly: Currently, the mechanism used to send data to AudienceStream (VDATA) does not process arrays correctly as a "Set of strings". Additionally, the core iOS and Android libraries do not currently send arrays in the correct format for the VDATA pixel. Both issues are currently being fixed, and should be ready in time for the next release of this plugin. Arrays ARE correctly passed to Tealium IQ for processing by JavaScript tags. If you need to pass arrays to AudienceStream, the suggested workaround is to disable Tealium Collect in the profile's publish settings, and add the Tealium Collect tag via Tealium IQ.
 
 ## Roadmap
-- Planning to add support for setting persistent data sources in a future release. Currently, only volatile data sources are supported, and must be sent with each tracking call.
-- Improved support for the [Tealium AudienceStream](http://tealium.com/products/audiencestream/) Customer Data Platform (add option to change settings and retrieve data)
+- Improved support for the [Tealium AudienceStream](http://tealium.com/products/audiencestream/) Customer Data Platform to retrieve visitor profile data as well as collect data
 - Windows Phone support to be investigated/added (no timeline as yet). Will include lib https://github.com/Tealium/win-library
 
 ## Change Log
+- 1.0.2 Updated sample app to include examples for volatile and persistent data API calls
+- 1.0.2 Updated README.md to detail new API calls
+- 1.0.2 Added API calls to add/remove persistent data and volatile data
+- 1.0.2 Android Only - In previous versions of the plugin, the only valid data type was a string. This was not intended behavior. This has been corrected to now accept the data type passed in (String, JSON Object or Array)
+- 1.0.2 Added option to override the URL for the Tealium Collect dispatch service (AudienceStream). Previously all calls went to the "main" profile and there was no possibility to override this. This is passed as one of two arguments at compile time (see above notes)
+- 1.0.2 Upgraded iOS core library to 5.0.4
+- 1.0.2 Upgraded Android core library to 5.0.4
+- - 1.0.2 Fixed lifecycle tracking on iOS by switching to using Cordova lifecycle events instead of native Android events
+- 1.0.2 Fixed lifecycle tracking on Android by switching to using Cordova lifecycle events instead of native Android events
+- 1.0.2 Minor optimizations/refactoring in the Java/Objective-C plugin code
 - 1.0.1 Upgraded core libraries to Android 5.0.2 and iOS 5.0.3 respectively
 - 1.0.1 Added lifecycle tracking by default to Android and iOS & additional config option to disable lifecycle tracking
 - 1.0.1 Added option to override the init successCallback function (see pull request https://github.com/Tealium/cordova-plugin/pull/8/commits/70ca605393119bac36a7ba66f2ec205a52edf324)

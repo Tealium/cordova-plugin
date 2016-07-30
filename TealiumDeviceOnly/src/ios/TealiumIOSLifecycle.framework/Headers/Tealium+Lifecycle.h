@@ -22,27 +22,6 @@
 
 #endif
 
-/**
- *  Types of Tealium lifecycle event.
- */
-typedef NS_ENUM(NSUInteger, TEALLifecycleType) {
-    /**
-     *  No Lifecycle type assigned.
-     */
-    TEALLifecycleTypeNone = 0,
-    /**
-     *  When the app has starts for the very first time.
-     */
-    TEALLifecycleTypeLaunch,
-    /**
-     *  When the app has awoken from a paused / background state.
-     */
-    TEALLifecycleTypeWake,
-    /**
-     *  When the user has left the app or is going to the background.
-     */
-    TEALLifecycleTypeSleep
-};
 
 /**
  *  Category on the Tealium object that adds lifecycle tracking features.
@@ -57,26 +36,43 @@ typedef NS_ENUM(NSUInteger, TEALLifecycleType) {
  *
  *  @param autotracking Boolean indicating whether to use autotracking or not. Default is NO.
  */
-- (void) setLifecycleAutotrackingIsEnabled:(BOOL)autotracking;
+- (void) setLifecycleAutotrackingIsEnabled:(BOOL)autotracking __attribute__((deprecated("Use the TEALConfiguration setLifecycleAutotrackingEnabled option instead")));
     
 /**
- *  Use to manually record an app launch event. This command is ignored if the
- *      lifecycleAutotrackingIsEnabled equals YES.
+ *  Use to manually record an app launch event.
  */
 - (void) launch;
 
 /**
- *  Use to record an app wake event. This command is ignored if the
- *      lifecycleAutotrackingIsEnabled equals YES.
+ *  Use to record an app wake event.
  */
 - (void) wake;
 
 /**
- *  Use to record an app sleep event. This command is ignored if the
- *      lifecycleAutotrackingIsEnabled equals YES.
+ *  Use to record an app sleep event.
  */
 - (void) sleep;
 
+/**
+ *  Use to manually record an app launch event.
+ *
+ *  @param dataSources NSDictionary of optional, additional data source key and values.
+ */
+- (void) launchWithDataSources:(NSDictionary * _Nullable)dataSources;
+
+/**
+ *  Use to manually record an app wake event.
+ *
+ *  @param dataSources NSDictionary of optional, additional data source key and values.
+ */
+- (void) wakeWithDataSources:(NSDictionary * _Nullable)dataSources;
+
+/**
+ *  Use to manually record an app sleep event.
+ *
+ *  @param dataSources NSDictionary of optional, additional data source key and values.
+ */
+- (void) sleepWithDataSources:(NSDictionary * _Nullable)dataSources;
 
 /**
  *  Convenience method for updating a numeric persistent value using Tealium's
