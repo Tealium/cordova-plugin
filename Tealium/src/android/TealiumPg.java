@@ -2,8 +2,6 @@ package org.apache.cordova.plugin;
 
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaWebView;
-import org.apache.cordova.CordovaInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,19 +10,19 @@ import org.json.JSONObject;
 import com.tealium.library.Tealium;
 import com.tealium.lifecycle.LifeCycle;
 
-import android.content.Context;
 import android.app.Activity;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.util.Log;
 import android.app.Application;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Set;
 
 public class TealiumPg extends CordovaPlugin {
+
 
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
@@ -34,21 +32,30 @@ public class TealiumPg extends CordovaPlugin {
             final Tealium instance = Tealium.getInstance(arguments.optString("instance", null));
             // Prevents the log messages reporting errors from re-initialization.
             if(instance != null) {
-                return false;
+                return true;
             }
-            
             // Tealium API requires use in the main thread.
             init(arguments, callbackContext);
             callbackContext.success(); // Thread-safe.
-
             return true;
-            
         } else if(action.equals("track")){
-              // Tealium API requires use in the main thread.
-              track(arguments, callbackContext);
-              callbackContext.success(); // Thread-safe.
-
-              return true;
+            // Tealium API requires use in the main thread.
+            track(arguments, callbackContext);
+            callbackContext.success(); // Thread-safe.
+            return true;
+        } else if(action.equals("trackLifecycle")){
+            trackLifecycle(arguments, callbackContext);
+            // Tealium API requires use in the main thread.
+            callbackContext.success(); // Thread-safe.
+            return true;
+        } else if (action.equals("setPersistent")) {
+            set(arguments, callbackContext, "persistent");
+            callbackContext.success(); // Thread-safe.
+            return true;
+        } else if (action.equals("setVolatile")) {
+            set(arguments, callbackContext, "volatile");
+            callbackContext.success(); // Thread-safe.
+            return true;
         }
         return false;
     }
@@ -61,18 +68,28 @@ public class TealiumPg extends CordovaPlugin {
             String accountName = arguments.optString("account", null);
             String profileName = arguments.optString("profile", null);
             String environmentName = arguments.optString("environment", null);
+            String collectDispatchURL = arguments.optString("collectDispatchURL", null);
+            String collectDispatchProfile = arguments.optString("collectDispatchProfile", null);
             String instanceName = arguments.optString("instance", null);
-            String isLifecycleEnabled = arguments.optString("isLifecycleEnabled", null);
-            
+            String isLifecycleEnabled = arguments.optString("isLifecycleEnabled", "true");
+
             Tealium.Config config = Tealium.Config.create(app, accountName, profileName, environmentName);
-            
-            String libVersion = "5.0.2";
+
+            String libVersion = "5.0.4";
             String override = this.mobileUrlOverride(accountName, profileName, environmentName, libVersion);
             config.setOverrideTagManagementUrl(override);
             config.setOverridePublishSettingsUrl(override);
-            
-            boolean isAutoTracking = (isLifecycleEnabled != "false") ? true : false;
-            LifeCycle.setupInstance(instanceName, config, isAutoTracking);
+            // full URL takes precedence over just the profile.
+            if (collectDispatchURL != null){
+                config.setOverrideCollectDispatchUrl(collectDispatchURL);
+            } else if (collectDispatchProfile != null) {
+                config.setOverrideCollectDispatchUrl("https://collect.tealiumiq.com/vdata/i.gif?tealium_account=" + accountName + "&tealium_profile=" + collectDispatchProfile);
+            }
+
+            if (isLifecycleEnabled.equals("true")) {
+                boolean isAutoTracking = false;
+                LifeCycle.setupInstance(instanceName, config, isAutoTracking);
+            }
 
             // create the Tealium instance using the instance name provided
             Tealium.createInstance(instanceName, config);
@@ -80,25 +97,77 @@ public class TealiumPg extends CordovaPlugin {
             Log.e("Tealium", "Error attempting init call. Check account/profile/environment/instance name combination is valid.", t);
         }
     }
-    
+
     private String mobileUrlOverride(String accountName, String profileName, String environmentName, String libVersion){
-        
+
         return String.format(Locale.ROOT, "https://tags.tiqcdn.com/utag/%s/%s/%s/mobile.html?%s=%s&%s=%s&%s=%s",
-                             accountName,
-                             profileName,
-                             environmentName,
-                             "platform", "android_cordova",
-                             "library_version", libVersion,
-                             "os_version", android.os.Build.VERSION.RELEASE);
+                accountName,
+                profileName,
+                environmentName,
+                "platform", "android_cordova",
+                "library_version", libVersion,
+                "os_version", android.os.Build.VERSION.RELEASE);
     }
-        
+
+    private Tealium getInstance(String instanceName) {
+        return Tealium.getInstance(instanceName);
+    }
+
+    private void set (JSONObject arguments, CallbackContext callbackContext, String type){
+        try {
+            String instanceName = arguments.optString("instance", null);
+            String keyName = arguments.optString("keyName", null);
+            Object data = arguments.opt("data");
+            String remove = arguments.optString("remove", "false");
+            if (type != null && type.equals("persistent")) {
+                setPersistent(keyName, data, instanceName, remove);
+            } else if (type != null && type.equals("volatile")) {
+                setVolatile(keyName, data, instanceName, remove);
+            }
+        } catch (Throwable t){
+            Log.e("Tealium", "Error attempting to set persistent or volatile data", t);
+        }
+    }
+
+    // sets or removes a volatile data source. if "remove" is String true, the data source will be removed
+    private void setVolatile (String keyName, Object data, String instanceName, String remove) {
+        Tealium instance = getInstance(instanceName);
+        if (instance == null) {
+            return;
+        }
+        if (remove != null && remove.equals("true") && keyName != null) {
+            instance.getDataSources().getVolatileDataSources().remove(keyName);
+        } else if (keyName != null && data != null && (remove == null || remove.equals("false"))) {
+            instance.getDataSources().getVolatileDataSources().put(keyName, data);
+        }
+    }
+
+    // sets or removes a volatile data source. if "remove" is String true, the data source will be removed
+    private void setPersistent (String keyName, Object data, String instanceName, String remove) {
+        Tealium instance = getInstance(instanceName);
+        if (instance == null) {
+            return;
+        }
+        if (remove != null && remove.equals("true") && keyName != null) {
+            instance.getDataSources().getPersistentDataSources().edit().remove(keyName).apply();
+        } else if (keyName != null && data != null && (remove == null || remove.equals("false"))) {
+            // checking type before storing as set of strings (array) or string
+            if (data instanceof String) {
+                instance.getDataSources().getPersistentDataSources().edit().putString(keyName, (String) data).apply();
+            } else if (data instanceof JSONArray) {
+                Set<String> s = this.jsonArrayToStringSet((JSONArray) data);
+                instance.getDataSources().getPersistentDataSources().edit().putStringSet(keyName, s).apply();
+            }
+        }
+    }
+
     private void track(JSONObject arguments, CallbackContext callbackContext) {
-        try { 
+        try {
             String instanceName = arguments.optString("instance", null);
             String eventType = arguments.optString("eventType", null);
-            Map<String, String> eventData = this.mapJSON(arguments.optJSONObject("eventData"));
-            String eventId = eventData.get("link_id");
-            String screenTitle = eventData.get("screen_title");
+            Map<String, Object> eventData = this.mapJSON(arguments.optJSONObject("eventData"));
+            String eventId = (String) eventData.get("link_id");
+            String screenTitle = (String) eventData.get("screen_title");
             final Tealium instance = Tealium.getInstance(instanceName);
 
             if (instanceName == null) {
@@ -118,14 +187,75 @@ public class TealiumPg extends CordovaPlugin {
             Log.e("Tealium", "Error attempting track call.", t);
         }
     }
-        
-    private Map<String, String> mapJSON(JSONObject json) {
-        Map<String,String> mapObject = new HashMap<String,String>(json.length());
-        Iterator<?> keys = json.keys();
-            
-        while(keys.hasNext()){
-            String key = (String)keys.next();
-            String value = json.optString(key, null);
+
+    private void doTrackLifecycle(LifeCycle lifeCycle, String eventType, Map<String,Object> eventData) {
+        if (lifeCycle != null && eventType != null) {
+            if (eventType.toLowerCase().equals("launch")) {
+                lifeCycle.trackLaunchEvent(eventData);
+            } else if (eventType.toLowerCase().equals("wake")) {
+                lifeCycle.trackWakeEvent(eventData);
+            } else if (eventType.toLowerCase().equals("sleep")) {
+                lifeCycle.trackSleepEvent(eventData);
+            }
+        } else {
+            Log.e("Tealium", "LifeCycle tracking attempted, but instance not initialized yet.");
+        }
+    }
+
+    private void trackLifecycle(JSONObject arguments, CallbackContext callbackContext) {
+
+        try {
+            String instanceName = arguments.optString("instance", null);
+            Map<String, Object> eventData;
+            String eventType = arguments.optString("eventType", null);
+            LifeCycle lifeCycle = null;
+
+            if (instanceName == null) {
+                Log.e("Tealium", "LifeCycle tracking attempted, but instanceName argument was null");
+                return;
+            }
+
+            lifeCycle = LifeCycle.getInstance(instanceName);
+
+            if (lifeCycle == null) {
+                Log.e("Tealium", "Tealium instance is not initialized yet. LifeCycle tracking failed.");
+            } else {
+                if (arguments.optJSONObject("eventData") == null) {
+                    eventData = new HashMap<String,Object>(1);
+                } else {
+                    eventData = this.mapJSON(arguments.optJSONObject("eventData"));
+                }
+                eventData.put("cordova_lifecycle", "true");
+                doTrackLifecycle(lifeCycle, eventType, eventData);
+            }
+        } catch (Throwable t){
+            Log.e("Tealium", "Error attempting trackLifecycle call.", t);
+        }
+    }
+
+    private Set<String> jsonArrayToStringSet (JSONArray json) {
+        Set<String> strSet = new HashSet<String>();
+        for (int i = 0; i < json.length(); i++) {
+            try {
+                strSet.add(json.getString(i));
+            } catch (JSONException e) {
+                Log.e("Tealium", e.toString());
+            }
+        }
+        return strSet;
+    }
+
+    private Map<String, Object> mapJSON(JSONObject json) {
+        Map<String,Object> mapObject = null;
+        Iterator<?> keys = null;
+        if (json != null) {
+            mapObject = new HashMap<String,Object>(json.length());
+            keys = json.keys();
+        }
+
+        while(keys != null && keys.hasNext()){
+            String key = (String) keys.next();
+            Object value = json.opt(key);
             mapObject.put(key,value);
         }
         return mapObject;
