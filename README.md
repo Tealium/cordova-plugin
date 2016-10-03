@@ -172,6 +172,8 @@ Substitute "platform" for either "android" or ios as appropriate.
 
 This usually also resolves spurious XCode code signing errors when building for a physical device. 
 
+- iOS: By default, Tealium includes simulator support for iOS (we provide a "fat" framework). This works fine for development builds, but will cause errors upon submission to the app store. For this reason, we provide a "Device Only" build without simulator support in the "DeviceOnly" directory of this repository. Please switch to the "DeviceOnly" build of the plugin prior to App Store submission. The only difference between the 2 plugins is that the ".framework" files for the core iOS SDK have had the simulator support removed. All other Cordova plugin files remain unchanged.
+
 ## Known Issues
 - (Affects Tealium Collect ONLY - not IQ) Arrays are not processed correctly: Currently, the mechanism used to send data to AudienceStream (VDATA) does not process arrays correctly as a "Set of strings". Additionally, the core iOS and Android libraries do not currently send arrays in the correct format for the VDATA pixel. Both issues are currently being fixed, and should be ready in time for the next release of this plugin. Arrays ARE correctly passed to Tealium IQ for processing by JavaScript tags. If you need to pass arrays to AudienceStream, the suggested workaround is to disable Tealium Collect in the profile's publish settings, and add the Tealium Collect tag via Tealium IQ.
 
