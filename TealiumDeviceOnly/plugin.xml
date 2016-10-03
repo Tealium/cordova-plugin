@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-        id="com.tealium.cordova.v5" version="1.0.1" name="tealium-v5">
+        id="com.tealium.cordova.v5" version="1.0.2" name="tealium-v5">
 
     <name>TealiumCordova</name>
     <description>Tealium Tag Management</description>
@@ -47,8 +47,8 @@
         </config-file>
         <framework src="src/android/tealium.gradle" custom="true" type="gradleReference" />
 
-        <resource-file src="src/android/tealium-5.0.2.aar" target="src/android/tealium-5.0.2.aar" />
-        <resource-file src="src/android/tealium.lifecycle-5.0.0.aar" target="src/android/tealium.lifecycle-5.0.0.aar" />
+        <resource-file src="src/android/tealium-5.0.4.aar" target="src/android/tealium-5.0.4.aar" />
+        <resource-file src="src/android/tealium.lifecycle-5.0.4.aar" target="src/android/tealium.lifecycle-5.0.4.aar" />
 		<source-file src="src/android/TealiumPg.java" target-dir="src/org/apache/cordova/plugin" />
      </platform>
 </plugin>
