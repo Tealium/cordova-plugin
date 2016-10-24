@@ -9,10 +9,12 @@ import org.json.JSONObject;
 
 import com.tealium.library.Tealium;
 import com.tealium.lifecycle.LifeCycle;
+import com.tealium.internal.listeners.WebViewCreatedListener;
 
 import android.app.Activity;
 import android.util.Log;
 import android.app.Application;
+import android.webkit.CookieManager;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -79,6 +81,7 @@ public class TealiumPg extends CordovaPlugin {
             String override = this.mobileUrlOverride(accountName, profileName, environmentName, libVersion);
             config.setOverrideTagManagementUrl(override);
             config.setOverridePublishSettingsUrl(override);
+
             // full URL takes precedence over just the profile.
             if (collectDispatchURL != null){
                 config.setOverrideCollectDispatchUrl(collectDispatchURL);
@@ -93,9 +96,36 @@ public class TealiumPg extends CordovaPlugin {
 
             // create the Tealium instance using the instance name provided
             Tealium.createInstance(instanceName, config);
+            config.getEventListeners().add(createCookieEnablerListener());
         } catch (Throwable t){
             Log.e("Tealium", "Error attempting init call. Check account/profile/environment/instance name combination is valid.", t);
         }
+    }
+
+    // enable cookies in the Android webview
+    private static WebViewCreatedListener createCookieEnablerListener() {
+        return new WebViewCreatedListener() {
+            @Override
+            public void onWebViewCreated(WebView webView) {
+                final CookieManager mgr = CookieManager.getInstance();
+
+                // Accept all cookies
+                mgr.setAcceptCookie(true);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mgr.setAcceptThirdPartyCookies(webView, true);
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+                    CookieManager.setAcceptFileSchemeCookies(true);
+                }
+            }
+
+            @Override
+            public String toString() {
+                return "EnableCookieWebViewCreatedListener";
+            }
+        };
     }
 
     private String mobileUrlOverride(String accountName, String profileName, String environmentName, String libVersion){
