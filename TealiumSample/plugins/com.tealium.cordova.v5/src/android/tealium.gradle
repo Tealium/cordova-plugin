@@ -1,0 +1,18 @@
+repositories{    
+  jcenter()
+  flatDir{
+      dirs 'src/android'
+   }
+}
+
+dependencies {
+   compile(name:'tealium-5.0.4', ext:'aar')
+   compile(name:'tealium.lifecycle-5.0.4', ext:'aar')
+}
+
+android {
+  packagingOptions {
+    exclude 'META-INF/NOTICE'
+    exclude 'META-INF/LICENSE'
+  }
+}

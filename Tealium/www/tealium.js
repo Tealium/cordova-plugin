@@ -209,6 +209,60 @@ var Tealium =  {
         }]
     );  
     },
+    getVolatile : function (keyName, instance, callback) {
+        if (keyName === "") {
+            console.log("Tealium: keyname or data object was not specified in addPersistent call. Terminating...");
+            return;
+        }
+        if (instance === ""){
+            console.log("Tealium: instance name was not specified in addPersistent call. Terminating...");
+            return;
+        }
+        if (typeof callback !== "function") {
+            console.log("Tealium: callback function not provided to getVolatile. Terminating...");
+            return;    
+        }
+      cordova.exec(
+        function (val) {
+            callback(val); // return the value requested from volatile storage
+            tealium.successCallback();
+        }, // success callback function
+        tealium.errorCallback, // error callback function
+        'TealiumPg', // plugin name
+        'getVolatile', // with this action name
+        [{                  // and this array of custom arguments to create our entry
+            "keyName": keyName,
+            "instance" : instance
+        }]
+    );  
+    },
+    getPersistent : function (keyName, instance, callback) {
+        if (keyName === "") {
+            console.log("Tealium: keyname or data object was not specified in addPersistent call. Terminating...");
+            return;
+        }
+        if (instance === ""){
+            console.log("Tealium: instance name was not specified in addPersistent call. Terminating...");
+            return;
+        }
+        if (typeof callback !== "function") {
+            console.log("Tealium: callback function not provided to getVolatile. Terminating...");
+            return;    
+        }
+      cordova.exec(
+        function (val) {
+            callback(val); // return the value requested from volatile storage
+            tealium.successCallback();
+        }, // success callback function
+        tealium.errorCallback, // error callback function
+        'TealiumPg', // plugin name
+        'getPersistent', // with this action name
+        [{                  // and this array of custom arguments to create our entry
+            "keyName": keyName,
+            "instance" : instance
+        }]
+    );  
+    },
     successCallback: function(e){
             console.log("Tealium: tealium call successful");
             console.log(e);

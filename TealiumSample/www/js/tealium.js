@@ -38,10 +38,21 @@ document.getElementById("volatile_button").addEventListener("click", function(){
 document.getElementById("remove_volatile_button").addEventListener("click", function(){
     tealium.removeVolatile("volatile", window.tealium_instance);
 });
+document.getElementById("get_volatile").addEventListener("click", function(){
+    tealium.getVolatile("volatile", window.tealium_instance, function (val) {
+        alert("Volatile data returned: " + "volatile = " + val);    
+    });
+});
+
+document.getElementById("get_persistent").addEventListener("click", function(){
+    tealium.getPersistent("persist", window.tealium_instance, function (val) {
+        alert("Persistent data returned: " + "persist = " + val);    
+    });
+});
 
 function onDeviceReady() {
     // call our custom tealiumInit function
-    tealiumInit("tealiummobile", "demo", "dev", "tealium_main");
+    tealiumInit("services-crouse", "mobile", "dev", "tealium_main");
     console.log("onDeviceReady");
 }
 

@@ -14,7 +14,10 @@ import com.tealium.internal.listeners.WebViewCreatedListener;
 import android.app.Activity;
 import android.util.Log;
 import android.app.Application;
+import android.webkit.WebView;
 import android.webkit.CookieManager;
+import android.os.Build;
+import android.content.SharedPreferences;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -57,6 +60,22 @@ public class TealiumPg extends CordovaPlugin {
         } else if (action.equals("setVolatile")) {
             set(arguments, callbackContext, "volatile");
             callbackContext.success(); // Thread-safe.
+            return true;
+        } else if (action.equals("getVolatile")) {
+            String val = get(arguments, callbackContext, "volatile");
+            /*if (val != null){
+                PluginResult pr = new PluginResult(PluginResult.Status.OK, val);    
+                callbackContext.sendPluginResult(pr);
+            }*/
+            callbackContext.success(val); // Thread-safe.
+            return true;
+        } else if (action.equals("getPersistent")) {
+            String val = get(arguments, callbackContext, "persistent");
+            /*if (val != null){
+                PluginResult pr = new PluginResult(PluginResult.Status.OK, val);    
+                callbackContext.sendPluginResult(pr);
+            }*/
+            callbackContext.success(val); // Thread-safe.
             return true;
         }
         return false;
@@ -190,6 +209,36 @@ public class TealiumPg extends CordovaPlugin {
             }
         }
     }
+
+    // getter for volatile or persistent data
+    private String get (JSONObject arguments, CallbackContext callbackContext, String type){
+    try {
+        String instanceName = arguments.optString("instance", null);
+        String keyName = arguments.optString("keyName", null);
+        final Tealium instance = Tealium.getInstance(instanceName);
+        if (instance == null) {
+            return null;
+        }
+
+        if (keyName == null){
+            return null;
+        }
+
+        if (type != null && type.equals("persistent")) {
+            SharedPreferences persistent = instance.getDataSources().getPersistentDataSources();
+            String val = persistent.getString(keyName, null);
+            return val;
+        } else if (type != null && type.equals("volatile")) {
+            //TODO: Change this to return an object to handle more than just strings
+            String val = instance.getDataSources().getVolatileDataSources().get(keyName).toString();
+            return val;
+        }
+        return null;
+    } catch (Throwable t){
+        Log.e("Tealium", "Error attempting to get persistent or volatile data", t);
+        return null;
+    }
+}
 
     private void track(JSONObject arguments, CallbackContext callbackContext) {
         try {
