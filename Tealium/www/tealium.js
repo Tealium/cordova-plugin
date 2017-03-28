@@ -1,7 +1,7 @@
 var Tealium =  {
     // new param config.isLifecycleEnabled
     init: function(config, successCallback) {
-
+        // will only be called on Android
         function trackLifecycle(event, instance) {
             var i = 0;
             for (i = 0; i < window.tealium.instanceNames.length; i++) {
@@ -14,7 +14,6 @@ var Tealium =  {
                         "instance": window.tealium.instanceNames[i],
                         "eventType": event,
                         "eventData": {
-                            "cordova_lifecycle": "true",
                             "autotracked" : "true"
                         }
                     }]
@@ -22,7 +21,7 @@ var Tealium =  {
             }
         }
 
-		if(typeof config != "object") {
+		if(typeof config !== "object") {
 			console.log("Tealium: Error initializing Tealium: please ensure config is an object of key:value pairs.");
 			return;
 		}
@@ -77,8 +76,8 @@ var Tealium =  {
         window.tealium.instanceNames = window.tealium.instanceNames || [];
         window.tealium.instanceNames.push(config.instance);
 
-
-        if (document && document.addEventListener){
+        // iOS uses automatic lifecycle tracking
+        if (document && document.addEventListener && cordova.platformId && cordova.platformId === "android") {
             // launch event
             document.addEventListener("deviceready", function (){
                 // to avoid init race conditions, launch event delayed by 700ms
@@ -86,11 +85,11 @@ var Tealium =  {
             });
             // wake event
             document.addEventListener("resume", function (){
-                trackLifecycle("wake");
+               window.setTimeout(function () {trackLifecycle("wake");}, 0);
             });
             // sleep event
             document.addEventListener("pause", function (){
-                trackLifecycle("sleep");
+                window.setTimeout(function () {trackLifecycle("sleep");}, 0);
             });
         }
 		
@@ -148,11 +147,11 @@ var Tealium =  {
     },
     removeVolatile : function (keyName, instance) {
         if (keyName === "") {
-            console.log("Tealium: keyname or data object was not specified in addPersistent call. Terminating...");
+            console.log("Tealium: keyname or data object was not specified in removeVolatile call. Terminating...");
             return;
         }
         if (instance === ""){
-            console.log("Tealium: instance name was not specified in addPersistent call. Terminating...");
+            console.log("Tealium: instance name was not specified in removeVolatile call. Terminating...");
             return;
         }
       cordova.exec(
@@ -208,6 +207,102 @@ var Tealium =  {
             "remove" : "true"
         }]
     );  
+    },
+    getVolatile : function (keyName, instance, callback) {
+        if (keyName === "") {
+            console.log("Tealium: keyname or data object was not specified in addPersistent call. Terminating...");
+            return;
+        }
+        if (instance === ""){
+            console.log("Tealium: instance name was not specified in addPersistent call. Terminating...");
+            return;
+        }
+        if (typeof callback !== "function") {
+            console.log("Tealium: callback function not provided to getVolatile. Terminating...");
+            return;    
+        }
+      cordova.exec(
+        function (val) {
+            if (val === "") {
+                // handle the case on Android where empty string is returned (not possible to return null from plugin result)
+                val = null;
+            }
+            if (callback && callback.call) {
+                callback(val); // return the value requested from volatile storage
+            }
+            tealium.successCallback();
+        }, // success callback function
+        tealium.errorCallback, // error callback function
+        'TealiumPg', // plugin name
+        'getVolatile', // with this action name
+        [{                  // and this array of custom arguments to create our entry
+            "keyName": keyName,
+            "instance" : instance
+        }]
+    );  
+    },
+    getPersistent : function (keyName, instance, callback) {
+        if (keyName === "") {
+            console.log("Tealium: keyname or data object was not specified in addPersistent call. Terminating...");
+            return;
+        }
+        if (instance === ""){
+            console.log("Tealium: instance name was not specified in addPersistent call. Terminating...");
+            return;
+        }
+        if (typeof callback !== "function") {
+            console.log("Tealium: callback function not provided to getVolatile. Terminating...");
+            return;    
+        }
+      cordova.exec(
+        function (val) {
+            if (val === "") {
+                // handle the case on Android where empty string is returned (not possible to return null from plugin result)
+                val = null;
+            }
+            if (callback && callback.call) {
+                callback(val); // return the value requested from volatile storage
+            }
+            tealium.successCallback();
+        }, // success callback function
+        tealium.errorCallback, // error callback function
+        'TealiumPg', // plugin name
+        'getPersistent', // with this action name
+        [{                  // and this array of custom arguments to create our entry
+            "keyName": keyName,
+            "instance" : instance
+        }]
+    );  
+    },
+    // Adds a remote command (tagbridge) and passes the response back to the JS side
+    addRemoteCommand : function (commandName, instance, callback) {
+        if (commandName === "") {
+            console.log("Tealium: keyname or data object was not specified in addPersistent call. Terminating...");
+            return;
+        }
+        if (instance === ""){
+            console.log("Tealium: instance name was not specified in addPersistent call. Terminating...");
+            return;
+        }
+        cordova.exec(
+            function (val) {
+                if (val === "") {
+                    // handle the case on Android where empty string is returned (not possible to return null from plugin result)
+                    val = null;
+                }
+                if (callback && callback.call){
+                    callback(val); // return the value requested from volatile storage
+                }
+                tealium.successCallback();
+            }, // success callback function
+            tealium.errorCallback, // error callback function
+            'TealiumPg', // plugin name
+            'addRemoteCommand', // with this action name
+            [{                  // and this array of custom arguments to create our entry
+                "commandName": commandName,
+                "instance" : instance
+            }]
+        );  
     },
     successCallback: function(e){
             console.log("Tealium: tealium call successful");

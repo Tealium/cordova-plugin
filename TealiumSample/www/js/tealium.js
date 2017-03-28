@@ -28,21 +28,78 @@ document.getElementById("view_button").addEventListener("click", function(){
 
 document.getElementById("persist_button").addEventListener("click", function(){
     tealium.addPersistent("persist", "testpersist", window.tealium_instance);
+    tealium.addPersistent("persistarray", ["testpersist","testpersist2"], window.tealium_instance);
 });
 document.getElementById("remove_persist_button").addEventListener("click", function(){
     tealium.removePersistent("persist", window.tealium_instance);
+    tealium.removePersistent("persistarray", window.tealium_instance);
 });
 document.getElementById("volatile_button").addEventListener("click", function(){
     tealium.addVolatile("volatile", "testvolatile", window.tealium_instance);
+    tealium.addVolatile("volatileobject", {"testvolatile":"myvolatiledata"}, window.tealium_instance);
+    tealium.addVolatile("volatilearray", ["testvolatile","testvolatile2"], window.tealium_instance);
 });
 document.getElementById("remove_volatile_button").addEventListener("click", function(){
     tealium.removeVolatile("volatile", window.tealium_instance);
+    tealium.removeVolatile("volatileobject", window.tealium_instance);
+    tealium.removeVolatile("volatilearray", window.tealium_instance);
+});
+document.getElementById("get_volatile").addEventListener("click", function(){
+    tealium.getVolatile("volatile", window.tealium_instance, function (val) {
+        alert("Volatile string data returned: " + "volatile = " + val);    
+    });
+    tealium.getVolatile("volatileobject", window.tealium_instance, function (val) {
+        if (val === null) {
+            alert("Volatile object data returned: " + "volatileobject = null");        
+        } else {
+            alert("Volatile object data returned: " + "volatileobject = " + JSON.stringify(val));        
+        }   
+    });
+    tealium.getVolatile("volatilearray", window.tealium_instance, function (val) {
+        if (val === null) {
+            alert("Volatile array data returned: " + "volatilearray = null");        
+        } else {
+            alert("Volatile array data returned: " + "volatilearray = " + val.toString());        
+        }
+    });
+});
+
+document.getElementById("get_persistent").addEventListener("click", function(){
+    tealium.getPersistent("persist", window.tealium_instance, function (val) {
+        alert("Persistent string data returned: " + "persist = " + val);    
+    });
+    tealium.getPersistent("persistarray", window.tealium_instance, function (val) {
+        if (val === null) {
+            alert("Persistent array data returned: " + "persistarray = null");        
+        } else {
+            alert("Persistent array data returned: " + "persistarray = " + val.toString());        
+        }
+    });
 });
 
 function onDeviceReady() {
     // call our custom tealiumInit function
-    tealiumInit("tealiummobile", "demo", "dev", "tealium_main");
+    tealiumInit("tealiummobile", "cordova-demo", "dev", "tealium_main");
     console.log("onDeviceReady");
+        tealium.addRemoteCommand("getTIQMessage", window.tealium_instance, function (message){
+         // message is a JSON object containing mapped key-value pairs from TiQ
+        if (message && message.message_text) {
+            alert(message.message_text);
+        }
+    });
+    tealium.addRemoteCommand("getAnotherMessage", window.tealium_instance, function (message){
+        // message is a JSON object containing mapped key-value pairs from TiQ
+        if (message && message.message_text) {
+            alert(message.message_text);
+        }    
+     });
+    // simple example to change the background color of the view to a color code returned from TiQ
+    tealium.addRemoteCommand("changeBackgroundColor", window.tealium_instance, function (message){
+        // message is a JSON object containing mapped key-value pairs from TiQ
+        if (message && message.bg_colorcode) {
+            document.body.style.background = message.bg_colorcode;
+        }    
+     });
 }
 
 function tealiumInit(accountName, profileName, environmentName, instanceName){
@@ -53,7 +110,7 @@ function tealiumInit(accountName, profileName, environmentName, instanceName){
                  , instance : instanceName || window.tealium_instance // instance name used to refer to the current tealium instance
                  , isLifecycleEnabled: "true" // explicitly enabling lifecycle tracking. Note string value required, not boolean
                  // , collectDispatchURL:"https://collect.tealiumiq.com/vdata/i.gif?tealium_account=services-crouse&tealium_profile=mobile"
-                 , collectDispatchProfile:"demo"
+                 , collectDispatchProfile:"cordova-demo"
                  });
 }
 
