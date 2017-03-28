@@ -3,19 +3,18 @@ package org.apache.cordova.plugin;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
 
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.tealium.internal.tagbridge.RemoteCommand;
 import com.tealium.library.Tealium;
 import com.tealium.lifecycle.LifeCycle;
-import com.tealium.internal.listeners.WebViewCreatedListener;
 
 import android.app.Activity;
 import android.util.Log;
 import android.app.Application;
-import android.webkit.WebView;
-import android.webkit.CookieManager;
 import android.os.Build;
 import android.content.SharedPreferences;
 
@@ -28,7 +27,8 @@ import java.util.Set;
 
 public class TealiumPg extends CordovaPlugin {
 
-
+    private Map<String, CallbackContext> tagBridgeCallback = new HashMap<String, CallbackContext>(5);
+    private final String LOG_TAG = "Tealium-Cordova-1.1.0";
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
         final JSONObject arguments = args.getJSONObject(0);
@@ -62,20 +62,40 @@ public class TealiumPg extends CordovaPlugin {
             callbackContext.success(); // Thread-safe.
             return true;
         } else if (action.equals("getVolatile")) {
-            String val = get(arguments, callbackContext, "volatile");
-            /*if (val != null){
-                PluginResult pr = new PluginResult(PluginResult.Status.OK, val);    
-                callbackContext.sendPluginResult(pr);
-            }*/
-            callbackContext.success(val); // Thread-safe.
+            Object val = get(arguments, "volatile");
+            if (val instanceof String) {
+                callbackContext.success((String) val); // Thread-safe.    
+            } else if (val instanceof JSONArray) {
+                callbackContext.success((JSONArray) val); // Thread-safe.
+            } else if (val instanceof JSONObject) {
+                callbackContext.success((JSONObject) val); // Thread-safe.
+            } else {
+                // return null
+                callbackContext.success("");
+            }
             return true;
         } else if (action.equals("getPersistent")) {
-            String val = get(arguments, callbackContext, "persistent");
-            /*if (val != null){
-                PluginResult pr = new PluginResult(PluginResult.Status.OK, val);    
-                callbackContext.sendPluginResult(pr);
-            }*/
-            callbackContext.success(val); // Thread-safe.
+            Object val = get(arguments, "persistent");
+            if (val instanceof String) {
+                callbackContext.success((String) val); // Thread-safe.    
+            } else if (val instanceof Set) {
+                callbackContext.success(stringSetToJsonArray((Set<?>) val)); // Thread-safe.
+            } else {
+                // return empty string
+                callbackContext.success("");
+            }
+            return true;
+        } else if (action.equals("addRemoteCommand")) {
+            String remoteCommandName = arguments.optString("commandName");
+            if (tagBridgeCallback.get(remoteCommandName) != null) {
+                callbackContext.error("Tagbridge callback already registered for this command");
+                return true;
+            }
+            tagBridgeCallback.put(remoteCommandName, callbackContext);
+            PluginResult tagBridgePluginResult = new PluginResult(PluginResult.Status.NO_RESULT);
+            tagBridgePluginResult.setKeepCallback(true);
+            callbackContext.sendPluginResult(tagBridgePluginResult);
+            addRemoteCommand(arguments, callbackContext);
             return true;
         }
         return false;
@@ -96,7 +116,7 @@ public class TealiumPg extends CordovaPlugin {
 
             Tealium.Config config = Tealium.Config.create(app, accountName, profileName, environmentName);
 
-            String libVersion = "5.0.4";
+            String libVersion = "5.2.0";
             String override = this.mobileUrlOverride(accountName, profileName, environmentName, libVersion);
             config.setOverrideTagManagementUrl(override);
             config.setOverridePublishSettingsUrl(override);
@@ -114,37 +134,13 @@ public class TealiumPg extends CordovaPlugin {
             }
 
             // create the Tealium instance using the instance name provided
-            Tealium.createInstance(instanceName, config);
-            config.getEventListeners().add(createCookieEnablerListener());
+            final Tealium instance = Tealium.createInstance(instanceName, config);
+            if (instance != null){
+                setPluginVersion(instance);
+            }
         } catch (Throwable t){
-            Log.e("Tealium", "Error attempting init call. Check account/profile/environment/instance name combination is valid.", t);
+            Log.e(LOG_TAG, "Error attempting init call. Check account/profile/environment/instance name combination is valid.", t);
         }
-    }
-
-    // enable cookies in the Android webview
-    private static WebViewCreatedListener createCookieEnablerListener() {
-        return new WebViewCreatedListener() {
-            @Override
-            public void onWebViewCreated(WebView webView) {
-                final CookieManager mgr = CookieManager.getInstance();
-
-                // Accept all cookies
-                mgr.setAcceptCookie(true);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    mgr.setAcceptThirdPartyCookies(webView, true);
-                }
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-                    CookieManager.setAcceptFileSchemeCookies(true);
-                }
-            }
-
-            @Override
-            public String toString() {
-                return "EnableCookieWebViewCreatedListener";
-            }
-        };
     }
 
     private String mobileUrlOverride(String accountName, String profileName, String environmentName, String libVersion){
@@ -174,7 +170,7 @@ public class TealiumPg extends CordovaPlugin {
                 setVolatile(keyName, data, instanceName, remove);
             }
         } catch (Throwable t){
-            Log.e("Tealium", "Error attempting to set persistent or volatile data", t);
+            Log.e(LOG_TAG, "Error attempting to set persistent or volatile data", t);
         }
     }
 
@@ -187,7 +183,9 @@ public class TealiumPg extends CordovaPlugin {
         if (remove != null && remove.equals("true") && keyName != null) {
             instance.getDataSources().getVolatileDataSources().remove(keyName);
         } else if (keyName != null && data != null && (remove == null || remove.equals("false"))) {
-            instance.getDataSources().getVolatileDataSources().put(keyName, data);
+            if (data instanceof String || data instanceof JSONArray || data instanceof JSONObject) {
+                instance.getDataSources().getVolatileDataSources().put(keyName, data);    
+            }
         }
     }
 
@@ -211,12 +209,13 @@ public class TealiumPg extends CordovaPlugin {
     }
 
     // getter for volatile or persistent data
-    private String get (JSONObject arguments, CallbackContext callbackContext, String type){
+    private Object get (JSONObject arguments, String type){
     try {
         String instanceName = arguments.optString("instance", null);
         String keyName = arguments.optString("keyName", null);
         final Tealium instance = Tealium.getInstance(instanceName);
         if (instance == null) {
+
             return null;
         }
 
@@ -224,18 +223,20 @@ public class TealiumPg extends CordovaPlugin {
             return null;
         }
 
-        if (type != null && type.equals("persistent")) {
+        if (type == null) {
+            return null;
+        }
+
+        if (type.equals("persistent")) {
             SharedPreferences persistent = instance.getDataSources().getPersistentDataSources();
-            String val = persistent.getString(keyName, null);
-            return val;
-        } else if (type != null && type.equals("volatile")) {
-            //TODO: Change this to return an object to handle more than just strings
-            String val = instance.getDataSources().getVolatileDataSources().get(keyName).toString();
-            return val;
+            Map<String, ?> allPersistentData = persistent.getAll();
+            return allPersistentData.get(keyName);
+        } else if (type.equals("volatile")) {
+            return instance.getDataSources().getVolatileDataSources().get(keyName);
         }
         return null;
     } catch (Throwable t){
-        Log.e("Tealium", "Error attempting to get persistent or volatile data", t);
+        Log.e(LOG_TAG, "Error attempting to get persistent or volatile data", t);
         return null;
     }
 }
@@ -250,11 +251,11 @@ public class TealiumPg extends CordovaPlugin {
             final Tealium instance = Tealium.getInstance(instanceName);
 
             if (instanceName == null) {
-                Log.e("Tealium", "Instance Name not specified. Please add a valid instance name to the tracking call.");
+                Log.e(LOG_TAG, "Instance Name not specified. Please add a valid instance name to the tracking call.");
             } else if (instance == null) {
-                Log.e("Tealium", "Library failed to initialize correctly. Please check account/profile/environment combination in init call.");
+                Log.e(LOG_TAG, "Library failed to initialize correctly. Please check account/profile/environment combination in init call.");
             } else if (eventType == null) {
-                Log.e("Tealium", "Event type not specified. Please pass either link or view as event type");
+                Log.e(LOG_TAG, "Event type not specified. Please pass either link or view as event type");
             } else {
                 if (eventType.toLowerCase().equals("view")) {
                     instance.trackView(screenTitle, eventData);
@@ -263,7 +264,38 @@ public class TealiumPg extends CordovaPlugin {
                 }
             }
         } catch (Throwable t){
-            Log.e("Tealium", "Error attempting track call.", t);
+            Log.e(LOG_TAG, "Error attempting track call.", t);
+        }
+    }
+
+    private void addRemoteCommand (JSONObject arguments, final CallbackContext callbackContext) {
+        try {
+            String instanceName = arguments.optString("instance", null);
+            final String remoteCommandName = arguments.optString("commandName", null);
+            final Tealium instance = Tealium.getInstance(instanceName);
+            if (instanceName == null) {
+                Log.e(LOG_TAG, "Instance Name not specified. Please add a valid instance name to the tracking call.");
+            } else if (instance == null) {
+                Log.e(LOG_TAG, "Library failed to initialize correctly. Please check account/profile/environment combination in init call.");
+            } else if (remoteCommandName == null) {
+                Log.e(LOG_TAG, "Remote Command Name not specified.");
+            } else {  
+                instance.addRemoteCommand(new RemoteCommand(remoteCommandName, "Auto generated Cordova remote command") {
+                    @Override
+                    protected void onInvoke(Response response) throws Exception {
+                        JSONObject resp = response.getRequestPayload();
+                        String commandReceived = resp.optString("command_id");
+                        CallbackContext commandCallback = tagBridgeCallback.get(commandReceived);
+                        if (commandCallback != null) {
+                            PluginResult result = new PluginResult(PluginResult.Status.OK, resp);
+                            result.setKeepCallback(true);
+                            commandCallback.sendPluginResult(result);
+                        }
+                    }
+                });
+            }
+        } catch (Throwable t) {
+            Log.e(LOG_TAG, "Error attempting addRemoteCommand call.", t);
         }
     }
 
@@ -277,7 +309,7 @@ public class TealiumPg extends CordovaPlugin {
                 lifeCycle.trackSleepEvent(eventData);
             }
         } else {
-            Log.e("Tealium", "LifeCycle tracking attempted, but instance not initialized yet.");
+            Log.e(LOG_TAG, "LifeCycle tracking attempted, but instance not initialized yet.");
         }
     }
 
@@ -290,14 +322,14 @@ public class TealiumPg extends CordovaPlugin {
             LifeCycle lifeCycle = null;
 
             if (instanceName == null) {
-                Log.e("Tealium", "LifeCycle tracking attempted, but instanceName argument was null");
+                Log.e(LOG_TAG, "LifeCycle tracking attempted, but instanceName argument was null");
                 return;
             }
 
             lifeCycle = LifeCycle.getInstance(instanceName);
 
             if (lifeCycle == null) {
-                Log.e("Tealium", "Tealium instance is not initialized yet. LifeCycle tracking failed.");
+                Log.e(LOG_TAG, "Tealium instance is not initialized yet. LifeCycle tracking failed.");
             } else {
                 if (arguments.optJSONObject("eventData") == null) {
                     eventData = new HashMap<String,Object>(1);
@@ -308,7 +340,7 @@ public class TealiumPg extends CordovaPlugin {
                 doTrackLifecycle(lifeCycle, eventType, eventData);
             }
         } catch (Throwable t){
-            Log.e("Tealium", "Error attempting trackLifecycle call.", t);
+            Log.e(LOG_TAG, "Error attempting trackLifecycle call.", t);
         }
     }
 
@@ -318,10 +350,26 @@ public class TealiumPg extends CordovaPlugin {
             try {
                 strSet.add(json.getString(i));
             } catch (JSONException e) {
-                Log.e("Tealium", e.toString());
+                Log.e(LOG_TAG, e.toString());
             }
         }
         return strSet;
+    }
+
+    private JSONArray stringSetToJsonArray (Set<?> setToConvert) {
+        JSONArray returnArray = new JSONArray();
+        for (Object item : setToConvert) {
+            if (item instanceof String) {
+                returnArray.put(item);
+            }
+        }
+        return returnArray;
+    }
+
+    private void setPluginVersion(Tealium instance) {
+        if (instance != null){
+            instance.getDataSources().getPersistentDataSources().edit().putString("tealium_plugin_version", LOG_TAG).apply();
+        }
     }
 
     private Map<String, Object> mapJSON(JSONObject json) {

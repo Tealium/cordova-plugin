@@ -1,3 +1,6 @@
 node_modules/*
 Tealium/package.json
 Tealium/README.md
+TealiumDeviceOnly/README.md
+TealiumDeviceOnly/package.json
+.DS_STORE

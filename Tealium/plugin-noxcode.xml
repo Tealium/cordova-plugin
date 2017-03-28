@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="com.tealium.cordova.v5" version="1.1.0" name="tealium-v5">
+
+    <name>TealiumCordova</name>
+    <description>Tealium Tag Management</description>
+    <keywords>tealium, tag, management,iOS,Android</keywords>
+    <repo>https://github.com/Tealium/cordova-plugin.git</repo>
+    <issue>https://github.com/Tealium/cordova-plugin/issues</issue>
+
+    <license>Commercial</license>
+
+    <engines>
+        <engine name="cordova" version=">=3.8.0" />
+    </engines>    
+
+    <js-module src="www/tealium.js" name="tealium">
+        <clobbers target="window.tealium" />
+    </js-module>
+
+    <!-- ios -->
+    <platform name="ios">
+        <!-- Cordova < 2.3 -->
+        <plugins-plist key="TealiumPg" string="TealiumPg" />
+        <!-- Cordova >= 2.3 -->
+        <config-file target="config.xml" parent="plugins">
+            <plugin name="TealiumPg" value="TealiumPg"/>
+            <feature name="TealiumPg">
+                <param name="ios-package" value="TealiumPg" />
+            </feature>
+        </config-file>
+        <header-file src="src/ios/tealium_int.h" />
+        <source-file src="src/ios/tealium_int.m" />
+        <framework src="Foundation.framework" />
+        <framework src="CoreTelephony.framework" />
+        <framework src="SystemConfiguration.framework" />
+        <framework src="src/ios/TealiumIOS.framework" custom="true" embed="true" compiler-flags="-ObjC"/>
+        <framework src="src/ios/TealiumIOSLifecycle.framework" custom="true" embed="true" compiler-flags="-ObjC"/>
+        <!--// source/credit: http://stackoverflow.com/questions/36650522/custom-cordova-plugin-add-framework-to-embedded-binaries/36723619#36723619-->
+        <!--Automatically adds embedded binary without manual editing of xcodeproj file-->
+        <!--<hook type="before_build" src="hooks/add_embedded.js" />-->
+    </platform>
+		
+    <!-- android -->
+    <platform name="android">
+        <config-file target="config.xml" parent="/*">
+            <feature name="TealiumPg">
+                <param name="android-package" value="org.apache.cordova.plugin.TealiumPg"/>
+            </feature>
+        </config-file>
+        <framework src="src/android/tealium.gradle" custom="true" type="gradleReference" />
+
+        <resource-file src="src/android/tealium-5.2.0.aar" target="src/android/tealium-5.2.0.aar" />
+        <resource-file src="src/android/tealium.lifecycle-5.0.4.aar" target="src/android/tealium.lifecycle-5.0.4.aar" />
+		<source-file src="src/android/TealiumPg.java" target-dir="src/org/apache/cordova/plugin" />
+     </platform>
+</plugin>

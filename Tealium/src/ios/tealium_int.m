@@ -5,11 +5,12 @@
 @implementation TealiumPg
 
 static NSString * const Tealium_Platform = @"ios_cordova";
-static NSString * const Tealium_LibVersion = @"5.0.4";
+static NSString * const Tealium_LibVersion = @"5.2.1";
 static NSString * const Tealium_MobileBaseURL = @"https://tags.tiqcdn.com/utag/%@/%@/%@/mobile.html?%@=%@&%@=%@&%@=%@&%@=%@";
-NSString* isLifecycleEnabled = nil;
-
+static NSString * const Tealium_PluginVersion = @"Tealium-Cordova-1.1.0";
 - (void) init: (CDVInvokedUrlCommand*)command {
+    // Check command.arguments here.
+//[self.commandDelegate runInBackground:^{
     CDVPluginResult* pluginResult = nil;
     NSDictionary* arguments;
     NSString* accountName;
@@ -23,6 +24,7 @@ NSString* isLifecycleEnabled = nil;
     long tiLong = (long)ti;
     NSString *timestamp = [NSString stringWithFormat:@"%li", tiLong];
     NSString *osVersion = [[UIDevice currentDevice] systemVersion];
+    NSString* isLifecycleEnabled = nil;
 
     @try {
         arguments = [command.arguments objectAtIndex:0];
@@ -61,10 +63,17 @@ NSString* isLifecycleEnabled = nil;
                 // configuration.overrideCollectDispatchURL = collectDispatchURL;
                 [configuration setOverrideCollectDispatchURL:collectDispatchURL];
             }
-            // disable auto lifecycle tracking at library level. this is handled by using Cordova lifecycle hooks instead
-            [configuration setAutotrackingLifecycleEnabled:NO];
+            // Enable or disable lifeycle autotracking based on option passed in at init time
+            if ([isLifecycleEnabled isEqualToString:@"true"]){
+                [configuration setAutotrackingLifecycleEnabled:YES];
+            } else {
+                [configuration setAutotrackingLifecycleEnabled:NO];
+            }
             // create a new Tealium instance using the instance name passed in
-            [Tealium newInstanceForKey:instanceName configuration:configuration];
+            Tealium * instance = [Tealium newInstanceForKey:instanceName configuration:configuration];
+            if (instance != nil) {
+                [instance addPersistentDataSources:@{@"tealium_plugin_version":Tealium_PluginVersion}];
+            }
             // set success response - we initialized successfully with no reported errors
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Tealium: Tealium init successful!"];
         }
@@ -76,9 +85,12 @@ NSString* isLifecycleEnabled = nil;
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         return;
     }
+//}];
 }
 
 -  (void) track:(CDVInvokedUrlCommand*)command {
+        // Check command.arguments here.
+[self.commandDelegate runInBackground:^{
     CDVPluginResult* pluginResult = nil;
     NSDictionary* arguments;
     NSString* eventType;
@@ -121,9 +133,12 @@ NSString* isLifecycleEnabled = nil;
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         return;
     }
+}];
 }
-
+/*
 - (void) trackLifecycle: (CDVInvokedUrlCommand*)command {
+        // Check command.arguments here.
+[self.commandDelegate runInBackground:^{
     CDVPluginResult* pluginResult = nil;
     NSDictionary* arguments = nil;
     NSString* instanceName = nil;
@@ -162,9 +177,12 @@ NSString* isLifecycleEnabled = nil;
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         return;
     }
+}];
 }
-
+*/
 - (void) setPersistent: (CDVInvokedUrlCommand*)command {
+        // Check command.arguments here.
+[self.commandDelegate runInBackground:^{
     CDVPluginResult* pluginResult = nil;
     NSDictionary* arguments = nil;
     NSString* instanceName;
@@ -185,8 +203,10 @@ NSString* isLifecycleEnabled = nil;
             if ([remove isEqualToString:@"true"]) {
                 [teal removePersistentDataSourcesForKeys:@[keyName]];
             } else if (keyName != nil && receivedData != nil) {
-                [data setValue:receivedData forKey: keyName];
-                [teal addPersistentDataSources:data];
+                if ([receivedData isKindOfClass:[NSString class]] || [receivedData isKindOfClass:[NSArray class]]){
+                    data[keyName] = receivedData;
+                    [teal addPersistentDataSources:data];
+                }
             }
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnString];
         } else {
@@ -200,9 +220,12 @@ NSString* isLifecycleEnabled = nil;
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         return;
     }
+}];
 }
 
 - (void) setVolatile: (CDVInvokedUrlCommand*)command {
+        // Check command.arguments here.
+[self.commandDelegate runInBackground:^{
     CDVPluginResult* pluginResult = nil;
     NSDictionary* arguments = nil;
     NSString* instanceName;
@@ -223,8 +246,10 @@ NSString* isLifecycleEnabled = nil;
             if ([remove isEqualToString:@"true"]) {
                 [teal removeVolatileDataSourcesForKeys:@[keyName]];    
             } else if (keyName != nil && receivedData != nil) {
-                [data setObject:receivedData forKey: keyName];
-                [teal addVolatileDataSources:data];    
+                if ([receivedData isKindOfClass:[NSString class]] || [receivedData isKindOfClass:[NSDictionary class]] || [receivedData isKindOfClass:[NSArray class]]){
+                    data[keyName] = receivedData;
+                    [teal addVolatileDataSources:data];    
+                }
             }
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnString];
         } else {
@@ -238,6 +263,137 @@ NSString* isLifecycleEnabled = nil;
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         return;
     }
+}];
+}
+
+- (void) getPersistent: (CDVInvokedUrlCommand*)command {
+        // Check command.arguments here.
+[self.commandDelegate runInBackground:^{
+    // persistent data on ios technically can store NSDictionary objects, but Android cannot. 
+    // To keep feature parity in the plugin, NSObjects cannot be returned or stored.
+    CDVPluginResult * pluginResult = nil;
+    NSDictionary * arguments = nil;
+    NSString * instanceName;
+    NSString * keyName = nil;
+    Tealium * teal = nil;
+    @try {
+        arguments = [command.arguments objectAtIndex:0];
+        instanceName = [arguments objectForKey:@"instance"];
+        keyName = [arguments objectForKey:@"keyName"];
+        teal = [Tealium instanceForKey:instanceName];
+        // not sure what data type the return value is yet
+        id returnValue = nil;
+        if (teal != nil) {
+           NSDictionary * persistentData = [teal persistentDataSourcesCopy];
+           returnValue = persistentData[keyName];
+           if (returnValue == nil) {
+              pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:nil];
+           } else if ([returnValue isKindOfClass:[NSString class]]) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnValue];
+           } else if ([returnValue isKindOfClass:[NSArray class]]) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:returnValue];
+           } else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:nil];
+           }
+        } else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Tealium: Persistent data source could not be found, as Tealium is not yet initialized (Tealium instance was NIL)"];
+        }
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        return;
+    }
+    @catch (NSException *exception) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        return;
+    }
+}];
+}
+
+- (void) getVolatile: (CDVInvokedUrlCommand*)command {
+        // Check command.arguments here.
+[self.commandDelegate runInBackground:^{
+    CDVPluginResult * pluginResult = nil;
+    NSDictionary * arguments = nil;
+    NSString * instanceName;
+    NSString * keyName = nil;
+    Tealium * teal = nil;
+    @try {
+        arguments = [command.arguments objectAtIndex:0];
+        instanceName = [arguments objectForKey:@"instance"];
+        keyName = [arguments objectForKey:@"keyName"];
+        teal = [Tealium instanceForKey:instanceName];
+        // not sure what data type the return value is yet
+        id returnValue = nil;
+        if (teal != nil) {
+           NSDictionary * volatileData = [teal volatileDataSourcesCopy];
+           returnValue = volatileData[keyName];
+           if (returnValue == nil) {
+                // can't return null literal, so return string value null to indicate value not found
+                // pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"null"];
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:nil];
+           } else if ([returnValue isKindOfClass:[NSDictionary class]]) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnValue];
+           } else if ([returnValue isKindOfClass:[NSString class]]) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnValue];
+           } else if ([returnValue isKindOfClass:[NSArray class]]) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:returnValue];
+           } else {
+            // data type not supported - only possible data types are Dictionary, String, Array
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:nil];
+           }
+        } else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Tealium: Volatile data source could not be found, as Tealium is not yet initialized (Tealium instance was NIL)"];
+        }
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        return;
+    }
+    @catch (NSException *exception) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        return;
+    }
+}];
+}
+
+- (void) addRemoteCommand: (CDVInvokedUrlCommand*)command {
+        // Check command.arguments here.
+[self.commandDelegate runInBackground:^{
+    __block CDVPluginResult * pluginResult = nil;
+    NSDictionary * arguments = nil;
+    NSString * instanceName;
+    NSString * remoteCommandName = nil;
+    Tealium * teal = nil;
+    @try {
+        arguments = [command.arguments objectAtIndex:0];
+        instanceName = [arguments objectForKey:@"instance"];
+        remoteCommandName = [arguments objectForKey:@"commandName"];
+        teal = [Tealium instanceForKey:instanceName];
+        if (_tagBridgeCallbackIds == nil) {
+            _tagBridgeCallbackIds = [[NSMutableDictionary alloc] init];
+        }
+        _tagBridgeCallbackIds[remoteCommandName] = command.callbackId;
+        if (teal != nil) {
+            [teal addRemoteCommandID:remoteCommandName description:@"Auto generated Cordova remote command" targetQueue:dispatch_get_main_queue() responseBlock:^(TEALRemoteCommandResponse * _Nonnull response) {
+               NSDictionary *tagBridgeResponse = [response requestPayload];
+               pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:tagBridgeResponse];
+               [pluginResult setKeepCallbackAsBool:YES];
+               NSString *commandCallbackId = _tagBridgeCallbackIds[tagBridgeResponse[@"command_id"]];
+               [self.commandDelegate sendPluginResult:pluginResult callbackId:commandCallbackId];
+            }];
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT];
+            [pluginResult setKeepCallbackAsBool:YES];
+        } else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Tealium: Volatile data source could not be found, as Tealium is not yet initialized (Tealium instance was NIL)"];
+        }
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        return;
+    }
+    @catch (NSException *exception) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        return;
+    }
+}];
 }
 
 @end
