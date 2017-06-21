@@ -91,7 +91,6 @@ module.exports = function(context) {
 
     // unquote (remove trailing ")
     var projectName = myProj.getFirstTarget().firstTarget.name.substr(1);
-    projectName = projectName.substr(0, projectName.length-1); //Removing the char " at beginning and the end.
 
     const groupName = 'Embed Frameworks ' + context.opts.plugin.id;
     const pluginPathInPlatformIosDir = projectName + '/Plugins/' + context.opts.plugin.id;
