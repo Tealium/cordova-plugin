@@ -26,13 +26,26 @@ document.getElementById("view_button").addEventListener("click", function(){
                                                         trackView('{"screen_title":"Test Homescreen"}', "tealium_main");
                                                         });
 
+// add a tealium view call (utag.view) to the "View Button"
+document.getElementById("crash_button").addEventListener("click", function(){
+                                                        // View events should normally be tracked through a view change callback, rather than through a button trigger as demonstrated here
+                                                        // call our custom trackView function and pass in some data, this time explicitly specifying the instance id
+                                                        trackView('{"forceCrash":"true"}', "tealium_main");
+                                                        });
+
 document.getElementById("persist_button").addEventListener("click", function(){
     tealium.addPersistent("persist", "testpersist", window.tealium_instance);
     tealium.addPersistent("persistarray", ["testpersist","testpersist2"], window.tealium_instance);
 });
+document.getElementById("get_visitor_id").addEventListener("click", function(){
+    tealium.getVisitorId(window.tealium_instance, function(visitorId){
+        window.alert("Visitor ID is: " + visitorId);
+    });
+});
 document.getElementById("remove_persist_button").addEventListener("click", function(){
     tealium.removePersistent("persist", window.tealium_instance);
     tealium.removePersistent("persistarray", window.tealium_instance);
+    tealium.removePersistent("install_referrer", window.tealium_instance);
 });
 document.getElementById("volatile_button").addEventListener("click", function(){
     tealium.addVolatile("volatile", "testvolatile", window.tealium_instance);
@@ -43,6 +56,7 @@ document.getElementById("remove_volatile_button").addEventListener("click", func
     tealium.removeVolatile("volatile", window.tealium_instance);
     tealium.removeVolatile("volatileobject", window.tealium_instance);
     tealium.removeVolatile("volatilearray", window.tealium_instance);
+    tealium.removeVolatile("install_referrer", window.tealium_instance);
 });
 document.getElementById("get_volatile").addEventListener("click", function(){
     tealium.getVolatile("volatile", window.tealium_instance, function (val) {
@@ -79,7 +93,7 @@ document.getElementById("get_persistent").addEventListener("click", function(){
 
 function onDeviceReady() {
     // call our custom tealiumInit function
-    tealiumInit("tealiummobile", "cordova-demo", "dev", "tealium_main");
+    tealiumInit("tealiummobile", "cordova-demo", "dev", "tealium_main", "3obb8c");
     console.log("onDeviceReady");
         tealium.addRemoteCommand("getTIQMessage", window.tealium_instance, function (message){
          // message is a JSON object containing mapped key-value pairs from TiQ
@@ -102,16 +116,28 @@ function onDeviceReady() {
      });
 }
 
-function tealiumInit(accountName, profileName, environmentName, instanceName){
+function tealiumInit(accountName, profileName, environmentName, instanceName, dataSourceId){
+    var ir, ai;
         tealium.init({
                  account : accountName       // REQUIRED: Your account.
                  , profile : profileName              // REQUIRED: Profile you wish to use.
                  , environment : environmentName         // REQUIRED: "dev", "qa", or "prod".
                  , instance : instanceName || window.tealium_instance // instance name used to refer to the current tealium instance
                  , isLifecycleEnabled: "true" // explicitly enabling lifecycle tracking. Note string value required, not boolean
-                 // , collectDispatchURL:"https://collect.tealiumiq.com/vdata/i.gif?tealium_account=services-crouse&tealium_profile=mobile"
+                 // , collectDispatchURL:"https://collect.tealiumiq.com/vdata/i.gif?tealium_account=tealiummobile&tealium_profile=mobile"
                  , collectDispatchProfile:"cordova-demo"
+                 , isCrashReporterEnabled: "true" // enable crash reporting (uncaught exception handler)
+                 , logLevel: tealium.logLevels.DEV
+                 , dataSourceId: dataSourceId
                  });
+        ir = window.tealiumInstallReferrer;
+        if (ir) {
+            ir.setPersistent(instanceName || window.tealium_instance);
+        }
+        ai = window.tealiumAdIdentifier;
+        if (ai) {
+         ai.setPersistent(instanceName|| window.tealium_instance);   
+        }
 }
 
 function trackEvent(data, instance){

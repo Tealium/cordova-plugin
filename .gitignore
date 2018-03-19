@@ -1,6 +1,5 @@
-node_modules/*
-Tealium/package.json
-Tealium/README.md
-TealiumDeviceOnly/README.md
-TealiumDeviceOnly/package.json
+node_modules/
+plugins/
+platforms/
 .DS_STORE
+package-lock.json

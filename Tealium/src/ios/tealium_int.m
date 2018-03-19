@@ -5,7 +5,7 @@
 @implementation TealiumPg
 
 static NSString * const Tealium_Platform = @"ios_cordova";
-static NSString * const Tealium_LibVersion = @"5.2.1";
+static NSString * const Tealium_LibVersion = @"5.3.2";
 static NSString * const Tealium_MobileBaseURL = @"https://tags.tiqcdn.com/utag/%@/%@/%@/mobile.html?%@=%@&%@=%@&%@=%@&%@=%@";
 static NSString * const Tealium_PluginVersion = @"Tealium-Cordova-1.1.0";
 - (void) init: (CDVInvokedUrlCommand*)command {
@@ -18,6 +18,7 @@ static NSString * const Tealium_PluginVersion = @"Tealium-Cordova-1.1.0";
     NSString* environmentName;
     NSString* instanceName;
     NSString* collectDispatchURL;
+    NSString* dataSourceId;
     NSString* collectDispatchProfile;
     // Below functions did not work as regular methods during Cordova build - added inline below
     NSTimeInterval ti = [[NSDate date] timeIntervalSince1970];
@@ -32,6 +33,7 @@ static NSString * const Tealium_PluginVersion = @"Tealium-Cordova-1.1.0";
         profileName = [arguments objectForKey:@"profile"];
         environmentName = [arguments objectForKey:@"environment"];
         instanceName = [arguments objectForKey:@"instance"];
+        dataSourceId = [arguments objectForKey:@"dataSourceId"];
         isLifecycleEnabled = [arguments objectForKey:@"isLifecycleEnabled"];
         collectDispatchProfile = [arguments objectForKey:@"collectDispatchProfile"];
         collectDispatchURL = [arguments objectForKey:@"collectDispatchURL"];
@@ -69,6 +71,10 @@ static NSString * const Tealium_PluginVersion = @"Tealium-Cordova-1.1.0";
             } else {
                 [configuration setAutotrackingLifecycleEnabled:NO];
             }
+            if (dataSourceId != nil){
+                [configuration setDatasourceId:dataSourceId];
+            }
+            
             // create a new Tealium instance using the instance name passed in
             Tealium * instance = [Tealium newInstanceForKey:instanceName configuration:configuration];
             if (instance != nil) {
@@ -135,53 +141,9 @@ static NSString * const Tealium_PluginVersion = @"Tealium-Cordova-1.1.0";
     }
 }];
 }
-/*
-- (void) trackLifecycle: (CDVInvokedUrlCommand*)command {
-        // Check command.arguments here.
-[self.commandDelegate runInBackground:^{
-    CDVPluginResult* pluginResult = nil;
-    NSDictionary* arguments = nil;
-    NSString* instanceName = nil;
-    NSString* eventType = nil;
-    NSString* returnString = @"Lifecycle tracking successful";
-    NSDictionary* eventData = [[NSMutableDictionary alloc]init];
-    Tealium* teal;
-    @try {
-        if ([isLifecycleEnabled isEqualToString:@"true"]) {
-            arguments = [command.arguments objectAtIndex:0];
-                instanceName = [arguments objectForKey:@"instance"];
-                eventType = [arguments objectForKey:@"eventType"];
-                eventData = [arguments objectForKey:@"eventData"];
-                teal = [Tealium instanceForKey:instanceName];
-                if (teal != nil) {
-                    [eventData setValue:@"true" forKey:@"cordova_lifecycle"];
-                    if ([eventType isEqualToString:@"launch"]){
-                        [teal launchWithDataSources:eventData];
-                    } else if ([eventType isEqualToString:@"wake"]) {
-                        [teal wakeWithDataSources:eventData];
-                    } else if ([eventType isEqualToString:@"sleep"]) {
-                        [teal sleepWithDataSources:eventData];
-                    }
-                    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnString];
-                } else {
-                    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Tealium: Lifecycle tracking could not complete, as Tealium is not yet initialized (Tealium instance was NIL)"];
-                }
-            } else {
-                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnString];
-            }
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-        return;
-    }
-    @catch (NSException *exception) {
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-        return;
-    }
-}];
-}
-*/
+
 - (void) setPersistent: (CDVInvokedUrlCommand*)command {
-        // Check command.arguments here.
+
 [self.commandDelegate runInBackground:^{
     CDVPluginResult* pluginResult = nil;
     NSDictionary* arguments = nil;
@@ -210,7 +172,7 @@ static NSString * const Tealium_PluginVersion = @"Tealium-Cordova-1.1.0";
             }
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnString];
         } else {
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Tealium: Volatile data source could not be added, as Tealium is not yet initialized (Tealium instance was NIL)"];
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Tealium: Persistent data source could not be added, as Tealium is not yet initialized (Tealium instance was NIL)"];
         }
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         return;

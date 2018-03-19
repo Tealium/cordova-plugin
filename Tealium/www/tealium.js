@@ -1,12 +1,11 @@
 var Tealium =  {
-    // new param config.isLifecycleEnabled
-    init: function(config, successCallback) {
+    init: function(config, successCallback, errorCallback) {
         // will only be called on Android
         function trackLifecycle(event, instance) {
             var i = 0;
             for (i = 0; i < window.tealium.instanceNames.length; i++) {
                 cordova.exec(
-                    onSuccess, // success callback function
+                    tealium.successCallback, // success callback function
                     tealium.errorCallback, // error callback function
                     'TealiumPg', // plugin name
                     'trackLifecycle', // with this action name
@@ -22,16 +21,31 @@ var Tealium =  {
         }
 
 		if(typeof config !== "object") {
-			console.log("Tealium: Error initializing Tealium: please ensure config is an object of key:value pairs.");
+			this.logger(this.privateConfig.severity.ERR, "Error initializing Tealium: please ensure config is an object of key:value pairs.");
 			return;
 		}
 
-        var onSuccess = successCallback || tealium.successCallback;
+        window.tealium.successCallback = successCallback || tealium.successCallback;
+
+        window.tealium.errorCallback = errorCallback || tealium.errorCallback;
 	
 		var messages = [];
 	
         if (!config.isLifecycleEnabled) {
             config.isLifecycleEnabled = "true";
+        }
+
+        if (!config.logLevel || (config.logLevel && !this.isValidLogLevel(config.logLevel))) {
+            if (config.environment === "dev") {
+                this.setLogLevel(this.logLevels.DEV);
+            } else if (config.environment === "qa") {
+                this.setLogLevel(this.logLevels.QA);
+            } else {
+                this.setLogLevel(this.logLevels.PROD);
+            }
+            this.logger(this.privateConfig.severity.WARN, "logLevel not passed in config object - defaulting to " + (config.environment + "").toUpperCase() + " logLevel");
+        } else {
+            this.setLogLevel(config.logLevel);
         }
 
 		if(!('account' in config) || typeof config.account != 'string') {
@@ -47,24 +61,30 @@ var Tealium =  {
 		}
 
         if (!config.instance) {
-            console.log("Tealium: instance name not specified. using default instance name of tealium_cordova.");
+            this.logger(this.privateConfig.severity.INFO, "Instance name not specified. Using default instance name of tealium_cordova.");
             config.instance = "tealium_cordova";
         }
 	
 		if (config.isLifecycleEnabled === "false") {
-            console.log("Tealium: Lifecycle tracking has been explicitly disabled.");
+            this.logger(this.privateConfig.severity.INFO, "Lifecycle tracking has been explicitly disabled.");
         }
 
         if (config.collectDispatchURL) {
-            console.log("Tealium: Collect dispatch URL provided was: ", config.collectDispatchURL);
+            this.logger(this.privateConfig.severity.INFO, "Tealium: Collect dispatch URL provided was: " +  config.collectDispatchURL);
         }
 
         if (config.collectDispatchProfile) {
-            console.log("Tealium: Collect dispatch profile provided was: ", config.collectDispatchProfile);
+            this.logger(this.privateConfig.severity.INFO, "Tealium: Collect dispatch profile provided was: " + config.collectDispatchProfile);
+        }
+
+        if (!config.dataSourceId) {
+            this.logger(this.privateConfig.severity.INFO, "Tealium: Optional dataSourceId not provided.");
+        } else {
+            this.logger(this.privateConfig.severity.INFO, "Tealium: dataSourceId provided was: " + config.dataSourceId);   
         }
 
         if(messages.length > 0) {
-			console.log("Tealium: Error initializing Tealium:\r\n\t" + messages.join('\r\n\t'));
+			this.logger(this.privateConfig.severity.ERR, "Error initializing Tealium:\r\n\t" + messages.join('\r\n\t'));
 			return;
 		}
 
@@ -94,7 +114,7 @@ var Tealium =  {
         }
 		
         cordova.exec(
-            onSuccess, // success callback function
+            tealium.successCallback, // success callback function
             tealium.errorCallback, // error callback function
             'TealiumPg', // plugin name
             'init', // with this action name
@@ -103,17 +123,17 @@ var Tealium =  {
     },
     track: function(type, data, instance) {
 			if (typeof type != "string"){
-				console.log("Tealium: please make sure type is a string, 'view' or 'link'")
+				this.logger(this.privateConfig.severity.WARN, "Please make sure type is a string, 'view' or 'link'");
 			}
 			if (typeof data != "object"){
-				console.log("Tealium: please make sure data is an object of key:value pairs")
+				this.logger(this.privateConfig.severity.WARN, "Please make sure data is an object of key:value pairs");
 			}
 			if (typeof data != "object" || typeof type != "string"){
-				console.log("Tealium: please make sure to use tealium.track(String type, Object data)");
+				this.logger(this.privateConfig.severity.ERR, "Please make sure to use tealium.track(String type, Object data)");
 				return;
 			}
             if (typeof instance != "string"){
-                console.log("Tealium: instance name not specified. using default instance name of tealium_cordova.");
+                this.logger(this.privateConfig.severity.INFO, "Instance name not specified. Using default instance name of tealium_cordova.");
                 instance = "tealium_cordova";
             }   
         cordova.exec(
@@ -128,9 +148,19 @@ var Tealium =  {
             }]
         );
     },
+    trackEvent: function (data, instance) {
+        this.track("link", data, instance);
+    },
+    trackView: function (data, instance){
+        if (!data.screen_title) {
+            this.logger(this.privateConfig.severity.ERR, "screen_title was missing from the trackView call data. Data will be sent with blank screen_title");
+            data.screen_title = "";
+        }
+        this.track("view", data, instance);
+    },
     addVolatile : function (keyName, data, instance) {
         if (keyName == null || data == null) {
-            console.log("Tealium: keyname or data object was not specified in addVolatile call. Terminating...");
+            this.logger(this.privateConfig.severity.ERR, "Keyname or data object was not specified in addVolatile call. Terminating...");
             return;
         }
         cordova.exec(
@@ -147,11 +177,11 @@ var Tealium =  {
     },
     removeVolatile : function (keyName, instance) {
         if (keyName === "") {
-            console.log("Tealium: keyname or data object was not specified in removeVolatile call. Terminating...");
+            this.logger(this.privateConfig.severity.ERR, "Keyname or data object was not specified in removeVolatile call. Terminating...");
             return;
         }
         if (instance === ""){
-            console.log("Tealium: instance name was not specified in removeVolatile call. Terminating...");
+            this.logger(this.privateConfig.severity.ERR, "Instance name was not specified in removeVolatile call. Terminating...");
             return;
         }
       cordova.exec(
@@ -168,11 +198,11 @@ var Tealium =  {
     },
     addPersistent : function (keyName, data, instance) {
         if (keyName === "" || data === "") {
-            console.log("Tealium: keyname or data object was not specified in addPersistent call. Terminating...");
+            this.logger(this.privateConfig.severity.ERR, "Keyname or data object was not specified in addPersistent call. Terminating...");
             return;
         }
         if (instance === ""){
-            console.log("Tealium: instance name was not specified in addPersistent call. Terminating...");
+            this.logger(this.privateConfig.severity.ERR, "Instance name was not specified in addPersistent call. Terminating...");
             return;
         }
         cordova.exec(
@@ -189,11 +219,11 @@ var Tealium =  {
     },
     removePersistent : function (keyName, instance) {
         if (keyName === "") {
-            console.log("Tealium: keyname or data object was not specified in addPersistent call. Terminating...");
+            this.logger(this.privateConfig.severity.ERR, "Keyname or data object was not specified in removePersistent call. Terminating...");
             return;
         }
         if (instance === ""){
-            console.log("Tealium: instance name was not specified in addPersistent call. Terminating...");
+            this.logger(this.privateConfig.severity.ERR, "Instance name was not specified in removePersistent call. Terminating...");
             return;
         }
       cordova.exec(
@@ -210,15 +240,15 @@ var Tealium =  {
     },
     getVolatile : function (keyName, instance, callback) {
         if (keyName === "") {
-            console.log("Tealium: keyname or data object was not specified in addPersistent call. Terminating...");
+            this.logger(this.privateConfig.severity.ERR, "Keyname or data object was not specified in getVolatile call. Terminating...");
             return;
         }
         if (instance === ""){
-            console.log("Tealium: instance name was not specified in addPersistent call. Terminating...");
+            this.logger(this.privateConfig.severity.ERR, "Instance name was not specified in getVolatile call. Terminating...");
             return;
         }
         if (typeof callback !== "function") {
-            console.log("Tealium: callback function not provided to getVolatile. Terminating...");
+            this.logger(this.privateConfig.severity.ERR, "Callback function not provided to getVolatile. Terminating...");
             return;    
         }
       cordova.exec(
@@ -243,15 +273,15 @@ var Tealium =  {
     },
     getPersistent : function (keyName, instance, callback) {
         if (keyName === "") {
-            console.log("Tealium: keyname or data object was not specified in addPersistent call. Terminating...");
+            this.logger(this.privateConfig.severity.ERR, "Keyname or data object was not specified in getPersistent call. Terminating...");
             return;
         }
         if (instance === ""){
-            console.log("Tealium: instance name was not specified in addPersistent call. Terminating...");
+            this.logger(this.privateConfig.severity.ERR, "Instance name was not specified in getPersistent call. Terminating...");
             return;
         }
         if (typeof callback !== "function") {
-            console.log("Tealium: callback function not provided to getVolatile. Terminating...");
+            this.logger(this.privateConfig.severity.ERR, "Callback function not provided to getPersistent. Terminating...");
             return;    
         }
       cordova.exec(
@@ -274,14 +304,19 @@ var Tealium =  {
         }]
     );  
     },
+    // use getPersistent to retrieve the visitor ID
+    getVisitorId: function (instance, callback) {
+        var VISITOR_ID_KEYNAME = "tealium_visitor_id";
+        this.getPersistent(VISITOR_ID_KEYNAME, instance, callback);
+    },
     // Adds a remote command (tagbridge) and passes the response back to the JS side
     addRemoteCommand : function (commandName, instance, callback) {
         if (commandName === "") {
-            console.log("Tealium: keyname or data object was not specified in addPersistent call. Terminating...");
+            this.logger(this.privateConfig.severity.ERR, "Command name was not specified in addRemoteCommand call. Terminating...");
             return;
         }
         if (instance === ""){
-            console.log("Tealium: instance name was not specified in addPersistent call. Terminating...");
+            this.logger(this.privateConfig.severity.ERR, "Instance name was not specified in addRemoteCommand call. Terminating...");
             return;
         }
         cordova.exec(
@@ -304,14 +339,87 @@ var Tealium =  {
             }]
         );  
     },
+    logLevels: {
+            DEV: 1,
+            QA: 2,
+            PROD: 3,
+            SILENT: 999
+    },
+    isValidLogLevel : function (logLevel) {
+        return this.logLevels.DEV===logLevel || this.logLevels.QA===logLevel || this.logLevels.PROD===logLevel || this.logLevels.SILENT===logLevel;
+    },  
+    privateConfig: {
+        logLevel: null,
+        severity : {
+            INFO: 1,
+            WARN: 2,
+            ERR: 3
+        },
+        TAG: "Tealium Cordova 1.1.1: ",
+        pluginVersion: "1.1.1"
+    },
+    // usage this.logger(this.logLevels.DEV, "some error message")
+    logger: function (severity, message) {
+        var privateConfig;
+        if (!window.tealium) {
+            return;
+        }
+        privateConfig = window.tealium.privateConfig;
+        if (severity >= privateConfig.logLevel) {
+            if (severity === privateConfig.severity.INFO) {
+                console.log(privateConfig.TAG + message);
+            } else if (severity === privateConfig.severity.WARN) {
+                console.warn(privateConfig.TAG + message);
+            }  else if (severity === privateConfig.severity.ERR) {
+                console.error(privateConfig.TAG + message);
+            }
+        }
+    },
+    getGlobalLogger: function (){
+        var t, logger, logLevels;
+
+        t = window.tealium;
+        if (!t) {
+            return undefined;
+        }
+        logger = t && t.logger ? t.logger : undefined;
+        if (!logger) {
+            return undefined;
+        }
+        logLevels = t && t.privateConfig && t.privateConfig.severity ? t.privateConfig.severity : undefined;
+        if (!logLevels) {
+            return undefined;
+        }
+
+        return {
+            "log" : logger,
+            "logLevels" : logLevels
+        };
+    },
     successCallback: function(e){
-            console.log("Tealium: tealium call successful");
-            console.log(e);
+        var logger;
+        if (window.tealium) {
+            logger = window.tealium.getGlobalLogger();
+            if (logger && logger.logLevels) {
+                logger.log(logger.logLevels.INFO, "Tealium call successful");
+                logger.log(logger.logLevels.INFO, e);
+            } 
+        }
+
     },
     errorCallback: function(e){
-            console.log("Tealium: Fail, check syntax of tealium.init(String account, String profile, String target) or tealium.track(String type, Object data)");
-            console.log(e);
-            window.tealium_cordova_error = e;
+        var logger;
+        if (window.tealium) {
+            logger = window.tealium.getGlobalLogger();
+            if (logger && logger.logLevels) {
+                logger.log(logger.logLevels.ERR, "Command failure, check syntax of tealium.init (String account, String profile, String target) or tealium.track(String type, Object data)");
+                logger.log(logger.logLevels.ERR, e);
+                window.tealium_cordova_error = e;
+            }
+        }   
+    },
+    setLogLevel: function (logLevel) {
+        this.privateConfig.logLevel = logLevel;
     }
 }
 

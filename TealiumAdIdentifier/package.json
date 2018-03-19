@@ -1,0 +1,38 @@
+{
+  "name": "tealium-cordova-adidentifier",
+  "version": "0.1.0",
+  "description": "Tealium Ad Identifier",
+  "cordova": {
+    "id": "tealium-cordova-adidentifier",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tealium/cordova-plugin.git"
+  },
+  "keywords": [
+    "tealium",
+    "tag",
+    "management",
+    "iOS",
+    "Android",
+    "ecosystem:cordova",
+    "cordova-ios",
+    "cordova-android"
+  ],
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.8.0"
+    }
+  ],
+  "author": "Tealium, Inc.",
+  "license": "Commercial",
+  "bugs": {
+    "url": "https://github.com/Tealium/cordova-plugin/issues"
+  },
+  "homepage": "https://github.com/Tealium/cordova-plugin#readme"
+}
