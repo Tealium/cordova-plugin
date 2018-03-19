@@ -4,7 +4,7 @@
     <description>
         A sample Apache Cordova application with the Tealium Plugin added. Includes two buttons to manually trigger event and a view calls.
     </description>
-    <author email="dev@cordova.apache.org" href="http://cordova.io">
+    <author email="support@tealium.com" href="http://tealium.com">
         Apache Cordova Team
     </author>
     <content src="index.html" />
@@ -23,4 +23,10 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
+    <plugin name="tealium-cordova-adidentifier" spec="../TealiumAdIdentifier" />
+    <plugin name="tealium-cordova-installreferrer" spec="../TealiumInstallReferrer" />
+    <plugin name="tealium-cordova-crashreporter" spec="../TealiumCrashReporter" />
+    <plugin name="tealium-cordova-plugin" spec="../Tealium" />
+    <engine name="android" spec="^7.0.0" />
+    <engine name="ios" spec="^4.5.4" />
 </widget>

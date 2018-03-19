@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="tealium-cordova-crashreporter" version="1.1.1" name="tealium-cordova-crashreporter">
+
+    <name>TealiumCrashReporter</name>
+    <description>Tealium Tag Management and UDH</description>
+    <keywords>tealium, tag, management,iOS,Android</keywords>
+    <repo>https://github.com/Tealium/cordova-plugin.git</repo>
+    <issue>https://github.com/Tealium/cordova-plugin/issues</issue>
+
+    <license>Commercial</license>
+
+    <engines>
+        <engine name="cordova" version=">=3.8.0" />
+    </engines>
+        
+    <!-- android -->
+    <platform name="android">
+        <framework src="src/android/tealium.gradle" custom="true" type="gradleReference" />
+     </platform>
+</plugin>

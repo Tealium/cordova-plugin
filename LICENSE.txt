@@ -1,6 +1,6 @@
 License Agreement
 
-Thank You for Your interest in our Tealium Phonegap/Cordova Plugin (the "Software"), owned and licensed by Tealium Inc. (“Tealium,” "Our," “We,” or “Us”). Please read this license agreement (the "Agreement") carefully, as it contains the terms and conditions that govern Your use of and access to the Software. 
+Thank You for Your interest in our Tealium Cordova Plugin (the "Software"), owned and licensed by Tealium Inc. (“Tealium,” "Our," “We,” or “Us”). Please read this license agreement (the "Agreement") carefully, as it contains the terms and conditions that govern Your use of and access to the Software. 
 
 You may not access the Software if You are Our direct competitor, except with Our prior written consent. In addition, You may not access the Software for purposes of monitoring the availability, performance, or functionality, of any of our products and services or for any other benchmarking or competitive purposes. 
 

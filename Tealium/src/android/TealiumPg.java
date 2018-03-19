@@ -13,22 +13,26 @@ import com.tealium.library.Tealium;
 import com.tealium.lifecycle.LifeCycle;
 
 import android.app.Activity;
+import android.os.Handler;
 import android.util.Log;
 import android.app.Application;
 import android.os.Build;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
+import java.lang.reflect.*;
 
 public class TealiumPg extends CordovaPlugin {
 
     private Map<String, CallbackContext> tagBridgeCallback = new HashMap<String, CallbackContext>(5);
-    private final String LOG_TAG = "Tealium-Cordova-1.1.0";
+    private final String LOG_TAG = "Tealium-Cordova-1.1.1";
+    private boolean isDevBuild = false;
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
         final JSONObject arguments = args.getJSONObject(0);
@@ -39,63 +43,58 @@ public class TealiumPg extends CordovaPlugin {
             if(instance != null) {
                 return true;
             }
-            // Tealium API requires use in the main thread.
             init(arguments, callbackContext);
-            callbackContext.success(); // Thread-safe.
             return true;
         } else if(action.equals("track")){
-            // Tealium API requires use in the main thread.
             track(arguments, callbackContext);
-            callbackContext.success(); // Thread-safe.
+            callbackContext.success();
             return true;
         } else if(action.equals("trackLifecycle")){
             trackLifecycle(arguments, callbackContext);
-            // Tealium API requires use in the main thread.
-            callbackContext.success(); // Thread-safe.
+            callbackContext.success();
             return true;
         } else if (action.equals("setPersistent")) {
             set(arguments, callbackContext, "persistent");
-            callbackContext.success(); // Thread-safe.
+            callbackContext.success();
             return true;
         } else if (action.equals("setVolatile")) {
             set(arguments, callbackContext, "volatile");
-            callbackContext.success(); // Thread-safe.
+            callbackContext.success();
             return true;
         } else if (action.equals("getVolatile")) {
             Object val = get(arguments, "volatile");
             if (val instanceof String) {
-                callbackContext.success((String) val); // Thread-safe.    
+                callbackContext.success((String) val);    
             } else if (val instanceof JSONArray) {
-                callbackContext.success((JSONArray) val); // Thread-safe.
+                callbackContext.success((JSONArray) val);
             } else if (val instanceof JSONObject) {
-                callbackContext.success((JSONObject) val); // Thread-safe.
+                callbackContext.success((JSONObject) val);
             } else {
-                // return null
+                // not found - return empty string
                 callbackContext.success("");
             }
             return true;
         } else if (action.equals("getPersistent")) {
             Object val = get(arguments, "persistent");
             if (val instanceof String) {
-                callbackContext.success((String) val); // Thread-safe.    
+                callbackContext.success((String) val);    
             } else if (val instanceof Set) {
-                callbackContext.success(stringSetToJsonArray((Set<?>) val)); // Thread-safe.
+                callbackContext.success(stringSetToJsonArray((Set<?>) val));
             } else {
-                // return empty string
+                // not found - return empty string
                 callbackContext.success("");
             }
             return true;
         } else if (action.equals("addRemoteCommand")) {
             String remoteCommandName = arguments.optString("commandName");
-            if (tagBridgeCallback.get(remoteCommandName) != null) {
-                callbackContext.error("Tagbridge callback already registered for this command");
-                return true;
-            }
+            Boolean isNewCommand = (tagBridgeCallback.get(remoteCommandName) == null);
             tagBridgeCallback.put(remoteCommandName, callbackContext);
             PluginResult tagBridgePluginResult = new PluginResult(PluginResult.Status.NO_RESULT);
             tagBridgePluginResult.setKeepCallback(true);
             callbackContext.sendPluginResult(tagBridgePluginResult);
-            addRemoteCommand(arguments, callbackContext);
+            if (isNewCommand) {
+                addRemoteCommand(arguments, callbackContext);
+            }
             return true;
         }
         return false;
@@ -109,14 +108,19 @@ public class TealiumPg extends CordovaPlugin {
             String accountName = arguments.optString("account", null);
             String profileName = arguments.optString("profile", null);
             String environmentName = arguments.optString("environment", null);
+            if (environmentName!= null && environmentName.equals("dev")) {
+                this.isDevBuild = true;
+            }
             String collectDispatchURL = arguments.optString("collectDispatchURL", null);
             String collectDispatchProfile = arguments.optString("collectDispatchProfile", null);
             String instanceName = arguments.optString("instance", null);
             String isLifecycleEnabled = arguments.optString("isLifecycleEnabled", "true");
-
+            String dataSourceId = arguments.optString("dataSourceId", null);
+            String isCrashReporterEnabled = arguments.optString("isCrashReporterEnabled", "false");
             Tealium.Config config = Tealium.Config.create(app, accountName, profileName, environmentName);
+            ArrayList<String> moduleErrors = new ArrayList<>(3);
 
-            String libVersion = "5.2.0";
+            String libVersion = "5.4.2";
             String override = this.mobileUrlOverride(accountName, profileName, environmentName, libVersion);
             config.setOverrideTagManagementUrl(override);
             config.setOverridePublishSettingsUrl(override);
@@ -132,14 +136,48 @@ public class TealiumPg extends CordovaPlugin {
                 boolean isAutoTracking = false;
                 LifeCycle.setupInstance(instanceName, config, isAutoTracking);
             }
+            
+            if (dataSourceId != null) {
+                config.setDatasourceId(dataSourceId);
+            }
 
+            if (isCrashReporterEnabled.equals("true")) {
+                try {
+                    // using reflection to check if optional crashreporter module is present in the app
+                    Class<?> crashReporter = Class.forName("com.tealium.crashreporter.CrashReporter");
+                    Class[] cArg = new Class[3];
+                    cArg[0] = String.class;
+                    cArg[1] = Tealium.Config.class;
+                    cArg[2] = boolean.class;
+                    Method initCrashReporter = crashReporter.getDeclaredMethod("initialize", cArg);
+                    initCrashReporter.setAccessible(true);
+                    initCrashReporter.invoke(null, instanceName, config, false);
+                    moduleErrors.add("INFO: Tealium Crash Reporter initialized");
+                } catch (Exception e) {
+                    moduleErrors.add("INFO: Tealium Crash Reporter Module not found");
+                    // disable crash testing feature if crash reporter not found
+                    this.isDevBuild = false;
+                }
+            } else {
+                // disable crash testing feature if crash reporter not enabled
+                this.isDevBuild = false;
+            }
+            
             // create the Tealium instance using the instance name provided
             final Tealium instance = Tealium.createInstance(instanceName, config);
             if (instance != null){
                 setPluginVersion(instance);
             }
+            // print any errors for info. e.g. if crash enabled but module not added
+            if (moduleErrors.size() > 0) {
+                String allErrors = moduleErrors.toString();
+                allErrors = allErrors.replace(",", "\n");
+                callbackContext.success(allErrors);
+            } else {
+             callbackContext.success();
+            }
         } catch (Throwable t){
-            Log.e(LOG_TAG, "Error attempting init call. Check account/profile/environment/instance name combination is valid.", t);
+            callbackContext.error("Error attempting init call. Check account/profile/environment/instance name combination is valid. Full error: " + t.getMessage());
         }
     }
 
@@ -262,6 +300,10 @@ public class TealiumPg extends CordovaPlugin {
                 } else if (eventType.toLowerCase().equals("link")) {
                     instance.trackEvent(eventId, eventData);
                 }
+                // allows testing of crash tracking in sample app
+                if (eventData.containsKey("forceCrash")) {
+                    triggerCrash();
+                }
             }
         } catch (Throwable t){
             Log.e(LOG_TAG, "Error attempting track call.", t);
@@ -342,6 +384,20 @@ public class TealiumPg extends CordovaPlugin {
         } catch (Throwable t){
             Log.e(LOG_TAG, "Error attempting trackLifecycle call.", t);
         }
+    }
+
+    private void triggerCrash(){
+        if (!this.isDevBuild) {
+            return;
+        }
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                throw new RuntimeException("Tealium Crash Triggered!");
+            }
+        }, 1000);
+
     }
 
     private Set<String> jsonArrayToStringSet (JSONArray json) {
