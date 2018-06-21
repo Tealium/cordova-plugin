@@ -7,7 +7,7 @@
 static NSString * const Tealium_Platform = @"ios_cordova";
 static NSString * const Tealium_LibVersion = @"5.3.2";
 static NSString * const Tealium_MobileBaseURL = @"https://tags.tiqcdn.com/utag/%@/%@/%@/mobile.html?%@=%@&%@=%@&%@=%@&%@=%@";
-static NSString * const Tealium_PluginVersion = @"Tealium-Cordova-1.1.0";
+static NSString * const Tealium_PluginVersion = @"Tealium-Cordova-1.1.2";
 - (void) init: (CDVInvokedUrlCommand*)command {
     // Check command.arguments here.
 //[self.commandDelegate runInBackground:^{
