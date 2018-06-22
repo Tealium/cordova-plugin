@@ -31,7 +31,7 @@ import java.lang.reflect.*;
 public class TealiumPg extends CordovaPlugin {
 
     private Map<String, CallbackContext> tagBridgeCallback = new HashMap<String, CallbackContext>(5);
-    private final String LOG_TAG = "Tealium-Cordova-1.1.1";
+    private final String LOG_TAG = "Tealium-Cordova-1.1.2";
     private boolean isDevBuild = false;
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
@@ -118,7 +118,7 @@ public class TealiumPg extends CordovaPlugin {
             String dataSourceId = arguments.optString("dataSourceId", null);
             String isCrashReporterEnabled = arguments.optString("isCrashReporterEnabled", "false");
             Tealium.Config config = Tealium.Config.create(app, accountName, profileName, environmentName);
-            ArrayList<String> moduleErrors = new ArrayList<>(3);
+            ArrayList<String> moduleErrors = new ArrayList<String>(3);
 
             String libVersion = "5.4.2";
             String override = this.mobileUrlOverride(accountName, profileName, environmentName, libVersion);

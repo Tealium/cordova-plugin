@@ -1,4 +1,8 @@
 ## Change Log
+### 1.1.2
+- Incremented version numbers
+- Fixed "Diamond Operator" issue: https://github.com/Tealium/cordova-plugin/issues/31
+
 ### 1.1.1
 - Added optional CrashReporter module
 - Added optional Ad Identifier module
