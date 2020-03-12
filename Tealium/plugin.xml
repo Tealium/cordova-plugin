@@ -12,7 +12,7 @@
 
     <engines>
         <engine name="cordova" version=">=3.8.0" />
-    </engines>    
+    </engines>
 
     <js-module src="www/tealium.js" name="tealium">
         <clobbers target="window.tealium" />
@@ -34,10 +34,18 @@
         <framework src="Foundation.framework" />
         <framework src="CoreTelephony.framework" />
         <framework src="SystemConfiguration.framework" />
-        <framework src="TealiumIOS" type="podspec" spec="~> 5.3.2" />
-        <framework src="TealiumIOSLifecycle" type="podspec" spec="~> 5.3.2" />
+        <podspec>
+          <config>
+            <source url="https://github.com/CocoaPods/Specs.git"/>
+          </config>
+          <pods use-frameworks="true">
+            <pod name="TealiumIOS" spec="5.6.6"/>
+            <pod name="TealiumIOSLifecycle" spec="5.6.6"/>
+          </pods>
+        </podspec>
+
     </platform>
-        
+
     <!-- android -->
     <platform name="android">
         <config-file target="config.xml" parent="/*">

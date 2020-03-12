@@ -1,4 +1,8 @@
 ## Change Log
+
+### 1.1.3
+- Upgraded core SDKs to tealium-android 5.7.0 and tealium-ios 5.6.6
+
 ### 1.1.2
 - Incremented version numbers
 - Fixed "Diamond Operator" issue: https://github.com/Tealium/cordova-plugin/issues/31

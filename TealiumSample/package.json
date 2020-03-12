@@ -4,8 +4,8 @@
   "displayName": "TealiumSample",
   "cordova": {
     "platforms": [
-      "android",
-      "ios"
+      "ios",
+      "android"
     ],
     "plugins": {
       "cordova-plugin-whitelist": {},
@@ -16,8 +16,8 @@
     }
   },
   "dependencies": {
-    "cordova-android": "^7.0.0",
-    "cordova-ios": "^4.5.4",
+    "cordova-android": "^8.1.0",
+    "cordova-ios": "^5.1.1",
     "cordova-plugin-whitelist": "1",
     "tealium-cordova-adidentifier": "file:../TealiumAdIdentifier",
     "tealium-cordova-crashreporter": "file:../TealiumCrashReporter",
