@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.tealium.installreferrer.InstallReferrerReceiver;
+import android.content.Context;
 
 public class TealiumPgInstallReferrer extends CordovaPlugin {
     
@@ -23,10 +24,11 @@ public class TealiumPgInstallReferrer extends CordovaPlugin {
     }
 
     private void initInstallReferrer(String instanceName, String persistentOrVolatile, CallbackContext callbackContext) {
+	Context mContext = this.cordova.getActivity().getApplicationContext();
         if ("persistent".equals(persistentOrVolatile)) {
-            InstallReferrerReceiver.setReferrerPersistent(instanceName);
+            InstallReferrerReceiver.setReferrerPersistent(mContext, instanceName);
         } else {
-            InstallReferrerReceiver.setReferrerVolatile(instanceName);
+            InstallReferrerReceiver.setReferrerVolatile(mContext, instanceName);
         }
         callbackContext.success("Tealium Install Referrer: Finished initialization");
     }

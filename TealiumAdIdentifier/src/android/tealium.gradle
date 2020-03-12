@@ -6,8 +6,8 @@ repositories{
 }
 
 dependencies {
-    compile 'com.tealium:adidentifier:1.0'
-    compile 'com.google.android.gms:play-services-ads:10.0.1'
+    implementation 'com.tealium:adidentifier:1.0.2'
+    implementation 'com.google.android.gms:play-services-ads:19.0.0'
 }
 
 android {

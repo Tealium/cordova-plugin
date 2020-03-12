@@ -6,7 +6,7 @@ repositories{
 }
 
 dependencies {
-  compile 'com.tealium:crashreporter:1.0'
+  implementation 'com.tealium:crashreporter:1.0.2'
 }
 
 android {

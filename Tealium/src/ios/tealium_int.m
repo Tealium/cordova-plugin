@@ -5,9 +5,9 @@
 @implementation TealiumPg
 
 static NSString * const Tealium_Platform = @"ios_cordova";
-static NSString * const Tealium_LibVersion = @"5.3.2";
+static NSString * const Tealium_LibVersion = @"5.X";
 static NSString * const Tealium_MobileBaseURL = @"https://tags.tiqcdn.com/utag/%@/%@/%@/mobile.html?%@=%@&%@=%@&%@=%@&%@=%@";
-static NSString * const Tealium_PluginVersion = @"Tealium-Cordova-1.1.2";
+static NSString * const Tealium_PluginVersion = @"Tealium-Cordova-1.1.3";
 - (void) init: (CDVInvokedUrlCommand*)command {
     // Check command.arguments here.
 //[self.commandDelegate runInBackground:^{
@@ -74,7 +74,7 @@ static NSString * const Tealium_PluginVersion = @"Tealium-Cordova-1.1.2";
             if (dataSourceId != nil){
                 [configuration setDatasourceId:dataSourceId];
             }
-            
+
             // create a new Tealium instance using the instance name passed in
             Tealium * instance = [Tealium newInstanceForKey:instanceName configuration:configuration];
             if (instance != nil) {
@@ -206,11 +206,11 @@ static NSString * const Tealium_PluginVersion = @"Tealium-Cordova-1.1.2";
         teal = [Tealium instanceForKey:instanceName];
         if (teal != nil) {
             if ([remove isEqualToString:@"true"]) {
-                [teal removeVolatileDataSourcesForKeys:@[keyName]];    
+                [teal removeVolatileDataSourcesForKeys:@[keyName]];
             } else if (keyName != nil && receivedData != nil) {
                 if ([receivedData isKindOfClass:[NSString class]] || [receivedData isKindOfClass:[NSDictionary class]] || [receivedData isKindOfClass:[NSArray class]]){
                     data[keyName] = receivedData;
-                    [teal addVolatileDataSources:data];    
+                    [teal addVolatileDataSources:data];
                 }
             }
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnString];
@@ -231,7 +231,7 @@ static NSString * const Tealium_PluginVersion = @"Tealium-Cordova-1.1.2";
 - (void) getPersistent: (CDVInvokedUrlCommand*)command {
         // Check command.arguments here.
 [self.commandDelegate runInBackground:^{
-    // persistent data on ios technically can store NSDictionary objects, but Android cannot. 
+    // persistent data on ios technically can store NSDictionary objects, but Android cannot.
     // To keep feature parity in the plugin, NSObjects cannot be returned or stored.
     CDVPluginResult * pluginResult = nil;
     NSDictionary * arguments = nil;

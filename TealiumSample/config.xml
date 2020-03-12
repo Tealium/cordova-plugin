@@ -24,9 +24,5 @@
         <allow-intent href="itms-apps:*" />
     </platform>
     <plugin name="tealium-cordova-adidentifier" spec="../TealiumAdIdentifier" />
-    <plugin name="tealium-cordova-installreferrer" spec="../TealiumInstallReferrer" />
     <plugin name="tealium-cordova-crashreporter" spec="../TealiumCrashReporter" />
-    <plugin name="tealium-cordova-plugin" spec="../Tealium" />
-    <engine name="android" spec="^7.0.0" />
-    <engine name="ios" spec="^4.5.4" />
 </widget>
