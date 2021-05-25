@@ -125,7 +125,7 @@ function handleClick(e) {
 }
 
 function setTraceId(e) {
-    document.getElementById("join_trace_button").setAttribute("data-params", "[" + e.target.value + "]")
+    document.getElementById("join_trace_button").setAttribute("data-params", '["' + e.target.value + '"]')
 }
 
 function logRemoteCommand(result) {
