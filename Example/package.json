@@ -24,7 +24,6 @@
       "tealium-cordova-plugin": {}
     },
     "platforms": [
-      "ios",
       "android"
     ]
   }
