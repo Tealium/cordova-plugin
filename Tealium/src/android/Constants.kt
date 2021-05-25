@@ -22,10 +22,6 @@ const val REMOVE_LISTENERS = "removeListeners"
 
 const val INSTANCE_NAME: String = "main"
 
-const val EVENT_EMITTERS_VISITOR = "TealiumReactNative.VisitorServiceEvent"
-const val EVENT_EMITTERS_REMOTE_COMMAND = "TealiumReactNative.RemoteCommandEvent"
-const val EVENT_EMITTERS_CONSENT_EXPIRED = "TealiumReactNative.ConsentExpiredEvent"
-
 const val KEY_CONFIG_ACCOUNT: String = "account"
 const val KEY_CONFIG_PROFILE: String = "profile"
 const val KEY_CONFIG_ENV: String = "environment"
