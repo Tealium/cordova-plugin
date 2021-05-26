@@ -42,20 +42,6 @@ class TealiumPlugin: NSObject {
             }
         }
         
-//        public static func registerRemoteCommandFactory(_ factory: RemoteCommandFactory) {
-//            remoteCommandFactories[factory.name] = factory
-//        }
-
-//        @objc
-//        override static func requiresMainQueueSetup() -> Bool {
-//            return false
-//        }
-        
-//        @objc
-//        override func supportedEvents() -> [String] {
-//            return EventEmitter.shared.allEvents
-//        }
-        
         @objc
         public static func initialize(_ config: [String: Any], _ completion: @escaping (Bool) -> Void) {
             guard let localConfig = tealiumConfig(from: config) else {
@@ -150,20 +136,4 @@ class TealiumPlugin: NSObject {
         public static func leaveTrace() {
             tealium?.leaveTrace()
         }
-    
-//    var pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR)
-//    @objc(initialize:) func initalize(_ command: CDVInvokedUrlCommand) {
-//        var pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR)
-//        // let param1 = (command.arguments[0] as? NSObject)?.value(forKey: "param1") as? Int
-//        // let param2 = (command.arguments[0] as? NSObject)?.value(forKey: "param2") as? Int
-//        // if let p1 = param1, let p2 = param2 {
-//        //     if p1 >= 0, p1 >= 0 {
-//        //         let total = String(p1 + p2)
-//                pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "total")
-//        //     } else {
-//        //         pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAs: "Something wrong")
-//        //     }
-//        // }
-//        commandDelegate.send(pluginResult, callbackId: command.callbackId)
-//    }
 }

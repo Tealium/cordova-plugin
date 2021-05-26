@@ -66,12 +66,6 @@ enum TealiumCordovaConstants {
         case eventName
     }
     
-    enum Events: String, CaseIterable  {
-        case remoteCommand = "TealiumReactNative.RemoteCommandEvent"
-        case visitorService = "TealiumReactNative.VisitorServiceEvent"
-        case consent = "TealiumReactNative.ConsentExpiredEvent"
-    }
-    
     enum Visitor {
         static let audiences = "audiences"
         static let badges = "badges"
