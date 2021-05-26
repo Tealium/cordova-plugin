@@ -191,8 +191,11 @@ extension TealiumPlugin {
         }
     }
     
-    public static func remoteCommandFor(_ id: String, commandDelegate: CDVCommandDelegate, callbackId: String) -> RemoteCommand {
+    public static func remoteCommandFor(_ id: String, callbackId: String) -> RemoteCommand {
         return RemoteCommand(commandId: id, description: nil) { response in
+            guard let commandDelegate = commandDelegate else {
+                return
+            }
             let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: response.payload)
             result?.keepCallback = true
             commandDelegate.send(result, callbackId: callbackId)

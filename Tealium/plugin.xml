@@ -44,7 +44,6 @@
           </config>
           <pods use-frameworks="true">
             <pod name="tealium-swift" spec="2.3.1"/>
-            <!-- <pod name="TealiumIOSLifecycle" spec="5.6.6"/> -->
           </pods> 
         </podspec>
     </platform>
