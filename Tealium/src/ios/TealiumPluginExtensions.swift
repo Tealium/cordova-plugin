@@ -27,10 +27,11 @@ extension TealiumPlugin {
             localConfig.consentPolicy = policy
             localConfig.consentLoggingEnabled =  dictionary[.consentLoggingEnabled] as? Bool ?? true
             localConfig.onConsentExpiration = {
-//                EventEmitter.shared
-//                    .dispatch(name: TealiumCordovaConstants.Events.consent.rawValue,
-//                              body: nil)
-
+                consentExpiryCallbackIds.forEach() { callbackId in
+                    let result = CDVPluginResult(status: CDVCommandStatus_OK)
+                    result?.keepCallback = true
+                    commandDelegate?.send(result, callbackId: callbackId)
+                }
             }
         }
         
@@ -190,38 +191,6 @@ extension TealiumPlugin {
         }
     }
     
-//    public static func remoteCommandsFrom(_ commands: [Any]) -> [RemoteCommandProtocol] {
-//        var remoteCommands = [RemoteCommandProtocol]()
-//        commands.forEach { commandPayload in
-//
-//            guard let commandPayload = commandPayload as? [String: Any],
-//                  let id = commandPayload[.id] as? String else {
-//                return
-//            }
-//
-//            var command: RemoteCommand?
-//            if commandPayload[.callback] == nil {
-//                // no callback look for a factory
-////                command = remoteCommandFactories[id]?.create()
-//            } else {
-//                // callback was provided
-//                command = remoteCommandFor(id)
-//            }
-//
-//            guard let remoteCommand = command else {
-//                return
-//            }
-//
-//            if let path = commandPayload[.path] as? String {
-//                remoteCommand.type = .local(file: path, bundle: nil)
-//            } else if let url = commandPayload[.url] as? String {
-//                remoteCommand.type = .remote(url: url)
-//            }
-//            remoteCommands.append(remoteCommand)
-//        }
-//        return remoteCommands
-//    }
-    
     public static func remoteCommandFor(_ id: String, commandDelegate: CDVCommandDelegate, callbackId: String) -> RemoteCommand {
         return RemoteCommand(commandId: id, description: nil) { response in
             let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: response.payload)
@@ -250,9 +219,14 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
 }
 
 class VisitorDelegate: VisitorServiceDelegate {
+    private let didUpdate: (([String: Any]) -> Void)
+    
+    init(didUpdate: @escaping (([String: Any]) -> Void)) {
+        self.didUpdate = didUpdate
+    }
+    
     public func didUpdate(visitorProfile: TealiumVisitorProfile) {
-//        EventEmitter.shared.dispatch(name: TealiumReactConstants.Events.visitorService.rawValue,
-//                                     body: convert(visitorProfile))
+        didUpdate(convert(visitorProfile))
     }
     
     private func convert(_ visitorProfile: TealiumVisitorProfile) -> [String: Any] {
@@ -265,7 +239,7 @@ class VisitorDelegate: VisitorServiceDelegate {
             Visitor.arraysOfNumbers: visitorProfile.currentVisit?.arraysOfNumbers,
             Visitor.tallies: visitorProfile.currentVisit?.tallies,
             Visitor.strings: visitorProfile.currentVisit?.strings,
-            Visitor.arraysOfStrings: visitorProfile,
+            Visitor.arraysOfStrings: visitorProfile.currentVisit?.arraysOfStrings,
             // Sets cannot be serialized to JSON, so convert to array first
             Visitor.setsOfStrings: visitorProfile.currentVisit?.setsOfStrings.map({ (stringSet) -> [String: [String]] in
                 var newValue = [String: [String]]()

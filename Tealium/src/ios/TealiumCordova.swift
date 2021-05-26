@@ -12,6 +12,10 @@ import TealiumSwift
 class TealiumCordova: CDVPlugin {
     // MARK: Properties
 
+    override func pluginInitialize() {
+        TealiumPlugin.commandDelegate = commandDelegate
+    }
+    
     @objc(initialize:)
     public func initialize(_ command: CDVInvokedUrlCommand) {
         guard let config = command.argument(at: 0) as? [String: Any] else {
@@ -21,6 +25,9 @@ class TealiumCordova: CDVPlugin {
         TealiumPlugin.initialize(config) { result in
             if result {
                 let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: result)
+                self.commandDelegate.send(result, callbackId: command.callbackId)
+            } else {
+                let result = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAs: result)
                 self.commandDelegate.send(result, callbackId: command.callbackId)
             }
         }
@@ -159,7 +166,10 @@ class TealiumCordova: CDVPlugin {
     
     @objc(setConsentExpiryListener:)
     public func setConsentExpiryListener(_ command: CDVInvokedUrlCommand) {
-        
+        guard let callbackId = command.callbackId else {
+            return
+        }
+        TealiumPlugin.setConsentExpiryListener(callbackId: callbackId)
         
         let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
         result?.keepCallback = true
@@ -168,10 +178,18 @@ class TealiumCordova: CDVPlugin {
     
     @objc(setVisitorServiceListener:)
     public func setVisitorServiceListener(_ command: CDVInvokedUrlCommand) {
-        
+        guard let callbackId = command.callbackId else {
+            return
+        }
+        TealiumPlugin.setVisitorServiceListener(callbackId: callbackId)
         
         let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
         result?.keepCallback = true
         self.commandDelegate.send(result, callbackId: command.callbackId)
+    }
+    
+    @objc(removeListeners:)
+    public func removeListeners(_ command: CDVInvokedUrlCommand) {
+        TealiumPlugin.removeListeners()
     }
 }
