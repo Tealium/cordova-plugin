@@ -16,7 +16,7 @@ class TealiumPlugin: NSObject {
     private static var config: TealiumConfig?
     
     static var visitorServiceDelegate: VisitorServiceDelegate = VisitorDelegate(didUpdate: { visitor in
-        visitorServiceCallbackIds.forEach() { callbackId in
+        visitorServiceCallbackIds.forEach { callbackId in
             let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: visitor)
             result?.keepCallback = true
             commandDelegate?.send(result, callbackId: callbackId)

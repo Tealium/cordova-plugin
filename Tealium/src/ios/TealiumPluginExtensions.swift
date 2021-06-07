@@ -27,7 +27,7 @@ extension TealiumPlugin {
             localConfig.consentPolicy = policy
             localConfig.consentLoggingEnabled =  dictionary[.consentLoggingEnabled] as? Bool ?? true
             localConfig.onConsentExpiration = {
-                consentExpiryCallbackIds.forEach() { callbackId in
+                consentExpiryCallbackIds.forEach { callbackId in
                     let result = CDVPluginResult(status: CDVCommandStatus_OK)
                     result?.keepCallback = true
                     commandDelegate?.send(result, callbackId: callbackId)
