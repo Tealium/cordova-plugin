@@ -24,14 +24,17 @@
         <!-- Cordova < 2.3 -->
         <plugins-plist key="TealiumCordova" string="TealiumCordova" />
         <!-- Cordova >= 2.3 -->
-        <!-- <config-file target="config.xml" parent="plugins">
-            <plugin name="TealiumPg" value="TealiumPg"/>
-            <feature name="TealiumPg">
-                <param name="ios-package" value="TealiumPg" />
+        <config-file target="config.xml" parent="/*">
+            <plugin name="TealiumCordova" value="TealiumCordova"/>
+            <feature name="TealiumCordova">
+                <param name="ios-package" value="TealiumCordova" />
             </feature>
+            <preference name="SwiftVersion" value="5" />
         </config-file>
-        <header-file src="src/ios/tealium_int.h" />
-        <source-file src="src/ios/tealium_int.m" />
+        <source-file src="src/ios/TealiumCordova.swift" />
+        <source-file src="src/ios/TealiumPlugin.swift" />
+        <source-file src="src/ios/TealiumPluginExtensions.swift" />
+        <source-file src="src/ios/TealiumCordovaConstants.swift" />
         <framework src="Foundation.framework" />
         <framework src="CoreTelephony.framework" />
         <framework src="SystemConfiguration.framework" />
@@ -40,10 +43,14 @@
             <source url="https://github.com/CocoaPods/Specs.git"/>
           </config>
           <pods use-frameworks="true">
-            <pod name="TealiumIOS" spec="5.6.6"/>
-            <pod name="TealiumIOSLifecycle" spec="5.6.6"/>
+            <pod name="tealium-swift/Core" spec="~> 2.3"/>
+            <pod name="tealium-swift/TagManagement" spec="~> 2.3"/>
+            <pod name="tealium-swift/Collect" spec="~> 2.3"/>
+            <pod name="tealium-swift/Lifecycle" spec="~> 2.3"/>
+            <pod name="tealium-swift/RemoteCommands" spec="~> 2.3"/>
+            <pod name="tealium-swift/VisitorService" spec="~> 2.3"/>
           </pods> 
-        </podspec> -->
+        </podspec>
     </platform>
     <!-- android -->
     <platform name="android">
