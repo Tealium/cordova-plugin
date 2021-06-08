@@ -43,7 +43,12 @@
             <source url="https://github.com/CocoaPods/Specs.git"/>
           </config>
           <pods use-frameworks="true">
-            <pod name="tealium-swift" spec="2.3.1"/>
+            <pod name="tealium-swift/Core" spec="~> 2.3"/>
+            <pod name="tealium-swift/TagManagement" spec="~> 2.3"/>
+            <pod name="tealium-swift/Collect" spec="~> 2.3"/>
+            <pod name="tealium-swift/Lifecycle" spec="~> 2.3"/>
+            <pod name="tealium-swift/RemoteCommands" spec="~> 2.3"/>
+            <pod name="tealium-swift/VisitorService" spec="~> 2.3"/>
           </pods> 
         </podspec>
     </platform>
