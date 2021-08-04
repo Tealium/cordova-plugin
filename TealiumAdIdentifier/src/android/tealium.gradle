@@ -1,13 +1,13 @@
 repositories{    
   jcenter()
    maven {
-            url "http://maven.tealiumiq.com/android/releases/"
+            url "https://maven.tealiumiq.com/android/releases/"
         }
 }
 
 dependencies {
-    implementation 'com.tealium:adidentifier:1.0.2'
-    implementation 'com.google.android.gms:play-services-ads:19.0.0'
+    implementation 'com.tealium:adidentifier:1.0.4'
+    implementation 'com.google.android.gms:play-services-ads:20.2.0'
 }
 
 android {
