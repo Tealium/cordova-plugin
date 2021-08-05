@@ -8,17 +8,16 @@
       "android"
     ],
     "plugins": {
-      "cordova-plugin-whitelist": {},
-      "tealium-cordova-adidentifier": {},
-      "tealium-cordova-installreferrer": {},
       "tealium-cordova-crashreporter": {},
-      "tealium-cordova-plugin": {}
+      "tealium-cordova-plugin": {},
+      "tealium-cordova-installreferrer": {},
+      "tealium-cordova-adidentifier": {}
     }
   },
-  "dependencies": {
-    "cordova-android": "^8.1.0",
-    "cordova-ios": "^5.1.1",
-    "cordova-plugin-whitelist": "1",
+  "dependencies": {},
+  "devDependencies": {
+    "cordova-android": "^9.1.0",
+    "cordova-ios": "^6.2.0",
     "tealium-cordova-adidentifier": "file:../TealiumAdIdentifier",
     "tealium-cordova-crashreporter": "file:../TealiumCrashReporter",
     "tealium-cordova-installreferrer": "file:../TealiumInstallReferrer",

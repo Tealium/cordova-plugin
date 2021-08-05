@@ -8,7 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.tealium.internal.tagbridge.RemoteCommand;
+import com.tealium.remotecommands.RemoteCommand;
 import com.tealium.library.Tealium;
 import com.tealium.lifecycle.LifeCycle;
 
