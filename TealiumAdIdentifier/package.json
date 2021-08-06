@@ -1,6 +1,6 @@
 {
   "name": "tealium-cordova-adidentifier",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tealium Ad Identifier",
   "cordova": {
     "id": "tealium-cordova-adidentifier",

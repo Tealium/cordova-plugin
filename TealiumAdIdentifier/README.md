@@ -11,9 +11,9 @@
 
 This is a supplementary plugin, designed to be used in conjunction with the Tealium Cordova Plugin. It is available for Android and iOS. If installed alongside the main Tealium plugin, it will pass the Google Advertising ID (Android) and IDFA/IDFV (iOS) values to the Tealium Data Layer. 
 
-For details of how to implement the plugin, please see the Tealium Learning Community: 
+For details of how to implement the plugin, please see the Tealium Developer Docs: 
 
-[https://community.tealiumiq.com/t5/Mobile-Libraries/Tealium-for-Cordova/ta-p/17618](https://community.tealiumiq.com/t5/Mobile-Libraries/Tealium-for-Cordova/ta-p/17618)
+[https://docs.tealium.com/platforms/cordova-v1/](https://docs.tealium.com/platforms/cordova-v1/)
 
 ## Dependencies
 
@@ -25,10 +25,12 @@ The following dependencies will be automatically added to your app when you impl
 * iOS: 
 	- AdSupport.framework
 
+Please note: if using this plugin on iOS, you are responsible for displaying the App Tracking Transparency prompt to your users prior to instantiating this component of the plugin.
+
 ## License
 
 Use of this software is subject to the terms and conditions of the license agreement contained in the file titled "LICENSE.txt".  Please read the license before downloading or using any of the files contained in this repository. By downloading or using any of these files, you are agreeing to be bound by and comply with the license agreement.
 
  
 ---
-Copyright (C) 2012-2018, Tealium Inc.
+Copyright (C) 2012-2021, Tealium Inc.

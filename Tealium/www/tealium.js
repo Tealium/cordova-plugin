@@ -355,8 +355,8 @@ var Tealium =  {
             WARN: 2,
             ERR: 3
         },
-        TAG: "Tealium Cordova 1.1.2: ",
-        pluginVersion: "1.1.2"
+        TAG: "Tealium Cordova 1.1.4: ",
+        pluginVersion: "1.1.4"
     },
     // usage this.logger(this.logLevels.DEV, "some error message")
     logger: function (severity, message) {

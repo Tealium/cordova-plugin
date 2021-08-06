@@ -1,6 +1,6 @@
 {
   "name": "tealium-cordova-crashreporter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tealium Crash Reporter",
   "cordova": {
     "id": "tealium-cordova-crashreporter",

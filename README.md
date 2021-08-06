@@ -8,9 +8,9 @@
 
 
 ## Documentation
-For full documentation, please see the Tealium Learning Community: 
+For full documentation, please see the Tealium Developer Docs: 
 
-[https://community.tealiumiq.com/t5/Mobile-Libraries/Tealium-for-Cordova/ta-p/17618](https://community.tealiumiq.com/t5/Mobile-Libraries/Tealium-for-Cordova/ta-p/17618)
+[https://docs.tealium.com/platforms/cordova-v1/](https://docs.tealium.com/platforms/cordova-v1/)
 
 ## License
 
@@ -18,4 +18,4 @@ Use of this software is subject to the terms and conditions of the license agree
 
  
 ---
-Copyright (C) 2012-2018, Tealium Inc.
+Copyright (C) 2012-2021, Tealium Inc.

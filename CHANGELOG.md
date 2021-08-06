@@ -1,5 +1,9 @@
 ## Change Log
 
+### 1.1.4
+- Upgraded core SDKs to tealium-android 5.9.1 and tealium-ios 5.8.1
+- Updated Android Gradle files to use https to support AndroidX
+
 ### 1.1.3
 - Upgraded core SDKs to tealium-android 5.7.0 and tealium-ios 5.6.6
 
