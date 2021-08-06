@@ -1,6 +1,6 @@
 {
   "name": "tealium-cordova-installreferrer",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Tealium Install Referrer",
   "cordova": {
     "id": "tealium-cordova-installreferrer",
