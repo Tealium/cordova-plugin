@@ -9,11 +9,11 @@
 
 ## Documentation
 
-This is a supplementary plugin, designed to be used in conjunction with the Tealium Cordova Plugin. Currently, it is only available for Android. If installed alongside the main Tealium plugin, it will pass the Install Referrer information received from the Google Play store to the Tealium Data Layer. In order to use this plugin, please make sure you have no other Install Referrer listeners in your app. For full details of the Android Install Referrer module on which this plugin is based, please see: [https://github.com/Tealium/tealium-android/tree/master/Support/InstallReferrer](https://github.com/Tealium/tealium-android/tree/master/Support/InstallReferrer)
+This is a supplementary plugin, designed to be used in conjunction with the Tealium Cordova Plugin. Currently, it is only available for Android. If installed alongside the main Tealium plugin, it will pass the Install Referrer information received from the Google Play store to the Tealium Data Layer. In order to use this plugin, please make sure you have no other Install Referrer listeners in your app. For full details of the Android Install Referrer module on which this plugin is based, please see: [https://docs.tealium.com/platforms/android-java/module-list/install-referrer/](https://docs.tealium.com/platforms/android-java/module-list/install-referrer/)
 
-For details of how to implement the plugin, please see the Tealium Learning Community: 
+For details of how to implement the plugin, please see the Tealium Developer Docs: 
 
-[https://community.tealiumiq.com/t5/Mobile-Libraries/Tealium-for-Cordova/ta-p/17618](https://community.tealiumiq.com/t5/Mobile-Libraries/Tealium-for-Cordova/ta-p/17618)
+[https://docs.tealium.com/platforms/cordova-v1/module-list/install-referrer/](https://docs.tealium.com/platforms/cordova-v1/module-list/install-referrer/)
 
 ## License
 
@@ -21,4 +21,4 @@ Use of this software is subject to the terms and conditions of the license agree
 
  
 ---
-Copyright (C) 2012-2018, Tealium Inc.
+Copyright (C) 2012-2021, Tealium Inc.

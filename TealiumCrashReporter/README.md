@@ -11,11 +11,11 @@
 
 This is a supplementary plugin, designed to be used in conjunction with the Tealium Cordova Plugin. It is available for Android only. If installed alongside the main Tealium plugin, it will pass details of any crashes (uncaught exceptions) occurring in your app to the Tealium Data Layer.
 
-For details of how to implement the plugin, please see the Tealium Learning Community: 
+For details of how to implement the plugin, please see the Tealium Developer Docs: 
 
-[https://community.tealiumiq.com/t5/Mobile-Libraries/Tealium-for-Cordova/ta-p/17618](https://community.tealiumiq.com/t5/Mobile-Libraries/Tealium-for-Cordova/ta-p/17618)
+[https://docs.tealium.com/platforms/cordova-v1/](https://docs.tealium.com/platforms/cordova-v1/)
 
-For full details of the Crash Reporter functionality, please see [Tealium Learning Community](https://community.tealiumiq.com/t5/Tealium-for-Android/Crash-Reporter-Module-for-Android/ta-p/20109).
+For full details of the Crash Reporter functionality, please see [Tealium Developer Docs](https://docs.tealium.com/platforms/android-java/module-list/crash-reporter/).
 
 Please note: adding this plugin does not expose any additional JavaScript APIs; it merely adds the Maven dependency to your app. Configuration of the module is achieved through the main Tealium Cordova Plugin JavaScript API.
 
@@ -31,4 +31,4 @@ Use of this software is subject to the terms and conditions of the license agree
 
  
 ---
-Copyright (C) 2012-2018, Tealium Inc.
+Copyright (C) 2012-2021, Tealium Inc.
