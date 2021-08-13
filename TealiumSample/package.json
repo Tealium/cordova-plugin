@@ -9,9 +9,9 @@
     ],
     "plugins": {
       "tealium-cordova-crashreporter": {},
-      "tealium-cordova-plugin": {},
       "tealium-cordova-installreferrer": {},
-      "tealium-cordova-adidentifier": {}
+      "tealium-cordova-adidentifier": {},
+      "tealium-cordova-plugin": {}
     }
   },
   "dependencies": {},
