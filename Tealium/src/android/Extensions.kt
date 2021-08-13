@@ -95,6 +95,10 @@ fun JSONObject.toTealiumConfig(application: Application): TealiumConfig? {
             dataSourceId = it
         }
 
+        safeGetString(KEY_CONFIG_CUSTOM_VISITOR_ID)?.let {
+            existingVisitorId = it
+        }
+
         // Collect Settings
         safeGetString(KEY_COLLECT_OVERRIDE_URL)?.let {
             overrideCollectUrl = it
@@ -265,6 +269,7 @@ fun dispatcherFactoryFromString(name: String): DispatcherFactory? {
 
 fun expiryFromString(name: String) = when (name.toLowerCase(Locale.ROOT)) {
     "forever" -> Expiry.FOREVER
+    "untilrestart" -> Expiry.UNTIL_RESTART
     else -> Expiry.SESSION
 }
 
