@@ -1,5 +1,8 @@
 ## Change Log
 
+### 1.1.5
+- Updated iOS dependency to fix code signing issue for TealiumIOSLifecycle framework.
+
 ### 1.1.4
 - Upgraded core SDKs to tealium-android 5.9.1 and tealium-ios 5.8.1
 - Updated Android Gradle files to use https to support AndroidX

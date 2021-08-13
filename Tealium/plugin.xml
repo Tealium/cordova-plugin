@@ -39,8 +39,8 @@
             <source url="https://github.com/CocoaPods/Specs.git"/>
           </config>
           <pods use-frameworks="true">
-            <pod name="TealiumIOS" spec="5.8.1"/>
-            <pod name="TealiumIOSLifecycle" spec="5.8.1"/>
+            <pod name="TealiumIOS" spec="5.8.2"/>
+            <pod name="TealiumIOSLifecycle" spec="5.8.2"/>
           </pods>
         </podspec>
 
