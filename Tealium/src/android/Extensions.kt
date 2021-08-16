@@ -57,7 +57,9 @@ fun JSONObject.toTealiumConfig(application: Application): TealiumConfig? {
         Environment.PROD
     }
 
-    val collectors = optJSONArray(KEY_CONFIG_COLLECTORS)?.toCollectorFactories()
+    val collectors = optJSONArray(KEY_CONFIG_COLLECTORS)?.also {
+        it.put(COLLECTORS_TIME)
+    }?.toCollectorFactories()
     val modules = JSONArray().apply {
         // Visitor Service passed as boolean
         optBoolean(KEY_VISITOR_SERVICE_ENABLED, false).let { vsEnabled ->
