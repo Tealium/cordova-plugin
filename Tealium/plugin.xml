@@ -50,7 +50,6 @@
             <pod name="tealium-swift/RemoteCommands" spec="~> 2.3"/>
             <pod name="tealium-swift/VisitorService" spec="~> 2.3"/>
           </pods> 
-
         </podspec>
     </platform>
     <!-- android -->
