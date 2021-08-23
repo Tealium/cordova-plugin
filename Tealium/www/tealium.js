@@ -1,426 +1,224 @@
-var Tealium =  {
-    init: function(config, successCallback, errorCallback) {
-        // will only be called on Android
-        function trackLifecycle(event, instance) {
-            var i = 0;
-            for (i = 0; i < window.tealium.instanceNames.length; i++) {
-                cordova.exec(
-                    tealium.successCallback, // success callback function
-                    tealium.errorCallback, // error callback function
-                    'TealiumPg', // plugin name
-                    'trackLifecycle', // with this action name
-                    [{
-                        "instance": window.tealium.instanceNames[i],
-                        "eventType": event,
-                        "eventData": {
-                            "autotracked" : "true"
-                        }
-                    }]
-                );
-            }
-        }
+const Environment = {
+    dev: "dev",
+    qa: "qa",
+    prod: "prod"
+}
 
-		if(typeof config !== "object") {
-			this.logger(this.privateConfig.severity.ERR, "Error initializing Tealium: please ensure config is an object of key:value pairs.");
-			return;
-		}
+const Collectors = {
+    AppData: "AppData",
+    Connectivity: "Connectivity",
+    DeviceData: "DeviceData",
+    Lifecycle: "Lifecycle",
+}
 
-        window.tealium.successCallback = successCallback || tealium.successCallback;
+const Dispatchers = {
+    Collect: "Collect",
+    TagManagement: "TagManagement",
+    RemoteCommands: "RemoteCommands"
+}
 
-        window.tealium.errorCallback = errorCallback || tealium.errorCallback;
-	
-		var messages = [];
-	
-        if (!config.isLifecycleEnabled) {
-            config.isLifecycleEnabled = "true";
-        }
+const Expiry = {
+    forever: 'forever',
+    untilRestart: 'untilRestart',
+    session: 'session',
+}
 
-        if (!config.logLevel || (config.logLevel && !this.isValidLogLevel(config.logLevel))) {
-            if (config.environment === "dev") {
-                this.setLogLevel(this.logLevels.DEV);
-            } else if (config.environment === "qa") {
-                this.setLogLevel(this.logLevels.QA);
-            } else {
-                this.setLogLevel(this.logLevels.PROD);
-            }
-            this.logger(this.privateConfig.severity.WARN, "logLevel not passed in config object - defaulting to " + (config.environment + "").toUpperCase() + " logLevel");
-        } else {
-            this.setLogLevel(config.logLevel);
-        }
+const ConsentPolicy = {
+    ccpa: 'ccpa',
+    gdpr: 'gdpr',
+}
 
-		if(!('account' in config) || typeof config.account != 'string') {
-			messages.push('"account" must be supplied with a string');
-		}
+const ConsentCategories = {
+    analytics: 'analytics',
+    affiliates: 'affiliates',
+    displayAds: 'display_ads',
+    email: 'email',
+    personalization: 'personalization',
+    search: 'search',
+    social: 'social',
+    bigData: 'big_data',
+    mobile: 'mobile',
+    engagement: 'engagement',
+    monitoring: 'monitoring',
+    crm: 'crm',
+    cdp: 'cdp',
+    cookieMatch: 'cookiematch',
+    misc: 'misc',
+}
 
-		if(!('profile' in config) || typeof config.profile != 'string') {		
-			messages.push('"profile" must be supplied with a string');
-		}
+const TimeUnit = {
+    minutes: 'minutes',
+    hours: 'hours',
+    months: 'months',
+    days: 'days'
+}
 
-		if(!('environment' in config) || typeof config.environment != 'string') {
-			messages.push('"environment" must be supplied with a string of "dev", "qa", or "prod"');
-		}
+const LogLevel = {
+    dev: 'dev',
+    qa: 'qa',
+    prod: 'prod',
+    silent: 'silent'
+}
 
-        if (!config.instance) {
-            this.logger(this.privateConfig.severity.INFO, "Instance name not specified. Using default instance name of tealium_cordova.");
-            config.instance = "tealium_cordova";
-        }
-	
-		if (config.isLifecycleEnabled === "false") {
-            this.logger(this.privateConfig.severity.INFO, "Lifecycle tracking has been explicitly disabled.");
-        }
-
-        if (config.collectDispatchURL) {
-            this.logger(this.privateConfig.severity.INFO, "Tealium: Collect dispatch URL provided was: " +  config.collectDispatchURL);
-        }
-
-        if (config.collectDispatchProfile) {
-            this.logger(this.privateConfig.severity.INFO, "Tealium: Collect dispatch profile provided was: " + config.collectDispatchProfile);
-        }
-
-        if (!config.dataSourceId) {
-            this.logger(this.privateConfig.severity.INFO, "Tealium: Optional dataSourceId not provided.");
-        } else {
-            this.logger(this.privateConfig.severity.INFO, "Tealium: dataSourceId provided was: " + config.dataSourceId);   
-        }
-
-        if(messages.length > 0) {
-			this.logger(this.privateConfig.severity.ERR, "Error initializing Tealium:\r\n\t" + messages.join('\r\n\t'));
-			return;
-		}
-
-        /*
-         * Lifecycle tracking fix
-        */
-        // keep track of instances for use in async callbacks
-        window.tealium = window.tealium || {};
-        window.tealium.instanceNames = window.tealium.instanceNames || [];
-        window.tealium.instanceNames.push(config.instance);
-
-        // iOS uses automatic lifecycle tracking
-        if (document && document.addEventListener && cordova.platformId && cordova.platformId === "android") {
-            // launch event
-            document.addEventListener("deviceready", function (){
-                // to avoid init race conditions, launch event delayed by 700ms
-                window.setTimeout(function () {trackLifecycle("launch");}, 700);
-            });
-            // wake event
-            document.addEventListener("resume", function (){
-               window.setTimeout(function () {trackLifecycle("wake");}, 0);
-            });
-            // sleep event
-            document.addEventListener("pause", function (){
-                window.setTimeout(function () {trackLifecycle("sleep");}, 0);
-            });
-        }
-		
-        cordova.exec(
-            tealium.successCallback, // success callback function
-            tealium.errorCallback, // error callback function
-            'TealiumPg', // plugin name
-            'init', // with this action name
-            [ config ]
-        );
-    },
-    track: function(type, data, instance) {
-			if (typeof type != "string"){
-				this.logger(this.privateConfig.severity.WARN, "Please make sure type is a string, 'view' or 'link'");
-			}
-			if (typeof data != "object"){
-				this.logger(this.privateConfig.severity.WARN, "Please make sure data is an object of key:value pairs");
-			}
-			if (typeof data != "object" || typeof type != "string"){
-				this.logger(this.privateConfig.severity.ERR, "Please make sure to use tealium.track(String type, Object data)");
-				return;
-			}
-            if (typeof instance != "string"){
-                this.logger(this.privateConfig.severity.INFO, "Instance name not specified. Using default instance name of tealium_cordova.");
-                instance = "tealium_cordova";
-            }   
-        cordova.exec(
-            tealium.successCallback, // success callback function
-            tealium.errorCallback, // error callback function
-            'TealiumPg', // plugin name
-            'track', // with this action name
-            [{                  // and this array of custom arguments to create our entry
-                "eventType": type,
-                "eventData": data,
-                "instance" : instance
-            }]
-        );
-    },
-    trackEvent: function (data, instance) {
-        this.track("link", data, instance);
-    },
-    trackView: function (data, instance){
-        if (!data.screen_title) {
-            this.logger(this.privateConfig.severity.ERR, "screen_title was missing from the trackView call data. Data will be sent with blank screen_title");
-            data.screen_title = "";
-        }
-        this.track("view", data, instance);
-    },
-    addVolatile : function (keyName, data, instance) {
-        if (keyName == null || data == null) {
-            this.logger(this.privateConfig.severity.ERR, "Keyname or data object was not specified in addVolatile call. Terminating...");
-            return;
-        }
-        cordova.exec(
-            tealium.successCallback, // success callback function
-            tealium.errorCallback, // error callback function
-            'TealiumPg', // plugin name
-            'setVolatile', // with this action name
-            [{                  // and this array of custom arguments to create our entry
-                "keyName": keyName,
-                "data": data,
-                "instance" : instance
-            }]
-        );
-    },
-    removeVolatile : function (keyName, instance) {
-        if (keyName === "") {
-            this.logger(this.privateConfig.severity.ERR, "Keyname or data object was not specified in removeVolatile call. Terminating...");
-            return;
-        }
-        if (instance === ""){
-            this.logger(this.privateConfig.severity.ERR, "Instance name was not specified in removeVolatile call. Terminating...");
-            return;
-        }
-      cordova.exec(
-        tealium.successCallback, // success callback function
-        tealium.errorCallback, // error callback function
-        'TealiumPg', // plugin name
-        'setVolatile', // with this action name
-        [{                  // and this array of custom arguments to create our entry
-            "keyName": keyName,
-            "instance" : instance,
-            "remove" : "true"
-        }]
-    );  
-    },
-    addPersistent : function (keyName, data, instance) {
-        if (keyName === "" || data === "") {
-            this.logger(this.privateConfig.severity.ERR, "Keyname or data object was not specified in addPersistent call. Terminating...");
-            return;
-        }
-        if (instance === ""){
-            this.logger(this.privateConfig.severity.ERR, "Instance name was not specified in addPersistent call. Terminating...");
-            return;
-        }
-        cordova.exec(
-            tealium.successCallback, // success callback function
-            tealium.errorCallback, // error callback function
-            'TealiumPg', // plugin name
-            'setPersistent', // with this action name
-            [{                  // and this array of custom arguments to create our entry
-                "keyName": keyName,
-                "data": data,
-                "instance" : instance
-            }]
-        );
-    },
-    removePersistent : function (keyName, instance) {
-        if (keyName === "") {
-            this.logger(this.privateConfig.severity.ERR, "Keyname or data object was not specified in removePersistent call. Terminating...");
-            return;
-        }
-        if (instance === ""){
-            this.logger(this.privateConfig.severity.ERR, "Instance name was not specified in removePersistent call. Terminating...");
-            return;
-        }
-      cordova.exec(
-        tealium.successCallback, // success callback function
-        tealium.errorCallback, // error callback function
-        'TealiumPg', // plugin name
-        'setPersistent', // with this action name
-        [{                  // and this array of custom arguments to create our entry
-            "keyName": keyName,
-            "instance" : instance,
-            "remove" : "true"
-        }]
-    );  
-    },
-    getVolatile : function (keyName, instance, callback) {
-        if (keyName === "") {
-            this.logger(this.privateConfig.severity.ERR, "Keyname or data object was not specified in getVolatile call. Terminating...");
-            return;
-        }
-        if (instance === ""){
-            this.logger(this.privateConfig.severity.ERR, "Instance name was not specified in getVolatile call. Terminating...");
-            return;
-        }
-        if (typeof callback !== "function") {
-            this.logger(this.privateConfig.severity.ERR, "Callback function not provided to getVolatile. Terminating...");
-            return;    
-        }
-      cordova.exec(
-        function (val) {
-            if (val === "") {
-                // handle the case on Android where empty string is returned (not possible to return null from plugin result)
-                val = null;
-            }
-            if (callback && callback.call) {
-                callback(val); // return the value requested from volatile storage
-            }
-            tealium.successCallback();
-        }, // success callback function
-        tealium.errorCallback, // error callback function
-        'TealiumPg', // plugin name
-        'getVolatile', // with this action name
-        [{                  // and this array of custom arguments to create our entry
-            "keyName": keyName,
-            "instance" : instance
-        }]
-    );  
-    },
-    getPersistent : function (keyName, instance, callback) {
-        if (keyName === "") {
-            this.logger(this.privateConfig.severity.ERR, "Keyname or data object was not specified in getPersistent call. Terminating...");
-            return;
-        }
-        if (instance === ""){
-            this.logger(this.privateConfig.severity.ERR, "Instance name was not specified in getPersistent call. Terminating...");
-            return;
-        }
-        if (typeof callback !== "function") {
-            this.logger(this.privateConfig.severity.ERR, "Callback function not provided to getPersistent. Terminating...");
-            return;    
-        }
-      cordova.exec(
-        function (val) {
-            if (val === "") {
-                // handle the case on Android where empty string is returned (not possible to return null from plugin result)
-                val = null;
-            }
-            if (callback && callback.call) {
-                callback(val); // return the value requested from volatile storage
-            }
-            tealium.successCallback();
-        }, // success callback function
-        tealium.errorCallback, // error callback function
-        'TealiumPg', // plugin name
-        'getPersistent', // with this action name
-        [{                  // and this array of custom arguments to create our entry
-            "keyName": keyName,
-            "instance" : instance
-        }]
-    );  
-    },
-    // use getPersistent to retrieve the visitor ID
-    getVisitorId: function (instance, callback) {
-        var VISITOR_ID_KEYNAME = "tealium_visitor_id";
-        this.getPersistent(VISITOR_ID_KEYNAME, instance, callback);
-    },
-    // Adds a remote command (tagbridge) and passes the response back to the JS side
-    addRemoteCommand : function (commandName, instance, callback) {
-        if (commandName === "") {
-            this.logger(this.privateConfig.severity.ERR, "Command name was not specified in addRemoteCommand call. Terminating...");
-            return;
-        }
-        if (instance === ""){
-            this.logger(this.privateConfig.severity.ERR, "Instance name was not specified in addRemoteCommand call. Terminating...");
-            return;
-        }
-        cordova.exec(
-            function (val) {
-                if (val === "") {
-                    // handle the case on Android where empty string is returned (not possible to return null from plugin result)
-                    val = null;
-                }
-                if (callback && callback.call){
-                    callback(val); // return the value requested from volatile storage
-                }
-                tealium.successCallback();
-            }, // success callback function
-            tealium.errorCallback, // error callback function
-            'TealiumPg', // plugin name
-            'addRemoteCommand', // with this action name
-            [{                  // and this array of custom arguments to create our entry
-                "commandName": commandName,
-                "instance" : instance
-            }]
-        );  
-    },
-    logLevels: {
-            DEV: 1,
-            QA: 2,
-            PROD: 3,
-            SILENT: 999
-    },
-    isValidLogLevel : function (logLevel) {
-        return this.logLevels.DEV===logLevel || this.logLevels.QA===logLevel || this.logLevels.PROD===logLevel || this.logLevels.SILENT===logLevel;
-    },  
-    privateConfig: {
-        logLevel: null,
-        severity : {
-            INFO: 1,
-            WARN: 2,
-            ERR: 3
-        },
-        TAG: "Tealium Cordova 1.1.4: ",
-        pluginVersion: "1.1.4"
-    },
-    // usage this.logger(this.logLevels.DEV, "some error message")
-    logger: function (severity, message) {
-        var privateConfig;
-        if (!window.tealium) {
-            return;
-        }
-        privateConfig = window.tealium.privateConfig;
-        if (severity >= privateConfig.logLevel) {
-            if (severity === privateConfig.severity.INFO) {
-                console.log(privateConfig.TAG + message);
-            } else if (severity === privateConfig.severity.WARN) {
-                console.warn(privateConfig.TAG + message);
-            }  else if (severity === privateConfig.severity.ERR) {
-                console.error(privateConfig.TAG + message);
-            }
-        }
-    },
-    getGlobalLogger: function (){
-        var t, logger, logLevels;
-
-        t = window.tealium;
-        if (!t) {
-            return undefined;
-        }
-        logger = t && t.logger ? t.logger : undefined;
-        if (!logger) {
-            return undefined;
-        }
-        logLevels = t && t.privateConfig && t.privateConfig.severity ? t.privateConfig.severity : undefined;
-        if (!logLevels) {
-            return undefined;
-        }
-
+const ConsentExpiry = {
+    create: function(time, unit) {
         return {
-            "log" : logger,
-            "logLevels" : logLevels
-        };
-    },
-    successCallback: function(e){
-        var logger;
-        if (window.tealium) {
-            logger = window.tealium.getGlobalLogger();
-            if (logger && logger.logLevels) {
-                logger.log(logger.logLevels.INFO, "Tealium call successful");
-                logger.log(logger.logLevels.INFO, e);
-            } 
+            time: time,
+            unit: unit
         }
-
-    },
-    errorCallback: function(e){
-        var logger;
-        if (window.tealium) {
-            logger = window.tealium.getGlobalLogger();
-            if (logger && logger.logLevels) {
-                logger.log(logger.logLevels.ERR, "Command failure, check syntax of tealium.init (String account, String profile, String target) or tealium.track(String type, Object data)");
-                logger.log(logger.logLevels.ERR, e);
-                window.tealium_cordova_error = e;
-            }
-        }   
-    },
-    setLogLevel: function (logLevel) {
-        this.privateConfig.logLevel = logLevel;
     }
 }
 
-module.exports = Tealium;
+const RemoteCommand = {
+    create: function(id, callback, path, url) {
+        return {
+            id: id,
+            path: path,
+            url: url,
+            callback: callback
+        }
+    }
+}
+
+const Dispatch = {
+    view: function(name, data) {
+        return {
+            type: "view",
+            viewName: name || "",
+            dataLayer: data || {}
+        };
+    },
+    event: function(name, data) {
+        return {
+            type: "event",
+            viewName: name || "",
+            dataLayer: data || {}
+        };
+    }
+};
+
+const Commands = {
+    INITIALIZE: "initialize",
+    TRACK: "track",
+    TERMINATE: "terminateInstance",
+    ADD_DATA: "addData",
+    GET_DATA: "getData",
+    REMOVE_DATA: "removeData",
+    GET_CONSENT_STATUS: "getConsentStatus",
+    SET_CONSENT_STATUS: "setConsentStatus",
+    GET_CONSENT_CATEGORIES: "getConsentCategories",
+    SET_CONSENT_CATEGORIES: "setConsentCategories",
+    JOIN_TRACE: "joinTrace",
+    LEAVE_TRACE: "leaveTrace",
+    GET_VISITOR_ID: "getVisitorId",
+    SET_VISITOR_SERVICE_LISTENER: "setVisitorServiceListener",
+    SET_CONSENT_EXPIRY_LISTENER: "setConsentExpiryListener",
+    ADD_REMOTE_COMMAND: "addRemoteCommand",
+    REMOVE_REMOTE_COMMAND: "removeRemoteCommand",
+    REMOVE_LISTENERS: "removeListeners"
+}
+
+const PLUGIN_NAME = "TealiumCordova";
+
+let TealiumPlugin = {
+    utils: {
+        Environment: Environment,
+        Collectors: Collectors,
+        Dispatchers: Dispatchers,
+        Expiry: Expiry,
+        ConsentPolicy: ConsentPolicy,
+        ConsentCategories: ConsentCategories,
+        TimeUnit: TimeUnit,
+        Dispatch: Dispatch,
+        ConsentExpiry: ConsentExpiry,
+        RemoteCommand: RemoteCommand,
+        LogLevel: LogLevel
+    },
+    initialize(config, callback) {
+        let self = this;
+        cordova.exec(function(e) {
+            self.addData({'plugin_name': 'Tealium-Cordova', 'plugin_version': '2.0.0'}, Expiry.forever);
+            if (config.remoteCommands) {
+                config.remoteCommands.forEach((remoteCommand) => {
+                    if (remoteCommand.callback) {
+                        self.addRemoteCommand(remoteCommand.id, remoteCommand.callback)
+                    }
+                });
+            }
+
+            callback(true)
+        }, function(e) {
+            callback(false)
+        }, PLUGIN_NAME, Commands.INITIALIZE, [config])
+    },
+
+    track(dispatch) {
+        cordova.exec(null, null, PLUGIN_NAME, Commands.TRACK, [dispatch])
+    },
+
+    terminateInstance() {
+        cordova.exec(null, null, PLUGIN_NAME, Commands.TERMINATE)
+    },
+
+    addData(data, expiry) {
+        cordova.exec(null, null, PLUGIN_NAME, Commands.ADD_DATA, [data, expiry])
+    },
+
+    getData(key, callback) {
+        cordova.exec(callback, callback, PLUGIN_NAME, Commands.GET_DATA, [key])
+    },
+
+    removeData(keys) {
+        cordova.exec(null, null, PLUGIN_NAME, Commands.REMOVE_DATA, [keys])
+    },
+
+    getConsentStatus(callback) {
+        cordova.exec(callback, callback, PLUGIN_NAME, Commands.GET_CONSENT_STATUS)
+    },
+
+    setConsentStatus(consentStatus) {
+        cordova.exec(null, null, PLUGIN_NAME, Commands.SET_CONSENT_STATUS, [consentStatus])
+    },
+
+    getConsentCategories(callback) {
+        cordova.exec(callback, callback, PLUGIN_NAME, Commands.GET_CONSENT_CATEGORIES)
+    },
+
+    setConsentCategories(consentCategories) {
+        cordova.exec(null, null, PLUGIN_NAME, Commands.SET_CONSENT_CATEGORIES, [consentCategories])
+    },
+
+    joinTrace(id) {
+        cordova.exec(null, null, PLUGIN_NAME, Commands.JOIN_TRACE, [id])
+    },
+
+    leaveTrace() {
+        cordova.exec(null, null, PLUGIN_NAME, Commands.LEAVE_TRACE)
+    },
+
+    getVisitorId(callback) {
+        cordova.exec(callback, callback, PLUGIN_NAME, Commands.GET_VISITOR_ID)
+    },
+
+    setVisitorServiceListener(callback) {
+        cordova.exec(callback, callback, PLUGIN_NAME, Commands.SET_VISITOR_SERVICE_LISTENER)
+    },
+
+    setConsentExpiryListener(callback) {
+        cordova.exec(callback, callback, PLUGIN_NAME, Commands.SET_CONSENT_EXPIRY_LISTENER)
+    },
+
+    addRemoteCommand(id, callback) {
+        cordova.exec(callback, callback, PLUGIN_NAME, Commands.ADD_REMOTE_COMMAND, [id])
+    },
+
+    removeRemoteCommand(id) {
+        cordova.exec(null, null, PLUGIN_NAME, Commands.REMOVE_REMOTE_COMMAND, [id])
+    },
+
+    removeListeners() {
+        cordova.exec(null, null, PLUGIN_NAME, Commands.REMOVE_LISTENERS)
+    }
+}
+
+module.exports = TealiumPlugin;

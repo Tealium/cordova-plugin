@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-        id="tealium-cordova-plugin" version="1.1.4" name="tealium-cordova-plugin">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="tealium-cordova-plugin" version="2.0.0" name="tealium-cordova-plugin">
 
     <name>TealiumCordova</name>
     <description>Tealium Tag Management and UDH</description>
@@ -11,26 +12,29 @@
     <license>Commercial</license>
 
     <engines>
-        <engine name="cordova" version=">=3.8.0" />
+        <engine name="cordova" version=">=9.0.0" />
     </engines>
 
     <js-module src="www/tealium.js" name="tealium">
-        <clobbers target="window.tealium" />
+        <clobbers target="tealium" />
     </js-module>
 
     <!-- ios -->
     <platform name="ios">
         <!-- Cordova < 2.3 -->
-        <plugins-plist key="TealiumPg" string="TealiumPg" />
+        <plugins-plist key="TealiumCordova" string="TealiumCordova" />
         <!-- Cordova >= 2.3 -->
-        <config-file target="config.xml" parent="plugins">
-            <plugin name="TealiumPg" value="TealiumPg"/>
-            <feature name="TealiumPg">
-                <param name="ios-package" value="TealiumPg" />
+        <config-file target="config.xml" parent="/*">
+            <plugin name="TealiumCordova" value="TealiumCordova"/>
+            <feature name="TealiumCordova">
+                <param name="ios-package" value="TealiumCordova" />
             </feature>
+            <preference name="SwiftVersion" value="5" />
         </config-file>
-        <header-file src="src/ios/tealium_int.h" />
-        <source-file src="src/ios/tealium_int.m" />
+        <source-file src="src/ios/TealiumCordova.swift" />
+        <source-file src="src/ios/TealiumPlugin.swift" />
+        <source-file src="src/ios/TealiumPluginExtensions.swift" />
+        <source-file src="src/ios/TealiumCordovaConstants.swift" />
         <framework src="Foundation.framework" />
         <framework src="CoreTelephony.framework" />
         <framework src="SystemConfiguration.framework" />
@@ -39,21 +43,29 @@
             <source url="https://github.com/CocoaPods/Specs.git"/>
           </config>
           <pods use-frameworks="true">
-            <pod name="TealiumIOS" spec="5.8.2"/>
-            <pod name="TealiumIOSLifecycle" spec="5.8.2"/>
-          </pods>
+            <pod name="tealium-swift/Core" spec="~> 2.3"/>
+            <pod name="tealium-swift/TagManagement" spec="~> 2.3"/>
+            <pod name="tealium-swift/Collect" spec="~> 2.3"/>
+            <pod name="tealium-swift/Lifecycle" spec="~> 2.3"/>
+            <pod name="tealium-swift/RemoteCommands" spec="~> 2.3"/>
+            <pod name="tealium-swift/VisitorService" spec="~> 2.3"/>
+          </pods> 
         </podspec>
-
     </platform>
-
     <!-- android -->
     <platform name="android">
         <config-file target="config.xml" parent="/*">
-            <feature name="TealiumPg">
-                <param name="android-package" value="org.apache.cordova.plugin.TealiumPg"/>
+            <feature name="TealiumCordova">
+                <param name="android-package" value="com.tealium.cordova.TealiumCordova"/>
             </feature>
+            <!-- Requires Kotlin to be enabled. -->
+            <preference name="GradlePluginKotlinEnabled" value="true" />
+            <preference name="AndroidXEnabled" value="true" />
         </config-file>
         <framework src="src/android/tealium.gradle" custom="true" type="gradleReference" />
-        <source-file src="src/android/TealiumPg.java" target-dir="src/org/apache/cordova/plugin" />
+        <source-file src="src/android/TealiumCordova.kt" target-dir="src/main/kotlin/com/tealium/cordova" />
+        <source-file src="src/android/Constants.kt" target-dir="src/main/kotlin/com/tealium/cordova" />
+        <source-file src="src/android/Extensions.kt" target-dir="src/main/kotlin/com/tealium/cordova" />
+        <source-file src="src/android/Listeners.kt" target-dir="src/main/kotlin/com/tealium/cordova" />
      </platform>
 </plugin>

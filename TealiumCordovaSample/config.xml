@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.tealium.sample" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
-    <name>TealiumSample</name>
+<widget id="com.tealium.example" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>TealiumCordovaSample</name>
     <description>
-        A sample Apache Cordova application with the Tealium Plugin added. Includes two buttons to manually trigger event and a view calls.
+        A sample Apache Cordova application that responds to the deviceready event.
     </description>
-    <author email="support@tealium.com" href="http://tealium.com">
+    <author email="dev@cordova.apache.org" href="http://cordova.io">
         Apache Cordova Team
     </author>
     <content src="index.html" />
