@@ -57,7 +57,9 @@ fun JSONObject.toTealiumConfig(application: Application): TealiumConfig? {
         Environment.PROD
     }
 
-    val collectors = optJSONArray(KEY_CONFIG_COLLECTORS)?.toCollectorFactories()
+    val collectors = optJSONArray(KEY_CONFIG_COLLECTORS)?.also {
+        it.put(COLLECTORS_TIME)
+    }?.toCollectorFactories()
     val modules = JSONArray().apply {
         // Visitor Service passed as boolean
         optBoolean(KEY_VISITOR_SERVICE_ENABLED, false).let { vsEnabled ->
@@ -93,6 +95,10 @@ fun JSONObject.toTealiumConfig(application: Application): TealiumConfig? {
         // Data Source Id
         safeGetString(KEY_CONFIG_DATA_SOURCE)?.let {
             dataSourceId = it
+        }
+
+        safeGetString(KEY_CONFIG_CUSTOM_VISITOR_ID)?.let {
+            existingVisitorId = it
         }
 
         // Collect Settings
@@ -265,6 +271,7 @@ fun dispatcherFactoryFromString(name: String): DispatcherFactory? {
 
 fun expiryFromString(name: String) = when (name.toLowerCase(Locale.ROOT)) {
     "forever" -> Expiry.FOREVER
+    "untilrestart" -> Expiry.UNTIL_RESTART
     else -> Expiry.SESSION
 }
 

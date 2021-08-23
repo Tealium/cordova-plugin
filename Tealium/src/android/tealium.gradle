@@ -1,16 +1,16 @@
 repositories{    
   jcenter()
    maven {
-            url "http://maven.tealiumiq.com/android/releases/"
+            url "https://maven.tealiumiq.com/android/releases/"
         }
 }
 
 dependencies {
-    implementation 'com.tealium:kotlin-core:1.2.4'
+    implementation 'com.tealium:kotlin-core:1.2.6'
     implementation 'com.tealium:kotlin-collect-dispatcher:1.0.4'
     implementation 'com.tealium:kotlin-tagmanagement-dispatcher:1.0.5'
     implementation 'com.tealium:kotlin-remotecommand-dispatcher:1.0.4'
-    implementation 'com.tealium:kotlin-lifecycle:1.0.4'
+    implementation 'com.tealium:kotlin-lifecycle:1.0.5'
     implementation 'com.tealium:kotlin-visitor-service:1.0.4'
 }
 
