@@ -18,7 +18,6 @@ import com.tealium.core.persistence.Expiry
 import com.tealium.dispatcher.Dispatch
 import com.tealium.dispatcher.TealiumEvent
 import com.tealium.dispatcher.TealiumView
-import com.tealium.example.BuildConfig
 import com.tealium.lifecycle.Lifecycle
 import com.tealium.lifecycle.isAutoTrackingEnabled
 import com.tealium.remotecommanddispatcher.RemoteCommandDispatcher
@@ -27,13 +26,12 @@ import com.tealium.tagmanagementdispatcher.overrideTagManagementUrl
 import com.tealium.visitorservice.VisitorProfile
 import com.tealium.visitorservice.VisitorService
 import org.json.JSONArray
-import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 private fun missingRequiredProperty(name: String) {
-    Log.d(BuildConfig.TEALIUM_TAG, "Missing required property: $name")
+    Log.d(TealiumCordova.TEALIUM_TAG, "Missing required property: $name")
 }
 
 fun JSONObject.toTealiumConfig(application: Application): TealiumConfig? {
