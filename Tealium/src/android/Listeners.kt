@@ -5,7 +5,6 @@ import com.tealium.core.consent.ConsentManagementPolicy
 import com.tealium.core.consent.ConsentStatus
 import com.tealium.core.consent.UserConsentPreferences
 import com.tealium.core.messaging.UserConsentPreferencesUpdatedListener
-import com.tealium.example.BuildConfig
 import com.tealium.remotecommands.RemoteCommand
 import com.tealium.visitorservice.VisitorProfile
 import com.tealium.visitorservice.VisitorUpdatedListener
@@ -20,7 +19,7 @@ class VisitorListener(private val callbackContext: CallbackContext) : VisitorUpd
                 callbackContext.sendPluginResult(PluginResult(PluginResult.Status.OK, it).apply { keepCallback = true })
             }
         } catch (jex: JSONException) {
-            Logger.qa(BuildConfig.TEALIUM_TAG, "${jex.message}")
+            Logger.qa(TealiumCordova.TEALIUM_TAG, "${jex.message}")
         }
     }
 }
@@ -46,7 +45,7 @@ class RemoteCommandListener(val callbackContext: CallbackContext, id: String, de
                 callbackContext.sendPluginResult(result)
             }
         } catch (jex: JSONException) {
-            Logger.qa(BuildConfig.TEALIUM_TAG, "${jex.message}")
+            Logger.qa(TealiumCordova.TEALIUM_TAG, "${jex.message}")
         }
         response.send()
     }

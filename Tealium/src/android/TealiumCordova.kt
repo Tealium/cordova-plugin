@@ -329,4 +329,8 @@ class TealiumCordova @JvmOverloads constructor(private var tealium: Tealium? = n
             visitorServiceCallbacks.clear()
         }
     }
+
+    companion object {
+        const val TEALIUM_TAG = "Tealium-Cordova"
+    }
 }
