@@ -16,7 +16,8 @@
     "cordova-android": "^9.1.0",
     "cordova-ios": "^6.2.0",
     "cordova-plugin-whitelist": "^1.3.4",
-    "tealium-cordova-plugin": "file:../RemoteCommands/TealiumFirebase"
+    "tealium-cordova-firebase-plugin": "file:../RemoteCommands/TealiumFirebase",
+    "tealium-cordova-plugin": "file:../Tealium"
   },
   "cordova": {
     "plugins": {
