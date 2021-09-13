@@ -100,8 +100,8 @@ class TealiumCordova @JvmOverloads constructor(
             }
             ADD_REMOTE_COMMAND -> {
                 args?.optString(0)?.let { id ->
-                    val path = args?.optString(1)
-                    val url = args?.optString(2)
+                    val path = args.optString(1)
+                    val url = args.optString(2)
                     addRemoteCommand(id, callbackContext, path, url)
                 }
             }

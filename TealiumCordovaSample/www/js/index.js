@@ -144,5 +144,6 @@ function logConsentExpired() {
 function createRemoteCommands() {
     return [
         window.tealium.remotecommands.firebase.create()
+            .setPath("firebase.json")
     ]
 }

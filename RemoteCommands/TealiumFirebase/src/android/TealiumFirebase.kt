@@ -30,19 +30,7 @@ class TealiumFirebase : CordovaPlugin() {
         args: JSONArray?,
         callbackContext: CallbackContext?
     ): Boolean {
-//        var result: Boolean = true
-
-//        when (action) {
-//            "create" -> {
-//                args?.optJSONObject(0)?.let {
-////                    initialize(it, callbackContext)
-//                } ?: callbackContext?.error("Required TealiumConfig not supplied")
-//            }
-//            else -> {
-//                result = false
-//            }
-//        }
-
+        callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.NO_RESULT))
         return true
     }
 
