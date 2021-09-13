@@ -9,12 +9,10 @@ import Foundation
 import TealiumSwift
 import TealiumFirebase
 
-//@objc(KochavaRemoteCommandWrapper)
 class FirebaseRemoteCommandWrapper: RemoteCommandFactory {
-    var name: String = "firebase"
+    var name: String = "firebaseAnalytics"
     
     func create() -> RemoteCommand {
-        // could pass `configurableSetting` here if required
         return FirebaseRemoteCommand()
     }
 }

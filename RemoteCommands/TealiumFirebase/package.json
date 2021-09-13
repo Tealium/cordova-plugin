@@ -1,9 +1,9 @@
 {
-  "name": "tealium-cordova-plugin",
-  "version": "2.0.1",
+  "name": "tealium-cordova-firebase-plugin",
+  "version": "1.0.0",
   "description": "Tealium Customer Data Hub",
   "cordova": {
-    "id": "tealium-cordova-plugin",
+    "id": "tealium-cordova-firebase-plugin",
     "platforms": [
       "ios",
       "android"

@@ -5,7 +5,7 @@ const Commands = {
 }
 
 let TealiumFirebase = {
-    id: "firebase",
+    id: "firebaseAnalytics",
     callback: null,
     path: null,
     url: null,

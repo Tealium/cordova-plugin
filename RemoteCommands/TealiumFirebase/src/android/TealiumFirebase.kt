@@ -18,7 +18,7 @@ class TealiumFirebase : CordovaPlugin() {
     }
 
     internal inner class FirebaseRemoteCommandFactory: RemoteCommandFactory {
-        override val name: String = "firebase"
+        override val name: String = "firebaseAnalytics"
 
         override fun create(): RemoteCommand {
             return FirebaseRemoteCommand(cordova.activity.application)
