@@ -99,7 +99,9 @@ class TealiumCordova: CDVPlugin {
         guard let id = command.argument(at: 0) as? String else {
             return
         }
-        TealiumPlugin.addRemoteCommand(id: id, callbackId: command.callbackId)
+        let path = command.argument(at: 1) as? String
+        let url = command.argument(at: 2) as? String
+        TealiumPlugin.addRemoteCommand(id: id, callbackId: command.callbackId, path: path, url: url)
         
         let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
         result?.keepCallback = true

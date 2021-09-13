@@ -1,6 +1,7 @@
 package com.tealium.cordova
 
 import android.app.Application
+import com.tealium.core.Logger
 import com.tealium.core.Tealium
 import com.tealium.core.consent.ConsentCategory
 import com.tealium.core.consent.ConsentStatus
@@ -9,6 +10,7 @@ import com.tealium.core.messaging.UserConsentPreferencesUpdatedListener
 import com.tealium.lifecycle.isAutoTrackingEnabled
 import com.tealium.lifecycle.lifecycle
 import com.tealium.remotecommanddispatcher.remoteCommands
+import com.tealium.remotecommands.RemoteCommand
 import com.tealium.visitorservice.VisitorUpdatedListener
 import org.apache.cordova.*
 import org.json.JSONArray
@@ -16,11 +18,16 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.lang.Exception
 
-class TealiumCordova @JvmOverloads constructor(private var tealium: Tealium? = null, private var application: Application? = null) : CordovaPlugin() {
+class TealiumCordova @JvmOverloads constructor(
+    private var tealium: Tealium? = null,
+    private var application: Application? = null
+) : CordovaPlugin() {
 
     private var visitorServiceCallbacks: MutableList<VisitorUpdatedListener> = mutableListOf()
-    private var consentExpiryCallbacks: MutableList<UserConsentPreferencesUpdatedListener> = mutableListOf()
+    private var consentExpiryCallbacks: MutableList<UserConsentPreferencesUpdatedListener> =
+        mutableListOf()
     private var remoteCommandListeners: MutableMap<String, RemoteCommandListener> = mutableMapOf()
+    private var remoteCommandFactories: MutableMap<String, RemoteCommandFactory> = mutableMapOf()
 
     override fun pluginInitialize() {
         application = cordova.activity.application
@@ -93,9 +100,9 @@ class TealiumCordova @JvmOverloads constructor(private var tealium: Tealium? = n
             }
             ADD_REMOTE_COMMAND -> {
                 args?.optString(0)?.let { id ->
-                    callbackContext?.let { callback ->
-                        addRemoteCommand(id, callback)
-                    }
+                    val path = args?.optString(1)
+                    val url = args?.optString(2)
+                    addRemoteCommand(id, callbackContext, path, url)
                 }
             }
             REMOVE_REMOTE_COMMAND -> {
@@ -215,26 +222,67 @@ class TealiumCordova @JvmOverloads constructor(private var tealium: Tealium? = n
 
     fun getData(key: String, callbackContext: CallbackContext?) {
         tealium?.dataLayer?.get(key)?.let {
-            when(it) {
-                is Int -> callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.OK, it))
-                is Long -> callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.OK, it.toInt()))
+            when (it) {
+                is Int -> callbackContext?.sendPluginResult(
+                    PluginResult(
+                        PluginResult.Status.OK,
+                        it
+                    )
+                )
+                is Long -> callbackContext?.sendPluginResult(
+                    PluginResult(
+                        PluginResult.Status.OK,
+                        it.toInt()
+                    )
+                )
                 is String -> {
                     try {
                         // Mixed Arrays and Arrays of Arrays/Objects are serialized to string.
                         // check if we need to deserialize it back here, else return the String value
                         if (it.startsWith("[") && it.endsWith("]")) {
-                            callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.OK, JSONArray(it)))
+                            callbackContext?.sendPluginResult(
+                                PluginResult(
+                                    PluginResult.Status.OK,
+                                    JSONArray(it)
+                                )
+                            )
                             return
                         }
-                    } catch (jex: JSONException) { }
+                    } catch (jex: JSONException) {
+                    }
                     callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.OK, it))
                 }
-                is Double -> callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.OK, it.toFloat()))
-                is Boolean -> callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.OK, it))
-                is Array<*> -> callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.OK, JSONArray(it)))
-                is JSONObject -> callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.OK, it))
+                is Double -> callbackContext?.sendPluginResult(
+                    PluginResult(
+                        PluginResult.Status.OK,
+                        it.toFloat()
+                    )
+                )
+                is Boolean -> callbackContext?.sendPluginResult(
+                    PluginResult(
+                        PluginResult.Status.OK,
+                        it
+                    )
+                )
+                is Array<*> -> callbackContext?.sendPluginResult(
+                    PluginResult(
+                        PluginResult.Status.OK,
+                        JSONArray(it)
+                    )
+                )
+                is JSONObject -> callbackContext?.sendPluginResult(
+                    PluginResult(
+                        PluginResult.Status.OK,
+                        it
+                    )
+                )
                 else -> {
-                    callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.OK, it.toString()))
+                    callbackContext?.sendPluginResult(
+                        PluginResult(
+                            PluginResult.Status.OK,
+                            it.toString()
+                        )
+                    )
                 }
             }
         } ?: callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.OK))
@@ -249,7 +297,12 @@ class TealiumCordova @JvmOverloads constructor(private var tealium: Tealium? = n
 
     fun getConsentStatus(callbackContext: CallbackContext?) {
         tealium?.apply {
-            callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.OK, consentManager.userConsentStatus.value))
+            callbackContext?.sendPluginResult(
+                PluginResult(
+                    PluginResult.Status.OK,
+                    consentManager.userConsentStatus.value
+                )
+            )
         }
     }
 
@@ -261,14 +314,20 @@ class TealiumCordova @JvmOverloads constructor(private var tealium: Tealium? = n
 
     fun getConsentCategories(callbackContext: CallbackContext?) {
         tealium?.apply {
-            callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.OK, consentManager.userConsentCategories?.toJsonArray() ?: JSONArray()))
+            callbackContext?.sendPluginResult(
+                PluginResult(
+                    PluginResult.Status.OK,
+                    consentManager.userConsentCategories?.toJsonArray() ?: JSONArray()
+                )
+            )
         }
     }
 
     fun setConsentCategories(categories: JSONArray) {
         tealium?.apply {
             val categoryStrings: List<String> = categories.toArray().map { it.toString() }
-            consentManager.userConsentCategories = ConsentCategory.consentCategories(categoryStrings.toSet())
+            consentManager.userConsentCategories =
+                ConsentCategory.consentCategories(categoryStrings.toSet())
         }
     }
 
@@ -281,7 +340,12 @@ class TealiumCordova @JvmOverloads constructor(private var tealium: Tealium? = n
     }
 
     fun getVisitorId(callbackContext: CallbackContext?) {
-        callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.OK, tealium?.visitorId ?: ""))
+        callbackContext?.sendPluginResult(
+            PluginResult(
+                PluginResult.Status.OK,
+                tealium?.visitorId ?: ""
+            )
+        )
     }
 
     fun setVisitorServiceListener(callbackContext: CallbackContext) {
@@ -289,7 +353,9 @@ class TealiumCordova @JvmOverloads constructor(private var tealium: Tealium? = n
         visitorServiceCallbacks.add(callback)
 
         tealium?.events?.subscribe(callback)
-        callbackContext.sendPluginResult(PluginResult(PluginResult.Status.NO_RESULT).apply { keepCallback = true })
+        callbackContext.sendPluginResult(PluginResult(PluginResult.Status.NO_RESULT).apply {
+            keepCallback = true
+        })
     }
 
     fun setConsentExpiryListener(callbackContext: CallbackContext) {
@@ -297,22 +363,41 @@ class TealiumCordova @JvmOverloads constructor(private var tealium: Tealium? = n
         consentExpiryCallbacks.add(callback)
 
         tealium?.events?.subscribe(callback)
-        callbackContext.sendPluginResult(PluginResult(PluginResult.Status.NO_RESULT).apply { keepCallback = true })
+        callbackContext.sendPluginResult(PluginResult(PluginResult.Status.NO_RESULT).apply {
+            keepCallback = true
+        })
     }
 
-    fun addRemoteCommand(id: String, callbackContext: CallbackContext) {
-        // store locally in order to cancel callback if removed
-        val remoteCommand = RemoteCommandListener(callbackContext, id, "$id Remote Comand")
-        remoteCommandListeners[id] = remoteCommand
+    fun addRemoteCommand(
+        id: String,
+        callbackContext: CallbackContext?,
+        path: String?,
+        url: String?
+    ) {
+        val remoteCommand: RemoteCommand? =
+            remoteCommandFactories[id]?.create() ?: callbackContext?.let { callback ->
+                RemoteCommandListener(
+                    callback,
+                    id,
+                    "$id Remote Comand"
+                ).also { remoteCommandListeners[id] = it }
+            }
 
-        tealium?.remoteCommands?.add(remoteCommand)
-        callbackContext.sendPluginResult(PluginResult(PluginResult.Status.NO_RESULT).apply { keepCallback = true })
+        remoteCommand?.let { cmd ->
+            tealium?.remoteCommands?.add(remoteCommand, path, url)
+            callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.NO_RESULT).apply {
+                keepCallback = true
+            })
+        }
+
     }
 
     fun removeRemoteCommand(id: String) {
         // cancel JS callback
         val remoteCommand = remoteCommandListeners.remove(id)
-        remoteCommand?.callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.NO_RESULT).apply { keepCallback = false })
+        remoteCommand?.callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.NO_RESULT).apply {
+            keepCallback = false
+        })
 
         tealium?.remoteCommands?.remove(id)
     }
@@ -328,6 +413,16 @@ class TealiumCordova @JvmOverloads constructor(private var tealium: Tealium? = n
             }
             visitorServiceCallbacks.clear()
         }
+    }
+
+    fun registerRemoteCommandFactory(factory: RemoteCommandFactory) {
+        if (remoteCommandFactories.containsKey(factory.name)) {
+            Logger.qa(
+                TEALIUM_TAG,
+                "RemoteCammand for name ${factory.name} already registered; overwriting."
+            )
+        }
+        remoteCommandFactories[factory.name] = factory
     }
 
     companion object {

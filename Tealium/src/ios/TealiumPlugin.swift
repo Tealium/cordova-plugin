@@ -14,6 +14,11 @@ class TealiumPlugin: NSObject {
     
     static var tealium: Tealium?
     private static var config: TealiumConfig?
+    static var remoteCommandFactories = [String: RemoteCommandFactory]()
+    
+    public static func registerRemoteCommandFactory(_ factory: RemoteCommandFactory) {
+        remoteCommandFactories[factory.name] = factory
+    }
     
     static var visitorServiceDelegate: VisitorServiceDelegate = VisitorDelegate(didUpdate: { visitor in
         visitorServiceCallbackIds.forEach { callbackId in
@@ -99,8 +104,11 @@ class TealiumPlugin: NSObject {
     }
 
     @objc
-    public static func addRemoteCommand(id: String, callbackId: String) {
-        let remoteCommand = self.remoteCommandFor(id, callbackId: callbackId)
+    public static func addRemoteCommand(id: String, callbackId: String, path: String?, url: String?) {
+        let remoteCommand = self.remoteCommandFor(id, callbackId: callbackId, path: path, url: url)
+        guard let remoteCommand = remoteCommand else {
+            return
+        }
         tealium?.remoteCommands?.add(remoteCommand)
     }
 

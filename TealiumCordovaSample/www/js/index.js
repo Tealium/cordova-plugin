@@ -64,7 +64,8 @@ function initializeTealium() {
             lifecycleAutotrackingEnabled: true,
             batchingEnabled: false, 
             visitorServiceEnabled: true, 
-            useRemoteLibrarySettings: false
+            useRemoteLibrarySettings: false,
+            remoteCommands: createRemoteCommands()
         };
 
         window.tealium.initialize(config, function(success) {
@@ -138,4 +139,10 @@ function logVisitorUpdated(visitor) {
 
 function logConsentExpired() {
     console.log("Consent has expired.")
+}
+
+function createRemoteCommands() {
+    return [
+        window.tealium.remotecommands.firebase.create()
+    ]
 }

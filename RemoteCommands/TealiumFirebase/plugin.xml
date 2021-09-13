@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="tealium-cordova-firebase-plugin" version="1.0.0" name="tealium-cordova-firebase-plugin">
+
+    <name>TealiumFirebaseCordova</name>
+    <description>Tealium Tag Management and UDH</description>
+    <keywords>tealium, tag, management,iOS,Android</keywords>
+    <repo>https://github.com/Tealium/cordova-plugin.git</repo>
+    <issue>https://github.com/Tealium/cordova-plugin/issues</issue>
+
+    <license>Commercial</license>
+
+    <engines>
+        <engine name="cordova" version=">=9.0.0" />
+    </engines>
+
+    <js-module src="www/tealium-firebase.js" name="tealium-firebase">
+        <clobbers target="tealium.remotecommands.firebase" />
+    </js-module>
+
+    <!-- ios -->
+    <platform name="ios">
+        <plugins-plist key="TealiumFirebase" string="TealiumFirebase" />
+        <config-file target="config.xml" parent="/*">
+            <plugin name="TealiumFirebase" value="TealiumFirebase"/>
+            <feature name="TealiumFirebase">
+                <param name="ios-package" value="TealiumFirebase" />
+            </feature>
+            <preference name="SwiftVersion" value="5" />
+        </config-file>
+        <source-file src="src/ios/TealiumFirebase.swift" />
+        <source-file src="src/ios/FirebaseRemoteCommandWrapper.swift" />
+        <framework src="Foundation.framework" />
+        <framework src="CoreTelephony.framework" />
+        <framework src="SystemConfiguration.framework" />
+        <podspec>
+          <config>
+            <source url="https://github.com/CocoaPods/Specs.git"/>
+          </config>
+          <pods use-frameworks="true">
+            <pod name="TealiumFirebase" spec="~> 2.0.2"/>
+            <pod name="Firebase" spec="~> 8.0"/>
+            <pod name="FirebaseAnalytics" spec="~> 8.0"/>
+          </pods> 
+        </podspec>
+    </platform>
+    <!-- android -->
+    <platform name="android">
+        <config-file target="config.xml" parent="/*">
+            <feature name="TealiumFirebase">
+                <param name="android-package" value="com.tealium.cordova.remotecommands.TealiumFirebase"/>
+            </feature>
+            <!-- Requires Kotlin to be enabled. -->
+            <preference name="GradlePluginKotlinEnabled" value="true" />
+            <preference name="AndroidXEnabled" value="true" />
+        </config-file>
+        <framework src="src/android/tealium.gradle" custom="true" type="gradleReference" />
+        <source-file src="src/android/TealiumFirebase.kt" target-dir="src/main/kotlin/com/tealium/cordova/remotecommands" />
+     </platform>
+</plugin>
