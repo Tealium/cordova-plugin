@@ -68,5 +68,6 @@
         <source-file src="src/android/Constants.kt" target-dir="src/main/kotlin/com/tealium/cordova" />
         <source-file src="src/android/Extensions.kt" target-dir="src/main/kotlin/com/tealium/cordova" />
         <source-file src="src/android/Listeners.kt" target-dir="src/main/kotlin/com/tealium/cordova" />
+        <source-file src="src/android/RemoteCommandFactory.kt" target-dir="src/main/kotlin/com/tealium/cordova" />
      </platform>
 </plugin>

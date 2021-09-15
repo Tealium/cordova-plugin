@@ -22,8 +22,8 @@
   "cordova": {
     "plugins": {
       "cordova-plugin-whitelist": {},
-      "tealium-cordova-firebase-plugin": {},
-      "tealium-cordova-plugin": {}
+      "tealium-cordova-plugin": {},
+      "tealium-cordova-firebase-plugin": {}
     },
     "platforms": [
       "android",
