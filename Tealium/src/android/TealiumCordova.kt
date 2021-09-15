@@ -379,7 +379,7 @@ class TealiumCordova @JvmOverloads constructor(
                 RemoteCommandListener(
                     callback,
                     id,
-                    "$id Remote Comand"
+                    "$id Remote Command"
                 ).also { remoteCommandListeners[id] = it }
             }
 
