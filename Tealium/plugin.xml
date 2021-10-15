@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        id="tealium-cordova-plugin" version="2.0.1" name="tealium-cordova-plugin">
+        id="tealium-cordova-plugin" version="2.1.0" name="tealium-cordova-plugin">
 
     <name>TealiumCordova</name>
     <description>Tealium Tag Management and UDH</description>
@@ -35,6 +35,7 @@
         <source-file src="src/ios/TealiumPlugin.swift" />
         <source-file src="src/ios/TealiumPluginExtensions.swift" />
         <source-file src="src/ios/TealiumCordovaConstants.swift" />
+        <source-file src="src/ios/RemoteCommandFactory.swift" />
         <framework src="Foundation.framework" />
         <framework src="CoreTelephony.framework" />
         <framework src="SystemConfiguration.framework" />
@@ -43,12 +44,12 @@
             <source url="https://github.com/CocoaPods/Specs.git"/>
           </config>
           <pods use-frameworks="true">
-            <pod name="tealium-swift/Core" spec="~> 2.3"/>
-            <pod name="tealium-swift/TagManagement" spec="~> 2.3"/>
-            <pod name="tealium-swift/Collect" spec="~> 2.3"/>
-            <pod name="tealium-swift/Lifecycle" spec="~> 2.3"/>
-            <pod name="tealium-swift/RemoteCommands" spec="~> 2.3"/>
-            <pod name="tealium-swift/VisitorService" spec="~> 2.3"/>
+            <pod name="tealium-swift/Core" spec="~> 2.4"/>
+            <pod name="tealium-swift/TagManagement" spec="~> 2.4"/>
+            <pod name="tealium-swift/Collect" spec="~> 2.4"/>
+            <pod name="tealium-swift/Lifecycle" spec="~> 2.4"/>
+            <pod name="tealium-swift/RemoteCommands" spec="~> 2.4"/>
+            <pod name="tealium-swift/VisitorService" spec="~> 2.4"/>
           </pods> 
         </podspec>
     </platform>
@@ -67,5 +68,6 @@
         <source-file src="src/android/Constants.kt" target-dir="src/main/kotlin/com/tealium/cordova" />
         <source-file src="src/android/Extensions.kt" target-dir="src/main/kotlin/com/tealium/cordova" />
         <source-file src="src/android/Listeners.kt" target-dir="src/main/kotlin/com/tealium/cordova" />
+        <source-file src="src/android/RemoteCommandFactory.kt" target-dir="src/main/kotlin/com/tealium/cordova" />
      </platform>
 </plugin>

@@ -137,12 +137,10 @@ let TealiumPlugin = {
     initialize(config, callback) {
         let self = this;
         cordova.exec(function(e) {
-            self.addData({'plugin_name': 'Tealium-Cordova', 'plugin_version': '2.0.1'}, Expiry.forever);
+            self.addData({'plugin_name': 'Tealium-Cordova', 'plugin_version': '2.1.0'}, Expiry.forever);
             if (config.remoteCommands) {
                 config.remoteCommands.forEach((remoteCommand) => {
-                    if (remoteCommand.callback) {
-                        self.addRemoteCommand(remoteCommand.id, remoteCommand.callback)
-                    }
+                    self.addRemoteCommand(remoteCommand.id, remoteCommand.callback, remoteCommand.path, remoteCommand.url)
                 });
             }
 
@@ -208,8 +206,8 @@ let TealiumPlugin = {
         cordova.exec(callback, callback, PLUGIN_NAME, Commands.SET_CONSENT_EXPIRY_LISTENER)
     },
 
-    addRemoteCommand(id, callback) {
-        cordova.exec(callback, callback, PLUGIN_NAME, Commands.ADD_REMOTE_COMMAND, [id])
+    addRemoteCommand(id, callback, path, url) {
+        cordova.exec(callback, callback, PLUGIN_NAME, Commands.ADD_REMOTE_COMMAND, [id, path, url])
     },
 
     removeRemoteCommand(id) {

@@ -4,7 +4,7 @@
            )](https://github.com/Tealium/cordova-plugin/blob/master/LICENSE.txt)
 ![Platform](https://img.shields.io/badge/platform-iOS%20android-lightgrey.svg?style=flat
              )
-![Language](https://img.shields.io/badge/language-javascript%20java%20objective--c-orange.svg)
+![Language](https://img.shields.io/badge/language-javascript%20java%20swift-orange.svg)
 
 
 ## Documentation

@@ -191,15 +191,35 @@ extension TealiumPlugin {
         }
     }
     
-    public static func remoteCommandFor(_ id: String, callbackId: String) -> RemoteCommand {
-        return RemoteCommand(commandId: id, description: nil) { response in
-            guard let commandDelegate = commandDelegate else {
-                return
+    public static func remoteCommandFor(_ id: String, callbackId: String, path: String?, url: String?) -> RemoteCommand? {
+                    
+        var command: RemoteCommand?
+        if let factory = remoteCommandFactories[id] {
+            // check for a factory first
+            command = factory.create()
+        } else {
+            // no factory, but callback was provided
+            command = RemoteCommand(commandId: id, description: nil) { response in
+                guard let commandDelegate = commandDelegate else {
+                    return
+                }
+                let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: response.payload)
+                result?.keepCallback = true
+                commandDelegate.send(result, callbackId: callbackId)
             }
-            let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: response.payload)
-            result?.keepCallback = true
-            commandDelegate.send(result, callbackId: callbackId)
         }
+            
+        guard let remoteCommand = command else {
+            return nil
+        }
+        
+        if let path = path {
+            remoteCommand.type = .local(file: path, bundle: nil)
+        } else if let url = url {
+            remoteCommand.type = .remote(url: url)
+        }
+        
+        return remoteCommand
     }
 }
 

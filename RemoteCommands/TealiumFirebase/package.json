@@ -1,0 +1,41 @@
+{
+  "name": "tealium-cordova-firebase-plugin",
+  "version": "1.0.0",
+  "description": "Tealium Customer Data Hub",
+  "cordova": {
+    "id": "tealium-cordova-firebase-plugin",
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tealium/cordova-plugin.git"
+  },
+  "keywords": [
+    "tealium",
+    "tag",
+    "management",
+    "iOS",
+    "Android",
+    "ecosystem:cordova",
+    "cordova-ios",
+    "cordova-android"
+  ],
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=9.0.0"
+    }
+  ],
+  "variables": {
+    "GRADLEPLUGINKOTLINENABLED": true
+  },
+  "author": "Tealium, Inc.",
+  "license": "Commercial",
+  "bugs": {
+    "url": "https://github.com/Tealium/cordova-plugin/issues"
+  },
+  "homepage": "https://github.com/Tealium/cordova-plugin#readme"
+}

@@ -1,0 +1,27 @@
+repositories{    
+  jcenter()
+   maven {
+            url "https://maven.tealiumiq.com/android/releases/"
+        }
+}
+
+dependencies {
+    implementation 'com.tealium:remotecommands:1.0.0'
+    implementation 'com.tealium.remotecommands:firebase:1.2.1'
+    implementation 'com.google.firebase:firebase-analytics:17.6.0'
+}
+
+android {
+  defaultConfig {
+  }
+
+  packagingOptions {
+    exclude 'META-INF/NOTICE'
+    exclude 'META-INF/LICENSE'
+  }
+  sourceSets {
+    main.java {
+      srcDirs += 'src/main/kotlin'
+    }
+  }
+}
