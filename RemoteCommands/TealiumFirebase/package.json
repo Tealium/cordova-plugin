@@ -29,6 +29,9 @@
       "version": ">=9.0.0"
     }
   ],
+  "dependencies": {
+    "tealium-cordova-plugin" : ">=2.1.0"
+  },
   "variables": {
     "GRADLEPLUGINKOTLINENABLED": true
   },
