@@ -117,6 +117,14 @@ extension TealiumPlugin {
             localConfig.overrideCollectBatchURL = overrideCollectBatchURL
         }
         
+        if let overrideCollectDomain = dictionary[.overrideCollectDomain] as? String {
+            localConfig.overrideCollectDomain = overrideCollectDomain
+        }
+        
+        if let overrideCollectProfile = dictionary[.overrideCollectProfile] as? String {
+            localConfig.overrideCollectProfile = overrideCollectProfile
+        }
+        
         if let overrideLibrarySettingsURL = dictionary[.overrideLibrarySettingsURL] as? String {
             localConfig.publishSettingsURL = overrideLibrarySettingsURL
         }
@@ -133,6 +141,8 @@ extension TealiumPlugin {
         localConfig.memoryReportingEnabled = dictionary[.memoryReportingEnabled] as? Bool ?? true
         localConfig.collectors = configCollectors
         localConfig.dispatchers = configDispatchers
+
+        localConfig.sessionCountingEnabled = dictionary[.sessionCountingEnabled] as? Bool ?? false
         
         return localConfig
     }

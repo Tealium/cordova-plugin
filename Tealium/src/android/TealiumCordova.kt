@@ -69,6 +69,9 @@ class TealiumCordova @JvmOverloads constructor(
                 val key = args?.optString(0) ?: ""
                 getData(key, callbackContext)
             }
+            GATHER_TRACK_DATA -> {
+                gatherTrackData(callbackContext)
+            }
             GET_CONSENT_STATUS -> {
                 getConsentStatus(callbackContext)
             }
@@ -287,6 +290,15 @@ class TealiumCordova @JvmOverloads constructor(
             }
         } ?: callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.OK))
     }
+
+    fun gatherTrackData(callbackContext: CallbackContext?) {
+        tealium?.apply {
+            callbackContext.sendPluginResult(
+                PluginResult.Status.OK,
+                gatherTrackData()
+            )
+        }
+    } 
 
     fun removeData(keys: JSONArray) {
         tealium?.apply {

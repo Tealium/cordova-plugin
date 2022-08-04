@@ -104,6 +104,15 @@ class TealiumPlugin: NSObject {
     }
 
     @objc
+    public static func gatherTrackData(callbackId: String) {
+        tealium?.gatherTrackData(completion: { trackData in
+            let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: trackData)
+            result?.keepCallback = true
+            commandDelegate?.send(result, callbackId: callbackId)
+        })
+    }
+
+    @objc
     public static func addRemoteCommand(id: String, callbackId: String, path: String?, url: String?) {
         let remoteCommand = self.remoteCommandFor(id, callbackId: callbackId, path: path, url: url)
         guard let remoteCommand = remoteCommand else {

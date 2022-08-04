@@ -133,6 +133,10 @@ function logRemoteCommand(result) {
     console.log("RemoteComand Payload: " + JSON.stringify(result))
 }
 
+function logGatherTrackData(result) {
+    console.log("Gather Track Data Response: " + JSON.stringify(result))
+}
+
 function logVisitorUpdated(visitor) {
     console.log("Visitor Updated " + JSON.stringify(visitor))
 }

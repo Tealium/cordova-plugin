@@ -109,6 +109,9 @@ fun JSONObject.toTealiumConfig(application: Application): TealiumConfig? {
         safeGetString(KEY_COLLECT_OVERRIDE_DOMAIN)?.let {
             overrideCollectDomain = it
         }
+        safeGetString(KEY_COLLECT_OVERRIDE_PROFILE)?.let {
+            overrideCollectProfile = it
+        }
 
         // Library Settings
         safeGetBoolean(KEY_SETTINGS_USE_REMOTE)?.let {
@@ -160,6 +163,10 @@ fun JSONObject.toTealiumConfig(application: Application): TealiumConfig? {
         // Lifecycle
         optBoolean(KEY_LIFECYCLE_AUTO_TRACKING_ENABLED, false)?.let {
             isAutoTrackingEnabled = it
+        }
+        
+        optBoolean(KEY_SESSION_COUNTING_ENABLED)?.let {
+            sessionCountingEnabled = it
         }
     }
 
