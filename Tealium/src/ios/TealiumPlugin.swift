@@ -104,12 +104,8 @@ class TealiumPlugin: NSObject {
     }
 
     @objc
-    public static func gatherTrackData(callbackId: String) {
-        tealium?.gatherTrackData(completion: { trackData in
-            let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: trackData)
-            result?.keepCallback = true
-            commandDelegate?.send(result, callbackId: callbackId)
-        })
+    public static func gatherTrackData(completion: @escaping([String: Any]) -> Void) {
+        tealium?.gatherTrackData(completion: completion)
     }
 
     @objc
