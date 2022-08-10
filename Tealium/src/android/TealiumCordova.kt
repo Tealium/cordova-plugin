@@ -5,7 +5,6 @@ import com.tealium.core.Logger
 import com.tealium.core.Tealium
 import com.tealium.core.consent.ConsentCategory
 import com.tealium.core.consent.ConsentStatus
-import com.tealium.core.consent.toJsonArray
 import com.tealium.core.messaging.UserConsentPreferencesUpdatedListener
 import com.tealium.lifecycle.isAutoTrackingEnabled
 import com.tealium.lifecycle.lifecycle
@@ -293,9 +292,11 @@ class TealiumCordova @JvmOverloads constructor(
 
     fun gatherTrackData(callbackContext: CallbackContext?) {
         tealium?.apply {
-            callbackContext.sendPluginResult(
-                PluginResult.Status.OK,
-                gatherTrackData()
+            callbackContext?.sendPluginResult(
+                PluginResult(
+                    PluginResult.Status.OK,
+                    JSONObject(gatherTrackData())
+                )
             )
         }
     } 

@@ -4,10 +4,7 @@ package com.tealium.cordova
 
 import android.app.Application
 import android.util.Log
-import com.tealium.collectdispatcher.CollectDispatcher
-import com.tealium.collectdispatcher.overrideCollectBatchUrl
-import com.tealium.collectdispatcher.overrideCollectDomain
-import com.tealium.collectdispatcher.overrideCollectUrl
+import com.tealium.collectdispatcher.*
 import com.tealium.core.*
 import com.tealium.core.collection.AppCollector
 import com.tealium.core.collection.ConnectivityCollector
@@ -23,6 +20,7 @@ import com.tealium.lifecycle.isAutoTrackingEnabled
 import com.tealium.remotecommanddispatcher.RemoteCommandDispatcher
 import com.tealium.tagmanagementdispatcher.TagManagementDispatcher
 import com.tealium.tagmanagementdispatcher.overrideTagManagementUrl
+import com.tealium.tagmanagementdispatcher.sessionCountingEnabled
 import com.tealium.visitorservice.VisitorProfile
 import com.tealium.visitorservice.VisitorService
 import org.json.JSONArray
@@ -84,7 +82,7 @@ fun JSONObject.toTealiumConfig(application: Application): TealiumConfig? {
     val dispatchers = optJSONArray(KEY_CONFIG_DISPATCHERS)?.toDispatcherFactories()
 
     val config = TealiumConfig(application, account, profile, environment,
-        collectors = collectors ?: Collectors.core,
+        collectors = collectors ?: Collectors.core.toMutableSet(),
         modules = modules ?: mutableSetOf(),
         dispatchers = dispatchers ?: mutableSetOf())
 
@@ -354,4 +352,8 @@ internal fun JSONObject.rename(oldKey: String, newKey: String) {
         this.put(newKey, it)
         this.remove(oldKey)
     }
+}
+
+internal fun Set<ConsentCategory>.toJsonArray(): JSONArray {
+    return JSONArray(this.map { it.value })
 }

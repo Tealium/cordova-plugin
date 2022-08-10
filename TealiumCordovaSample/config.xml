@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.tealium.example" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.tealium.example" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>TealiumCordovaSample</name>
     <description>
         A sample Apache Cordova application that responds to the deviceready event.
@@ -18,6 +18,9 @@
     <platform name="android">
         <allow-intent href="market:*" />
         <preference name="AndroidXEnabled" value="true" />
+        <preference name="android-targetSdkVersion" value="31" />
+        <preference name="android-compileSdkVersion" value="31" />
+        <preference name="android-buildToolsVersion" value="30.0.3" />
         <config-file parent="/manifest/application" target="AndroidManifest.xml">
              <!-- TODO: Replace with your real AdMob app ID -->
             <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-################~##########" />
