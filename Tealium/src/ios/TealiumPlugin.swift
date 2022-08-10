@@ -104,6 +104,11 @@ class TealiumPlugin: NSObject {
     }
 
     @objc
+    public static func gatherTrackData(completion: @escaping([String: Any]) -> Void) {
+        tealium?.gatherTrackData(completion: completion)
+    }
+
+    @objc
     public static func addRemoteCommand(id: String, callbackId: String, path: String?, url: String?) {
         let remoteCommand = self.remoteCommandFor(id, callbackId: callbackId, path: path, url: url)
         guard let remoteCommand = remoteCommand else {

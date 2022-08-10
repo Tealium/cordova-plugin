@@ -49,6 +49,8 @@ enum TealiumCordovaConstants {
         case logLevel
         case overrideCollectURL
         case overrideCollectBatchURL
+        case overrideCollectDomain
+        case overrideCollectProfile
         case overrideTagManagementURL
         case overrideLibrarySettingsURL
         case qrTraceEnabled
@@ -57,6 +59,7 @@ enum TealiumCordovaConstants {
         case visitorServiceEnabled
         case memoryReportingEnabled
         case remoteCommands
+        case sessionCountingEnabled
     }
     
     enum Dispatch: String {

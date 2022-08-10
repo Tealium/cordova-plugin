@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        id="tealium-cordova-plugin" version="2.1.0" name="tealium-cordova-plugin">
+        id="tealium-cordova-plugin" version="2.2.0" 
+name="tealium-cordova-plugin">
 
     <name>TealiumCordova</name>
     <description>Tealium Tag Management and UDH</description>
@@ -44,12 +45,12 @@
             <source url="https://github.com/CocoaPods/Specs.git"/>
           </config>
           <pods use-frameworks="true">
-            <pod name="tealium-swift/Core" spec="~> 2.4"/>
-            <pod name="tealium-swift/TagManagement" spec="~> 2.4"/>
-            <pod name="tealium-swift/Collect" spec="~> 2.4"/>
-            <pod name="tealium-swift/Lifecycle" spec="~> 2.4"/>
-            <pod name="tealium-swift/RemoteCommands" spec="~> 2.4"/>
-            <pod name="tealium-swift/VisitorService" spec="~> 2.4"/>
+            <pod name="tealium-swift/Core" spec="~> 2.7.0"/>
+            <pod name="tealium-swift/TagManagement" spec="~> 2.7.0"/>
+            <pod name="tealium-swift/Collect" spec="~> 2.7.0"/>
+            <pod name="tealium-swift/Lifecycle" spec="~> 2.7.0"/>
+            <pod name="tealium-swift/RemoteCommands" spec="~> 2.7.0"/>
+            <pod name="tealium-swift/VisitorService" spec="~> 2.7.0"/>
           </pods> 
         </podspec>
     </platform>

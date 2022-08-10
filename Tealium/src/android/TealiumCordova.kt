@@ -5,7 +5,6 @@ import com.tealium.core.Logger
 import com.tealium.core.Tealium
 import com.tealium.core.consent.ConsentCategory
 import com.tealium.core.consent.ConsentStatus
-import com.tealium.core.consent.toJsonArray
 import com.tealium.core.messaging.UserConsentPreferencesUpdatedListener
 import com.tealium.lifecycle.isAutoTrackingEnabled
 import com.tealium.lifecycle.lifecycle
@@ -68,6 +67,9 @@ class TealiumCordova @JvmOverloads constructor(
             GET_DATA -> {
                 val key = args?.optString(0) ?: ""
                 getData(key, callbackContext)
+            }
+            GATHER_TRACK_DATA -> {
+                gatherTrackData(callbackContext)
             }
             GET_CONSENT_STATUS -> {
                 getConsentStatus(callbackContext)
@@ -287,6 +289,17 @@ class TealiumCordova @JvmOverloads constructor(
             }
         } ?: callbackContext?.sendPluginResult(PluginResult(PluginResult.Status.OK))
     }
+
+    fun gatherTrackData(callbackContext: CallbackContext?) {
+        tealium?.apply {
+            callbackContext?.sendPluginResult(
+                PluginResult(
+                    PluginResult.Status.OK,
+                    JSONObject(gatherTrackData())
+                )
+            )
+        }
+    } 
 
     fun removeData(keys: JSONArray) {
         tealium?.apply {

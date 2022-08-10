@@ -94,6 +94,14 @@ class TealiumCordova: CDVPlugin {
         self.commandDelegate.send(result, callbackId: command.callbackId)
     }
 
+    @objc(gatherTrackData:)
+    public func gatherTrackData(_ command: CDVInvokedUrlCommand) {
+        TealiumPlugin.gatherTrackData(completion: { trackData in
+            let result = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: trackData)
+            self.commandDelegate.send(result, callbackId: command.callbackId)
+        })
+    }
+
     @objc(addRemoteCommand:)
     public func addRemoteCommand(_ command: CDVInvokedUrlCommand) {
         guard let id = command.argument(at: 0) as? String else {

@@ -133,6 +133,10 @@ function logRemoteCommand(result) {
     console.log("RemoteComand Payload: " + JSON.stringify(result))
 }
 
+function logGatherTrackData(result) {
+    console.log("Gather Track Data Response: " + JSON.stringify(result))
+}
+
 function logVisitorUpdated(visitor) {
     console.log("Visitor Updated " + JSON.stringify(visitor))
 }
@@ -142,8 +146,15 @@ function logConsentExpired() {
 }
 
 function createRemoteCommands() {
-    return [
-        window.tealium.remotecommands.firebase.create()
-            .setPath("firebase.json")
-    ]
+    var commands = [];
+    var remoteCommands = window.tealium && 
+                            window.tealium.remotecommands;
+    if (remoteCommands) {
+        var firebase =  remoteCommands.firebase && 
+                            remoteCommands.firebase.create()
+                                .setPath("firebase.json");
+        firebase && commands.push(firebase);
+    }
+
+    return commands;
 }

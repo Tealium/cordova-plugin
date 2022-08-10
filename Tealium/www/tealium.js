@@ -91,7 +91,7 @@ const Dispatch = {
     event: function(name, data) {
         return {
             type: "event",
-            viewName: name || "",
+            eventName: name || "",
             dataLayer: data || {}
         };
     }
@@ -103,6 +103,7 @@ const Commands = {
     TERMINATE: "terminateInstance",
     ADD_DATA: "addData",
     GET_DATA: "getData",
+    GATHER_TRACK_DATA: "gatherTrackData",
     REMOVE_DATA: "removeData",
     GET_CONSENT_STATUS: "getConsentStatus",
     SET_CONSENT_STATUS: "setConsentStatus",
@@ -164,6 +165,10 @@ let TealiumPlugin = {
 
     getData(key, callback) {
         cordova.exec(callback, callback, PLUGIN_NAME, Commands.GET_DATA, [key])
+    },
+
+    gatherTrackData(callback) {
+        cordova.exec(callback, callback, PLUGIN_NAME, Commands.GATHER_TRACK_DATA)
     },
 
     removeData(keys) {
