@@ -158,6 +158,10 @@ fun JSONObject.toTealiumConfig(application: Application): TealiumConfig? {
             consentManagerPolicy = consentPolicyFromString(it)
         }
 
+        safeGetString(KEY_CONFIG_VISITOR_IDENTITY_KEY)?.let {
+            visitorIdentityKey = it
+        }
+
         // Lifecycle
         optBoolean(KEY_LIFECYCLE_AUTO_TRACKING_ENABLED, false)?.let {
             isAutoTrackingEnabled = it
