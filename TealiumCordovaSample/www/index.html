@@ -18,19 +18,20 @@
     under the License.
 -->
 <html>
+
 <head>
     <meta charset="utf-8">
     <!--
-    Customize this policy to fit your own app's needs. For more guidance, see:
-        https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
-    Some notes:
-        * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
-        * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
-        * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
-            * Enable inline JS: add 'unsafe-inline' to default-src
-    -->
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
     <meta http-equiv="Content-Security-Policy"
-          content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+        content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
@@ -38,127 +39,125 @@
     <link rel="stylesheet" href="css/index.css">
     <title>Hello World</title>
 </head>
+
 <body>
-<div class="app">
-    <h1>Apache Cordova</h1>
-    <div id="deviceready" class="blink">
-        <p class="event listening">Connecting to Device</p>
-        <p class="event received">Device is Ready</p>
-    </div>
-    <div>
-        <input class="tealium" disabled align="center" id="trace_id_input" type="text"
-               placeholder="Trace Id"/>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="join_trace_button"
-                data-method="joinTrace">Join Trace
-        </button>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="leave_trace_button"
-                data-method="leaveTrace">Leave Trace
-        </button>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="event_button" data-method="track"
+    <div class="app">
+        <h1>Apache Cordova</h1>
+        <div id="deviceready" class="blink">
+            <p class="event listening">Connecting to Device</p>
+            <p class="event received">Device is Ready</p>
+        </div>
+        <div>
+            <input class="tealium" disabled align="center" id="trace_id_input" type="text" placeholder="Trace Id" />
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="join_trace_button" data-method="joinTrace">Join Trace
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="leave_trace_button" data-method="leaveTrace">Leave Trace
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="event_button" data-method="track"
                 data-params='[{"eventName": "TestEvent","type": "event", "dataLayer": {"key": "value"}}]'>
-            Trigger Event
-        </button>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="view_button" data-method="track"
+                Trigger Event
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="view_button" data-method="track"
                 data-params='[{"viewName": "TestView","type": "view", "dataLayer": {"key": "value"}}]'>
-            Trigger View
-        </button>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="grant_consent_button"
-                data-method="setConsentStatus" data-params='["consented"]'>Grant Consent
-        </button>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="revoke_consent_button"
-                data-method="setConsentStatus" data-params='["notConsented"]'>Revoke Consent
-        </button>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="reset_consent_button"
-                data-method="setConsentStatus" data-params='["unknown"]'>Reset Consent
-        </button>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="get_consent_status_button"
+                Trigger View
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="grant_consent_button" data-method="setConsentStatus"
+                data-params='["consented"]'>Grant Consent
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="revoke_consent_button" data-method="setConsentStatus"
+                data-params='["notConsented"]'>Revoke Consent
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="reset_consent_button" data-method="setConsentStatus"
+                data-params='["unknown"]'>Reset Consent
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="get_consent_status_button"
                 data-method="getConsentStatus" data-callback="alert">Get Consent Status
-        </button>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="set_consent_categories_button"
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="set_consent_categories_button"
                 data-method="setConsentCategories" data-params='[["analytics", "crm", "email"]]'>Set
-            Consent Categories
-        </button>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="get_consent_categories_button"
+                Consent Categories
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="get_consent_categories_button"
                 data-method="getConsentCategories" data-callback="alert">Get Consent Categories
-        </button>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="add_data_button" data-method="addData"
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="add_data_button" data-method="addData"
                 data-params='[{"data1": "TestEvent","data2": 100}, "forever"]'>Add Data
-        </button>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="remove_data_button"
-                data-method="removeData" data-params='[["data1","data2"]]'>Remove Data
-        </button>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="get_data_button" data-method="getData"
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="remove_data_button" data-method="removeData"
+                data-params='[["data1","data2"]]'>Remove Data
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="get_data_button" data-method="getData"
                 data-params='["data1"]' data-callback="alert">Get Data
-        </button>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="gather_track_data_button"
-                data-method="gatherTrackData" data-callback="logGatherTrackData">Gather Track Data
-        </button>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="get_visitor_id_button"
-                data-method="getVisitorId" data-callback="alert">Get Visitor ID
-        </button>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="reset_visitor_id_button"
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="gather_track_data_button" data-method="gatherTrackData"
+                data-callback="logGatherTrackData">Gather Track Data
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="get_visitor_id_button" data-method="getVisitorId"
+                data-callback="alert">Get Visitor ID
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="reset_visitor_id_button"
                 data-method="resetVisitorId">Reset Visitor ID
-        </button>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="clear_visitor_ids_button"
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="clear_visitor_ids_button"
                 data-method="clearStoredVisitorIds">Clear Stored Visitor IDs
-        </button>
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="add_remote_command" data-method="addRemoteCommand"
+                data-params='["display"]' data-callback='logRemoteCommand'>Add Remote Command
+            </button>
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="remove_remote_command" data-method="removeRemoteCommand"
+                data-params='["display"]'>Remove Remote Command
+            </button>
+        </div>
+        <div>
+            <input class="tealium" disabled align="center" id="identity_input" type="text"
+                placeholder="User Identity" />
+        </div>
+        <div>
+            <button class="tealium" disabled align="center" id="login" data-method="addData">
+                Login
+            </button>
+        </div>
     </div>
-    <div>
-        <button class="tealium" disabled align="center" id="add_remote_command"
-                data-method="addRemoteCommand" data-params='["display"]'
-                data-callback='logRemoteCommand'>Add Remote Command
-        </button>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="remove_remote_command"
-                data-method="removeRemoteCommand" data-params='["display"]'>Remove Remote Command
-        </button>
-    </div>
-    <div>
-        <input class="tealium" disabled align="center" id="identity_input" type="text"
-               placeholder="User Identity"/>
-    </div>
-    <div>
-        <button class="tealium" disabled align="center" id="login" data-method="addData">
-            Login
-        </button>
-    </div>
-</div>
-<script src="cordova.js"></script>
-<script src="js/index.js"></script>
+    <script src="cordova.js"></script>
+    <script src="js/index.js"></script>
 </body>
+
 </html>
