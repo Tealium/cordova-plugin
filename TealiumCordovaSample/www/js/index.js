@@ -129,11 +129,12 @@ function handleClick(e) {
 }
 
 function setTraceId(e) {
-    document.getElementById("join_trace_button").setAttribute("data-params", '["' + e.target.value + '"]')
+    document.getElementById("join_trace_button").setAttribute("data-params", `["${e.target.value}"]`)
 }
 
 function setUserId(e) {
-    document.getElementById("login").setAttribute("data-params", '[{"user_identity": "' + e.target.value + '"}]')
+    let Expiry = window.tealium && window.tealium.utils.Expiry;
+    document.getElementById("login").setAttribute("data-params", `[{"user_identity": "${e.target.value}"}, "${Expiry.forever}"]`)
 }
 
 function logRemoteCommand(result) {
