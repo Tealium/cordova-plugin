@@ -5,6 +5,7 @@ import com.tealium.core.consent.ConsentManagementPolicy
 import com.tealium.core.consent.ConsentStatus
 import com.tealium.core.consent.UserConsentPreferences
 import com.tealium.core.messaging.UserConsentPreferencesUpdatedListener
+import com.tealium.core.messaging.VisitorIdUpdatedListener
 import com.tealium.remotecommands.RemoteCommand
 import com.tealium.visitorservice.VisitorProfile
 import com.tealium.visitorservice.VisitorUpdatedListener
@@ -16,7 +17,11 @@ class VisitorListener(private val callbackContext: CallbackContext) : VisitorUpd
     override fun onVisitorUpdated(visitorProfile: VisitorProfile) {
         try {
             VisitorProfile.toFriendlyJson(visitorProfile).let {
-                callbackContext.sendPluginResult(PluginResult(PluginResult.Status.OK, it).apply { keepCallback = true })
+                callbackContext.sendPluginResult(
+                    PluginResult(
+                        PluginResult.Status.OK,
+                        it
+                    ).apply { keepCallback = true })
             }
         } catch (jex: JSONException) {
             Logger.qa(TealiumCordova.TEALIUM_TAG, "${jex.message}")
@@ -24,18 +29,36 @@ class VisitorListener(private val callbackContext: CallbackContext) : VisitorUpd
     }
 }
 
-class ConsentListener(private val callbackContext: CallbackContext): UserConsentPreferencesUpdatedListener {
+class VisitorIdListener(private val callbackContext: CallbackContext) : VisitorIdUpdatedListener {
+    override fun onVisitorIdUpdated(visitorId: String) {
+        callbackContext.sendPluginResult(
+            PluginResult(
+                PluginResult.Status.OK,
+                visitorId
+            ).apply { keepCallback = true }
+        )
+    }
+}
+
+class ConsentListener(private val callbackContext: CallbackContext) :
+    UserConsentPreferencesUpdatedListener {
     override fun onUserConsentPreferencesUpdated(
         userConsentPreferences: UserConsentPreferences,
         policy: ConsentManagementPolicy
     ) {
         if (userConsentPreferences.consentStatus != ConsentStatus.UNKNOWN) return
 
-        callbackContext.sendPluginResult(PluginResult(PluginResult.Status.OK).apply { keepCallback = true })
+        callbackContext.sendPluginResult(PluginResult(PluginResult.Status.OK).apply {
+            keepCallback = true
+        })
     }
 }
 
-class RemoteCommandListener(val callbackContext: CallbackContext, id: String, description: String = id) : RemoteCommand(id, description) {
+class RemoteCommandListener(
+    val callbackContext: CallbackContext,
+    id: String,
+    description: String = id
+) : RemoteCommand(id, description) {
     public override fun onInvoke(response: Response) {
         response.requestPayload.put("command_id", commandName)
         try {

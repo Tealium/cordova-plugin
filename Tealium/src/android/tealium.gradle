@@ -1,30 +1,30 @@
-repositories{    
-  jcenter()
-   maven {
-            url "https://maven.tealiumiq.com/android/releases/"
-        }
+repositories {
+    mavenCentral()
+    maven {
+        url "https://maven.tealiumiq.com/android/releases/"
+    }
 }
 
 dependencies {
-    implementation 'com.tealium:kotlin-core:1.4.2'
+    implementation 'com.tealium:kotlin-core:1.5.1'
     implementation 'com.tealium:kotlin-collect-dispatcher:1.1.0'
-    implementation 'com.tealium:kotlin-tagmanagement-dispatcher:1.1.2'
-    implementation 'com.tealium:kotlin-remotecommand-dispatcher:1.1.1'
+    implementation 'com.tealium:kotlin-tagmanagement-dispatcher:1.2.0'
+    implementation 'com.tealium:kotlin-remotecommand-dispatcher:1.2.1'
     implementation 'com.tealium:kotlin-lifecycle:1.1.1'
-    implementation 'com.tealium:kotlin-visitor-service:1.1.0'
+    implementation 'com.tealium:kotlin-visitor-service:1.1.1'
 }
 
 android {
-  defaultConfig {
-  }
-
-  packagingOptions {
-    exclude 'META-INF/NOTICE'
-    exclude 'META-INF/LICENSE'
-  }
-  sourceSets {
-    main.java {
-      srcDirs += 'src/main/kotlin'
+    defaultConfig {
     }
-  }
+
+    packagingOptions {
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+    }
+    sourceSets {
+        main.java {
+            srcDirs += 'src/main/kotlin'
+        }
+    }
 }
