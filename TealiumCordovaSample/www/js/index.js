@@ -65,6 +65,7 @@ function initializeTealium() {
             batchingEnabled: false, 
             visitorServiceEnabled: true, 
             useRemoteLibrarySettings: false,
+            visitorIdentityKey: "user_identity",
             remoteCommands: createRemoteCommands()
         };
 
@@ -73,6 +74,7 @@ function initializeTealium() {
             if(success) {
                 enableButtons()
                 tealium.setVisitorServiceListener(logVisitorUpdated)
+                tealium.setVisitorIdListener(logVisitorIdUpdated)
                 tealium.setConsentExpiryListener(logConsentExpired)
                 tealium.addRemoteCommand("hello-world", logRemoteCommand)
             }
@@ -107,6 +109,7 @@ function setupEventListeners() {
     }
 
     document.getElementById("trace_id_input").oninput = setTraceId
+    document.getElementById("identity_input").oninput = setUserId
 }
 
 function handleClick(e) {
@@ -126,7 +129,12 @@ function handleClick(e) {
 }
 
 function setTraceId(e) {
-    document.getElementById("join_trace_button").setAttribute("data-params", '["' + e.target.value + '"]')
+    document.getElementById("join_trace_button").setAttribute("data-params", `["${e.target.value}"]`)
+}
+
+function setUserId(e) {
+    let Expiry = window.tealium && window.tealium.utils.Expiry;
+    document.getElementById("login").setAttribute("data-params", `[{"user_identity": "${e.target.value}"}, "${Expiry.forever}"]`)
 }
 
 function logRemoteCommand(result) {
@@ -139,6 +147,10 @@ function logGatherTrackData(result) {
 
 function logVisitorUpdated(visitor) {
     console.log("Visitor Updated " + JSON.stringify(visitor))
+}
+
+function logVisitorIdUpdated(visitorId) {
+    console.log("Visitor Identity Updated " + JSON.stringify(visitorId))
 }
 
 function logConsentExpired() {

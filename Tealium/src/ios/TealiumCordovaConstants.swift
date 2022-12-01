@@ -60,6 +60,7 @@ enum TealiumCordovaConstants {
         case memoryReportingEnabled
         case remoteCommands
         case sessionCountingEnabled
+        case visitorIdentityKey
     }
     
     enum Dispatch: String {

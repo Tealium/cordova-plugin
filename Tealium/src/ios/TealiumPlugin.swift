@@ -31,6 +31,7 @@ class TealiumPlugin: NSObject {
     static var commandDelegate: CDVCommandDelegate?
     static var consentExpiryCallbackIds = [String]()
     static var visitorServiceCallbackIds = [String]()
+    static var visitorIdCallbackIds = [String]()
     
     @objc
     public static var consentStatus: String {
@@ -64,6 +65,13 @@ class TealiumPlugin: NSObject {
         }
         TealiumPlugin.config = localConfig.copy
         tealium = Tealium(config: localConfig) { _ in
+            tealium?.onVisitorId?.subscribe { id in
+                visitorIdCallbackIds.forEach { callbackId in
+                    let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: id)
+                    result?.keepCallback = true
+                    commandDelegate?.send(result, callbackId: callbackId)
+                }
+            }
             completion(true)
         }
     }
@@ -147,6 +155,16 @@ class TealiumPlugin: NSObject {
     }
     
     @objc
+    public static func resetVisitorId() {
+        tealium?.resetVisitorId()
+    }
+    
+    @objc
+    public static func clearStoredVisitorIds() {
+        tealium?.clearStoredVisitorIds()
+    }
+    
+    @objc
     public static func setConsentExpiryListener(callbackId: String) {
         consentExpiryCallbackIds.append(callbackId)
     }
@@ -154,6 +172,11 @@ class TealiumPlugin: NSObject {
     @objc
     public static func setVisitorServiceListener(callbackId: String) {
         visitorServiceCallbackIds.append(callbackId)
+    }
+
+    @objc
+    public static func setVisitorIdListener(callbackId: String) {
+        visitorIdCallbackIds.append(callbackId)
     }
     
     @objc
@@ -171,5 +194,12 @@ class TealiumPlugin: NSObject {
             commandDelegate?.send(result, callbackId: callbackId)
         }
         consentExpiryCallbackIds.removeAll()
+        
+        visitorIdCallbackIds.forEach { callbackId in
+            let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
+            result?.keepCallback = false
+            commandDelegate?.send(result, callbackId: callbackId)
+        }
+        visitorIdCallbackIds.removeAll()
     }
 }

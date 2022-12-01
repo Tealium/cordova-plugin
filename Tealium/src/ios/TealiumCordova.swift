@@ -174,6 +174,16 @@ class TealiumCordova: CDVPlugin {
         self.commandDelegate.send(result, callbackId: command.callbackId)
     }
     
+    @objc(resetVisitorId:)
+    public func resetVisitorId(_ command: CDVInvokedUrlCommand) {
+        TealiumPlugin.resetVisitorId()
+    }
+    
+    @objc(clearStoredVisitorIds:)
+    public func clearStoredVisitorIds(_ command: CDVInvokedUrlCommand) {
+        TealiumPlugin.clearStoredVisitorIds()
+    }
+    
     @objc(setConsentExpiryListener:)
     public func setConsentExpiryListener(_ command: CDVInvokedUrlCommand) {
         guard let callbackId = command.callbackId else {
@@ -192,6 +202,18 @@ class TealiumCordova: CDVPlugin {
             return
         }
         TealiumPlugin.setVisitorServiceListener(callbackId: callbackId)
+        
+        let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
+        result?.keepCallback = true
+        self.commandDelegate.send(result, callbackId: command.callbackId)
+    }
+    
+    @objc(setVisitorIdListener:)
+    public func setVisitorIdListener(_ command: CDVInvokedUrlCommand) {
+        guard let callbackId = command.callbackId else {
+            return
+        }
+        TealiumPlugin.setVisitorIdListener(callbackId: callbackId)
         
         let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
         result?.keepCallback = true

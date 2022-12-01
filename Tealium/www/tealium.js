@@ -1,3 +1,4 @@
+
 const Environment = {
     dev: "dev",
     qa: "qa",
@@ -112,7 +113,10 @@ const Commands = {
     JOIN_TRACE: "joinTrace",
     LEAVE_TRACE: "leaveTrace",
     GET_VISITOR_ID: "getVisitorId",
+    RESET_VISITOR_ID: "resetVisitorId",
+    CLEAR_STORED_VISITOR_IDS: "clearStoredVisitorIds",
     SET_VISITOR_SERVICE_LISTENER: "setVisitorServiceListener",
+    SET_VISITOR_ID_LISTENER: "setVisitorIdListener",
     SET_CONSENT_EXPIRY_LISTENER: "setConsentExpiryListener",
     ADD_REMOTE_COMMAND: "addRemoteCommand",
     REMOVE_REMOTE_COMMAND: "removeRemoteCommand",
@@ -138,7 +142,7 @@ let TealiumPlugin = {
     initialize(config, callback) {
         let self = this;
         cordova.exec(function(e) {
-            self.addData({'plugin_name': 'Tealium-Cordova', 'plugin_version': '2.2.1'}, Expiry.forever);
+            self.addData({'plugin_name': 'Tealium-Cordova', 'plugin_version': '2.3.0'}, Expiry.forever);
             if (config.remoteCommands) {
                 config.remoteCommands.forEach((remoteCommand) => {
                     self.addRemoteCommand(remoteCommand.id, remoteCommand.callback, remoteCommand.path, remoteCommand.url)
@@ -203,8 +207,20 @@ let TealiumPlugin = {
         cordova.exec(callback, callback, PLUGIN_NAME, Commands.GET_VISITOR_ID)
     },
 
+    resetVisitorId() {
+        cordova.exec(null, null, PLUGIN_NAME, Commands.RESET_VISITOR_ID)
+    },
+
+    clearStoredVisitorIds() {
+        cordova.exec(null, null, PLUGIN_NAME, Commands.CLEAR_STORED_VISITOR_IDS)
+    },
+
     setVisitorServiceListener(callback) {
         cordova.exec(callback, callback, PLUGIN_NAME, Commands.SET_VISITOR_SERVICE_LISTENER)
+    },
+
+    setVisitorIdListener(callback) {
+        cordova.exec(callback, callback, PLUGIN_NAME, Commands.SET_VISITOR_ID_LISTENER)
     },
 
     setConsentExpiryListener(callback) {

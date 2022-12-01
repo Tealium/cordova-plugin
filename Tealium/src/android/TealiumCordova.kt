@@ -5,7 +5,9 @@ import com.tealium.core.Logger
 import com.tealium.core.Tealium
 import com.tealium.core.consent.ConsentCategory
 import com.tealium.core.consent.ConsentStatus
+import com.tealium.core.messaging.Listener
 import com.tealium.core.messaging.UserConsentPreferencesUpdatedListener
+import com.tealium.core.messaging.VisitorIdUpdatedListener
 import com.tealium.lifecycle.isAutoTrackingEnabled
 import com.tealium.lifecycle.lifecycle
 import com.tealium.remotecommanddispatcher.remoteCommands
@@ -23,6 +25,7 @@ class TealiumCordova @JvmOverloads constructor(
 ) : CordovaPlugin() {
 
     private var visitorServiceCallbacks: MutableList<VisitorUpdatedListener> = mutableListOf()
+    private var visitorIdCallbacks: MutableList<VisitorIdUpdatedListener> = mutableListOf()
     private var consentExpiryCallbacks: MutableList<UserConsentPreferencesUpdatedListener> =
         mutableListOf()
     private var remoteCommandListeners: MutableMap<String, RemoteCommandListener> = mutableMapOf()
@@ -100,6 +103,12 @@ class TealiumCordova @JvmOverloads constructor(
             GET_VISITOR_ID -> {
                 getVisitorId(callbackContext)
             }
+            RESET_VISITOR_ID -> {
+                resetVisitorId()
+            }
+            CLEAR_STORED_VISITOR_IDS -> {
+                clearStoredVisitorIds()
+            }
             ADD_REMOTE_COMMAND -> {
                 args?.optString(0)?.let { id ->
                     val path = args.optString(1)
@@ -115,6 +124,11 @@ class TealiumCordova @JvmOverloads constructor(
             SET_VISITOR_SERVICE_LISTENER -> {
                 callbackContext?.let {
                     setVisitorServiceListener(it)
+                }
+            }
+            SET_VISITOR_ID_LISTENER -> {
+                callbackContext?.let {
+                    setVisitorIdListener(it)
                 }
             }
             SET_CONSENT_EXPIRY_LISTENER -> {
@@ -299,7 +313,7 @@ class TealiumCordova @JvmOverloads constructor(
                 )
             )
         }
-    } 
+    }
 
     fun removeData(keys: JSONArray) {
         tealium?.apply {
@@ -361,9 +375,27 @@ class TealiumCordova @JvmOverloads constructor(
         )
     }
 
+    fun resetVisitorId() {
+        tealium?.resetVisitorId()
+    }
+
+    fun clearStoredVisitorIds() {
+        tealium?.clearStoredVisitorIds()
+    }
+
     fun setVisitorServiceListener(callbackContext: CallbackContext) {
         val callback = VisitorListener(callbackContext)
         visitorServiceCallbacks.add(callback)
+
+        tealium?.events?.subscribe(callback)
+        callbackContext.sendPluginResult(PluginResult(PluginResult.Status.NO_RESULT).apply {
+            keepCallback = true
+        })
+    }
+
+    fun setVisitorIdListener(callbackContext: CallbackContext) {
+        val callback = VisitorIdListener(callbackContext)
+        visitorIdCallbacks.add(callback)
 
         tealium?.events?.subscribe(callback)
         callbackContext.sendPluginResult(PluginResult(PluginResult.Status.NO_RESULT).apply {
@@ -417,14 +449,16 @@ class TealiumCordova @JvmOverloads constructor(
 
     fun removeListeners() {
         tealium?.apply {
-            consentExpiryCallbacks.forEach {
-                events.unsubscribe(it)
+            listOf(
+                consentExpiryCallbacks,
+                visitorServiceCallbacks,
+                visitorIdCallbacks
+            ).forEach { listeners ->
+                for (listener in listeners) {
+                    events.unsubscribe(listener)
+                }
+                listeners.clear()
             }
-            consentExpiryCallbacks.clear()
-            visitorServiceCallbacks.forEach {
-                events.unsubscribe(it)
-            }
-            visitorServiceCallbacks.clear()
         }
     }
 
