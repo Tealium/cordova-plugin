@@ -98,6 +98,22 @@ const Dispatch = {
     }
 };
 
+const mapToObject = function (entries){
+    if (!entries || !entries[Symbol.iterator]) {
+        return {};
+    }
+
+    let obj = {};
+    for (let [key, value] of entries) {
+        if (value && value instanceof Map) {
+            obj[key] = mapToObject(value);
+        } else {
+            obj[key] = value;
+        }
+    }
+    return obj;
+};
+
 const Commands = {
     INITIALIZE: "initialize",
     TRACK: "track",
@@ -142,7 +158,7 @@ let TealiumPlugin = {
     initialize(config, callback) {
         let self = this;
         cordova.exec(function(e) {
-            self.addData({'plugin_name': 'Tealium-Cordova', 'plugin_version': '2.3.0'}, Expiry.forever);
+            self.addData({'plugin_name': 'Tealium-Cordova', 'plugin_version': '2.3.1'}, Expiry.forever);
             if (config.remoteCommands) {
                 config.remoteCommands.forEach((remoteCommand) => {
                     self.addRemoteCommand(remoteCommand.id, remoteCommand.callback, remoteCommand.path, remoteCommand.url)
@@ -156,6 +172,10 @@ let TealiumPlugin = {
     },
 
     track(dispatch) {
+        if (dispatch.dataLayer && dispatch.dataLayer instanceof Map) {
+            // Ionic supports sending `Map<String, Any>`
+            dispatch.dataLayer = mapToObject(dispatch.dataLayer)
+        }
         cordova.exec(null, null, PLUGIN_NAME, Commands.TRACK, [dispatch])
     },
 
@@ -164,6 +184,10 @@ let TealiumPlugin = {
     },
 
     addData(data, expiry) {
+        if (data && data instanceof Map) {
+            // Ionic supports sending `Map<String, Any>`
+            data = mapToObject(data)
+        }
         cordova.exec(null, null, PLUGIN_NAME, Commands.ADD_DATA, [data, expiry])
     },
 
