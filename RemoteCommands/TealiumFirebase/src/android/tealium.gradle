@@ -6,9 +6,9 @@ repositories{
 }
 
 dependencies {
-    implementation 'com.tealium:remotecommands:1.0.0'
-    implementation 'com.tealium.remotecommands:firebase:1.2.1'
-    implementation 'com.google.firebase:firebase-analytics:17.6.0'
+    implementation 'com.tealium:remotecommands:1.0.1'
+    implementation 'com.tealium.remotecommands:firebase:1.5.0'
+    implementation 'com.google.firebase:firebase-analytics:[18,22)'
 }
 
 android {

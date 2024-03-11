@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        id="tealium-cordova-plugin" version="2.3.1" 
+        id="tealium-cordova-plugin" version="2.4.0" 
 name="tealium-cordova-plugin">
 
     <name>TealiumCordova</name>
@@ -26,6 +26,7 @@ name="tealium-cordova-plugin">
         <plugins-plist key="TealiumCordova" string="TealiumCordova" />
         <!-- Cordova >= 2.3 -->
         <config-file target="config.xml" parent="/*">
+            <preference name="deployment-target" value="12.0" />
             <plugin name="TealiumCordova" value="TealiumCordova"/>
             <feature name="TealiumCordova">
                 <param name="ios-package" value="TealiumCordova" />
@@ -45,12 +46,12 @@ name="tealium-cordova-plugin">
             <source url="https://github.com/CocoaPods/Specs.git"/>
           </config>
           <pods use-frameworks="true">
-            <pod name="tealium-swift/Core" spec="~> 2.8"/>
-            <pod name="tealium-swift/TagManagement" spec="~> 2.8"/>
-            <pod name="tealium-swift/Collect" spec="~> 2.8"/>
-            <pod name="tealium-swift/Lifecycle" spec="~> 2.8"/>
-            <pod name="tealium-swift/RemoteCommands" spec="~> 2.8"/>
-            <pod name="tealium-swift/VisitorService" spec="~> 2.8"/>
+            <pod name="tealium-swift/Core" spec="~> 2.12"/>
+            <pod name="tealium-swift/TagManagement" spec="~> 2.12"/>
+            <pod name="tealium-swift/Collect" spec="~> 2.12"/>
+            <pod name="tealium-swift/Lifecycle" spec="~> 2.12"/>
+            <pod name="tealium-swift/RemoteCommands" spec="~> 2.12"/>
+            <pod name="tealium-swift/VisitorService" spec="~> 2.12"/>
           </pods> 
         </podspec>
     </platform>

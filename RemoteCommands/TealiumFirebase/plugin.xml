@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        id="tealium-cordova-firebase-plugin" version="1.0.0" name="tealium-cordova-firebase-plugin">
+        id="tealium-cordova-firebase-plugin" version="1.1.0" name="tealium-cordova-firebase-plugin">
 
     <name>TealiumFirebaseCordova</name>
     <description>Tealium Tag Management and UDH</description>
@@ -39,9 +39,9 @@
             <source url="https://github.com/CocoaPods/Specs.git"/>
           </config>
           <pods use-frameworks="true">
-            <pod name="TealiumFirebase" spec="~> 2.0.2"/>
-            <pod name="Firebase" spec="~> 8.0"/>
-            <pod name="FirebaseAnalytics" spec="~> 8.0"/>
+            <pod name="TealiumFirebase" spec="~> 3.2"/>
+            <pod name="Firebase" spec="~> 10.7"/>
+            <pod name="FirebaseAnalytics" spec="~> 10.7"/>
           </pods> 
         </podspec>
     </platform>
