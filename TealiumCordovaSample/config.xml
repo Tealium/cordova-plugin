@@ -21,11 +21,13 @@
         <preference name="android-targetSdkVersion" value="34" />
         <preference name="android-compileSdkVersion" value="34" />
         <preference name="android-buildToolsVersion" value="33.0.2" />
+        <preference name="GradlePluginKotlinVersion" value="1.9.20"/>
         <config-file parent="/manifest/application" target="AndroidManifest.xml">
              <!-- TODO: Replace with your real AdMob app ID -->
             <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-################~##########" />
         </config-file>
-        <resource-file src="resources/firebase.json" target="app/firebase.json" />
+        <resource-file src="resources/firebase.json" target="app/src/main/assets/firebase.json" />
+        <hook type="after_platform_add" src="hooks/disable-kotlin-extensions.js"/>
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
