@@ -22,11 +22,12 @@
   "cordova": {
     "plugins": {
       "cordova-plugin-whitelist": {},
+      "tealium-cordova-firebase-plugin": {},
       "tealium-cordova-plugin": {}
     },
     "platforms": [
-      "ios",
-      "android"
+      "android",
+      "ios"
     ]
   }
 }
