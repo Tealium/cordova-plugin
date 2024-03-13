@@ -16,7 +16,7 @@
     </engines>
 
     <js-module src="www/tealium-firebase.js" name="tealium-firebase">
-        <clobbers target="tealium.remotecommands.firebase" />
+        <merges target="tealium.remotecommands.firebase" />
     </js-module>
 
     <!-- ios -->
