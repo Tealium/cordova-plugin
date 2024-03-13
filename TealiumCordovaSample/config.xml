@@ -27,6 +27,8 @@
             <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-################~##########" />
         </config-file>
         <resource-file src="resources/firebase.json" target="app/src/main/assets/firebase.json" />
+        <!-- uncomment the following to test Firebase after adding the google-services.json under the resources directory -->
+        <!-- <resource-file src="resources/google-services.json" target="app/google-services.json" /> -->
         <hook type="before_build" src="hooks/copy-gradle-extras.js"/>
         <hook type="after_platform_add" src="hooks/disable-kotlin-extensions.js"/>
     </platform>
@@ -38,5 +40,7 @@
             <preference name="target-device" value="universal" />
         </config-file>
         <resource-file src="resources/firebase.json" />
+        <!-- uncomment the following to test Firebase after adding the GoogleService-Info.plist under the resources directory -->
+        <!-- <resource-file src="resources/GoogleService-Info.plist" /> -->
     </platform>
 </widget>

@@ -3,3 +3,5 @@ plugins/
 platforms/
 .DS_STORE
 package-lock.json
+*GoogleService-Info.plist
+*google-services.json
