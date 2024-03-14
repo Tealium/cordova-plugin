@@ -162,9 +162,13 @@ function createRemoteCommands() {
     var remoteCommands = window.tealium && 
                             window.tealium.remotecommands;
     if (remoteCommands) {
+        let path = 'firebase'
+        if (window.cordova.platformId == 'android') {
+            path += ".json"
+        }
         var firebase =  remoteCommands.firebase && 
                             remoteCommands.firebase.create()
-                                .setPath("firebase.json");
+                                .setPath(path);
         firebase && commands.push(firebase);
     }
 

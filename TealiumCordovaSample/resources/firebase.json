@@ -28,7 +28,6 @@
         "product_brand": "items.param_item_brand",
         "product_category": "items.param_item_category",
         "product_id": "items.param_item_id",
-        "tealium_event": "items.param_item_custom_id",
         "product_unit_price": "items.param_price",
         "product_quantity": "items.param_quantity",
         "product_list": "items.param_item_list",
@@ -55,7 +54,7 @@
         "order_total": "event.param_value",
         "currency_type": "event.param_virtual_currency_name",
         "user_signup_method": "event.param_user_signup_method",
-        "event_title": "firebase_event_name",
+        "tealium_event": "firebase_event_name",
         "screen_name": "firebase_screen_name",
         "screen_class": "firebase_screen_class",
         "customer_property": "firebase_property_name",
@@ -92,6 +91,7 @@
         "checkout_progress": "logevent",
         "email_signup": "logevent",
         "order": "logevent,setscreenname",
-        "setconsent": "setconsent"
+        "setconsent": "setconsent",
+        "TestEvent": "logevent"
     }
 }
