@@ -30,7 +30,7 @@
     }
   ],
   "dependencies": {
-    "tealium-cordova-plugin" : ">=2.1.0"
+    "tealium-cordova-plugin": ">=2.1.0"
   },
   "variables": {
     "GRADLEPLUGINKOTLINENABLED": true
