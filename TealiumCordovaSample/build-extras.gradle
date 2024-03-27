@@ -1,0 +1,8 @@
+// Manually set the Kotlin version
+if(cordovaConfig.IS_GRADLE_PLUGIN_KOTLIN_ENABLED) {
+    android {
+        kotlinOptions {
+            jvmTarget = JavaVersion.VERSION_1_8
+        }
+    }
+}

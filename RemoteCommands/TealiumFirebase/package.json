@@ -1,6 +1,6 @@
 {
   "name": "tealium-cordova-firebase-plugin",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Tealium Customer Data Hub",
   "cordova": {
     "id": "tealium-cordova-firebase-plugin",
@@ -30,7 +30,7 @@
     }
   ],
   "dependencies": {
-    "tealium-cordova-plugin" : ">=2.1.0"
+    "tealium-cordova-plugin": ">=2.1.0"
   },
   "variables": {
     "GRADLEPLUGINKOTLINENABLED": true

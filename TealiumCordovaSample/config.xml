@@ -18,16 +18,32 @@
     <platform name="android">
         <allow-intent href="market:*" />
         <preference name="AndroidXEnabled" value="true" />
-        <preference name="android-targetSdkVersion" value="31" />
-        <preference name="android-compileSdkVersion" value="31" />
-        <preference name="android-buildToolsVersion" value="30.0.3" />
+        <preference name="android-targetSdkVersion" value="34" />
+        <preference name="android-compileSdkVersion" value="34" />
+        <preference name="android-buildToolsVersion" value="33.0.2" />
+        <preference name="GradlePluginKotlinVersion" value="1.9.20"/>
+        <!-- uncomment the following to test Firebase after adding the google-services.json under the resources directory -->        
+        <!-- <preference name="GradlePluginGoogleServicesEnabled" value="true"/>
+        <preference name="GradlePluginGoogleServicesVersion" value="4.3.15"/> -->
         <config-file parent="/manifest/application" target="AndroidManifest.xml">
              <!-- TODO: Replace with your real AdMob app ID -->
             <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-################~##########" />
         </config-file>
+        <resource-file src="resources/firebase.json" target="app/src/main/assets/firebase.json" />
+        <!-- uncomment the following to test Firebase after adding the google-services.json under the resources directory -->
+        <!-- <resource-file src="resources/google-services.json" target="app/google-services.json" /> -->
+        <hook type="before_build" src="hooks/copy-gradle-extras.js"/>
+        <hook type="after_platform_add" src="hooks/disable-kotlin-extensions.js"/>
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
+        <config-file parent="/*" target="config.xml">
+            <preference name="deployment-target" value="12.0" />
+            <preference name="target-device" value="universal" />
+        </config-file>
+        <resource-file src="resources/firebase.json" />
+        <!-- uncomment the following to test Firebase after adding the GoogleService-Info.plist under the resources directory -->
+        <!-- <resource-file src="resources/GoogleService-Info.plist" /> -->
     </platform>
 </widget>
