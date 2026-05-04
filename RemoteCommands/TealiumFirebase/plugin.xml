@@ -35,9 +35,6 @@
         <framework src="CoreTelephony.framework" />
         <framework src="SystemConfiguration.framework" />
         <podspec>
-          <config>
-            <source url="https://github.com/CocoaPods/Specs.git"/>
-          </config>
           <pods use-frameworks="true">
             <pod name="TealiumFirebase" spec="~> 3.2"/>
             <pod name="Firebase" spec="~> 10.7"/>

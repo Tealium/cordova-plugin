@@ -38,10 +38,8 @@
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
-        <config-file parent="/*" target="config.xml">
-            <preference name="deployment-target" value="12.0" />
-            <preference name="target-device" value="universal" />
-        </config-file>
+        <preference name="deployment-target" value="13.0" />
+        <preference name="target-device" value="universal" />
         <resource-file src="resources/firebase.json" />
         <!-- uncomment the following to test Firebase after adding the GoogleService-Info.plist under the resources directory -->
         <!-- <resource-file src="resources/GoogleService-Info.plist" /> -->

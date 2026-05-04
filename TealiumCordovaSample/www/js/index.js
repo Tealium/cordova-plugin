@@ -64,8 +64,10 @@ function initializeTealium() {
             lifecycleAutotrackingEnabled: true,
             batchingEnabled: false, 
             visitorServiceEnabled: true, 
-            useRemoteLibrarySettings: false,
+            useRemoteLibrarySettings: true,
             visitorIdentityKey: "user_identity",
+            deepLinkTrackingEnabled: true,
+            sendDeepLinkEvent: true,
             remoteCommands: createRemoteCommands()
         };
 
@@ -77,7 +79,6 @@ function initializeTealium() {
                 tealium.setVisitorIdListener(logVisitorIdUpdated)
                 tealium.setConsentExpiryListener(logConsentExpired)
                 tealium.addRemoteCommand("hello-world", logRemoteCommand)
-                tealium.handleDeepLink("tealium://test?param=value")
             }
         })
     } else {

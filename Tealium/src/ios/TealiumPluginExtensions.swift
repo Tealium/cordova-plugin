@@ -29,7 +29,7 @@ extension TealiumPlugin {
             localConfig.onConsentExpiration = {
                 consentExpiryCallbackIds.forEach { callbackId in
                     let result = CDVPluginResult(status: CDVCommandStatus_OK)
-                    result?.keepCallback = true
+                    result.keepCallback = true
                     commandDelegate?.send(result, callbackId: callbackId)
                 }
             }
@@ -218,8 +218,9 @@ extension TealiumPlugin {
                 guard let commandDelegate = commandDelegate else {
                     return
                 }
-                let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: response.payload)
-                result?.keepCallback = true
+                guard let payload = response.payload else { return }
+                let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: payload)
+                result.keepCallback = true
                 commandDelegate.send(result, callbackId: callbackId)
             }
         }

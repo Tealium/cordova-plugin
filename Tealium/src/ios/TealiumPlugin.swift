@@ -23,7 +23,7 @@ class TealiumPlugin: NSObject {
     static var visitorServiceDelegate: VisitorServiceDelegate = VisitorDelegate(didUpdate: { visitor in
         visitorServiceCallbackIds.forEach { callbackId in
             let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: visitor)
-            result?.keepCallback = true
+            result.keepCallback = true
             commandDelegate?.send(result, callbackId: callbackId)
         }
     })
@@ -68,7 +68,7 @@ class TealiumPlugin: NSObject {
             tealium?.onVisitorId?.subscribe { id in
                 visitorIdCallbackIds.forEach { callbackId in
                     let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: id)
-                    result?.keepCallback = true
+                    result.keepCallback = true
                     commandDelegate?.send(result, callbackId: callbackId)
                 }
             }
@@ -157,7 +157,7 @@ class TealiumPlugin: NSObject {
     @objc
     public static func handleDeepLink(uri: String) {
         if let url = URL(string: uri) {
-            tealium?.handleDeepLink(url: url)
+            tealium?.handleDeepLink(url)
         }
     }
     
@@ -190,21 +190,21 @@ class TealiumPlugin: NSObject {
     public static func removeListeners() {
         visitorServiceCallbackIds.forEach { callbackId in
             let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-            result?.keepCallback = false
+            result.keepCallback = false
             commandDelegate?.send(result, callbackId: callbackId)
         }
         visitorServiceCallbackIds.removeAll()
         
         consentExpiryCallbackIds.forEach { callbackId in
             let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-            result?.keepCallback = false
+            result.keepCallback = false
             commandDelegate?.send(result, callbackId: callbackId)
         }
         consentExpiryCallbackIds.removeAll()
         
         visitorIdCallbackIds.forEach { callbackId in
             let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-            result?.keepCallback = false
+            result.keepCallback = false
             commandDelegate?.send(result, callbackId: callbackId)
         }
         visitorIdCallbackIds.removeAll()
