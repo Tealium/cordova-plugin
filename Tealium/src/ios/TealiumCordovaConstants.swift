@@ -55,6 +55,7 @@ enum TealiumCordovaConstants {
         case overrideLibrarySettingsURL
         case qrTraceEnabled
         case deepLinkTrackingEnabled
+        case sendDeepLinkEvent
         case lifecycleAutotrackingEnabled
         case visitorServiceEnabled
         case memoryReportingEnabled

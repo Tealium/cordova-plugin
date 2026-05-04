@@ -135,6 +135,7 @@ extension TealiumPlugin {
         
         localConfig.qrTraceEnabled = dictionary[.qrTraceEnabled] as? Bool ?? true
         localConfig.deepLinkTrackingEnabled = dictionary[.deepLinkTrackingEnabled] as? Bool ?? true
+        localConfig.sendDeepLinkEvent = dictionary[.sendDeepLinkEvent] as? Bool ?? false
         localConfig.lifecycleAutoTrackingEnabled = dictionary[.lifecycleAutotrackingEnabled] as? Bool ?? true
         
         if dictionary[.visitorServiceEnabled] as? Bool == true {

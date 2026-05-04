@@ -77,6 +77,7 @@ function initializeTealium() {
                 tealium.setVisitorIdListener(logVisitorIdUpdated)
                 tealium.setConsentExpiryListener(logConsentExpired)
                 tealium.addRemoteCommand("hello-world", logRemoteCommand)
+                tealium.handleDeepLink("tealium://test?param=value")
             }
         })
     } else {

@@ -153,6 +153,13 @@ class TealiumPlugin: NSObject {
     public static func leaveTrace() {
         tealium?.leaveTrace()
     }
+
+    @objc
+    public static func handleDeepLink(uri: String) {
+        if let url = URL(string: uri) {
+            tealium?.handleDeepLink(url: url)
+        }
+    }
     
     @objc
     public static func resetVisitorId() {

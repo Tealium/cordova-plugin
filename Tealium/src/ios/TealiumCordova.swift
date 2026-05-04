@@ -165,6 +165,14 @@ class TealiumCordova: CDVPlugin {
         TealiumPlugin.leaveTrace()
     }
 
+    @objc(handleDeepLink:)
+    public func handleDeepLink(_ command: CDVInvokedUrlCommand) {
+        guard let uri = command.argument(at: 0) as? String else {
+            return
+        }
+        TealiumPlugin.handleDeepLink(uri: uri)
+    }
+
     @objc(getVisitorId:)
     public func getVisitorId(_ command: CDVInvokedUrlCommand) {
         guard let visitorId = TealiumPlugin.visitorId else {

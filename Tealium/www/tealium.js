@@ -128,6 +128,7 @@ const Commands = {
     SET_CONSENT_CATEGORIES: "setConsentCategories",
     JOIN_TRACE: "joinTrace",
     LEAVE_TRACE: "leaveTrace",
+    HANDLE_DEEP_LINK: "handleDeepLink",
     GET_VISITOR_ID: "getVisitorId",
     RESET_VISITOR_ID: "resetVisitorId",
     CLEAR_STORED_VISITOR_IDS: "clearStoredVisitorIds",
@@ -158,7 +159,7 @@ let TealiumPlugin = {
     initialize(config, callback) {
         let self = this;
         cordova.exec(function(e) {
-            self.addData({'plugin_name': 'Tealium-Cordova', 'plugin_version': '2.4.0'}, Expiry.forever);
+            self.addData({'plugin_name': 'Tealium-Cordova', 'plugin_version': '2.5.0'}, Expiry.forever);
             if (config.remoteCommands) {
                 config.remoteCommands.forEach((remoteCommand) => {
                     self.addRemoteCommand(remoteCommand.id, remoteCommand.callback, remoteCommand.path, remoteCommand.url)
@@ -225,6 +226,10 @@ let TealiumPlugin = {
 
     leaveTrace() {
         cordova.exec(null, null, PLUGIN_NAME, Commands.LEAVE_TRACE)
+    },
+
+    handleDeepLink(uri) {
+        cordova.exec(null, null, PLUGIN_NAME, Commands.HANDLE_DEEP_LINK, [uri])
     },
 
     getVisitorId(callback) {
