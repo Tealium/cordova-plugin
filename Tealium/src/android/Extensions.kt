@@ -1,7 +1,6 @@
 @file:JvmName("Utils")
 package com.tealium.cordova
 
-
 import android.app.Application
 import android.util.Log
 import com.tealium.collectdispatcher.*
@@ -47,7 +46,7 @@ fun JSONObject.toTealiumConfig(application: Application): TealiumConfig? {
     }
 
     val environment = try {
-        Environment.valueOf(environmentString.uppercase() ?: "PROD")
+        Environment.valueOf(environmentString.uppercase().ifEmpty { "PROD" })
     } catch (iax: IllegalArgumentException) {
         missingRequiredProperty(KEY_CONFIG_ENV)
         Environment.PROD
