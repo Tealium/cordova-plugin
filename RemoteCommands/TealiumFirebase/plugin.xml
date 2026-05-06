@@ -28,7 +28,7 @@
             <feature name="TealiumFirebase">
                 <param name="ios-package" value="TealiumFirebase" />
             </feature>
-            <preference name="SwiftVersion" value="6" />
+            <preference name="SwiftVersion" value="5" />
         </config-file>
         <source-file src="src/ios/TealiumFirebase.swift" />
         <source-file src="src/ios/FirebaseRemoteCommandWrapper.swift" />
