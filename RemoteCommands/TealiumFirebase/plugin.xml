@@ -21,9 +21,9 @@
 
     <!-- ios -->
     <platform name="ios">
-        <preference name="deployment-target" value="15.0" />
         <plugins-plist key="TealiumFirebase" string="TealiumFirebase" />
         <config-file target="config.xml" parent="/*">
+            <preference name="deployment-target" value="15.0" />
             <plugin name="TealiumFirebase" value="TealiumFirebase"/>
             <feature name="TealiumFirebase">
                 <param name="ios-package" value="TealiumFirebase" />
