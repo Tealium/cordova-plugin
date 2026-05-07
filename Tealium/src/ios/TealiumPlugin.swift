@@ -34,8 +34,8 @@ public class TealiumPlugin: NSObject {
     
     static var visitorServiceDelegate: VisitorServiceDelegate = VisitorDelegate(didUpdate: { visitor in
         visitorServiceCallbackIds.forEach { callbackId in
-            let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: visitor)
-            result.keepCallback = true
+            let result: CDVPluginResult? = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: visitor)
+            result?.keepCallback = true
             commandDelegate?.send(result, callbackId: callbackId)
         }
     })
@@ -79,8 +79,8 @@ public class TealiumPlugin: NSObject {
         tealium = Tealium(config: localConfig) { _ in
             tealium?.onVisitorId?.subscribe { id in
                 visitorIdCallbackIds.forEach { callbackId in
-                    let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: id)
-                    result.keepCallback = true
+                    let result: CDVPluginResult? = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: id)
+                    result?.keepCallback = true
                     commandDelegate?.send(result, callbackId: callbackId)
                 }
             }
@@ -201,22 +201,22 @@ public class TealiumPlugin: NSObject {
     @objc
     public static func removeListeners() {
         visitorServiceCallbackIds.forEach { callbackId in
-            let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-            result.keepCallback = false
+            let result: CDVPluginResult? = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
+            result?.keepCallback = false
             commandDelegate?.send(result, callbackId: callbackId)
         }
         visitorServiceCallbackIds.removeAll()
         
         consentExpiryCallbackIds.forEach { callbackId in
-            let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-            result.keepCallback = false
+            let result: CDVPluginResult? = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
+            result?.keepCallback = false
             commandDelegate?.send(result, callbackId: callbackId)
         }
         consentExpiryCallbackIds.removeAll()
         
         visitorIdCallbackIds.forEach { callbackId in
-            let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-            result.keepCallback = false
+            let result: CDVPluginResult? = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
+            result?.keepCallback = false
             commandDelegate?.send(result, callbackId: callbackId)
         }
         visitorIdCallbackIds.removeAll()

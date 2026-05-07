@@ -118,8 +118,8 @@ class TealiumCordova: CDVPlugin {
         let url = command.argument(at: 2) as? String
         TealiumPlugin.addRemoteCommand(id: id, callbackId: command.callbackId, path: path, url: url)
         
-        let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-        result.keepCallback = true
+        let result: CDVPluginResult? = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
+        result?.keepCallback = true
         self.commandDelegate.send(result, callbackId: command.callbackId)
     }
 
@@ -206,8 +206,8 @@ class TealiumCordova: CDVPlugin {
         }
         TealiumPlugin.setConsentExpiryListener(callbackId: callbackId)
         
-        let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-        result.keepCallback = true
+        let result: CDVPluginResult? = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
+        result?.keepCallback = true
         self.commandDelegate.send(result, callbackId: command.callbackId)
     }
     
@@ -218,8 +218,8 @@ class TealiumCordova: CDVPlugin {
         }
         TealiumPlugin.setVisitorServiceListener(callbackId: callbackId)
         
-        let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-        result.keepCallback = true
+        let result: CDVPluginResult? = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
+        result?.keepCallback = true
         self.commandDelegate.send(result, callbackId: command.callbackId)
     }
     
@@ -230,8 +230,8 @@ class TealiumCordova: CDVPlugin {
         }
         TealiumPlugin.setVisitorIdListener(callbackId: callbackId)
         
-        let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-        result.keepCallback = true
+        let result: CDVPluginResult? = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
+        result?.keepCallback = true
         self.commandDelegate.send(result, callbackId: command.callbackId)
     }
     

@@ -40,8 +40,8 @@ extension TealiumPlugin {
             localConfig.consentLoggingEnabled =  dictionary[.consentLoggingEnabled] as? Bool ?? true
             localConfig.onConsentExpiration = {
                 consentExpiryCallbackIds.forEach { callbackId in
-                    let result = CDVPluginResult(status: CDVCommandStatus_OK)
-                    result.keepCallback = true
+                    let result: CDVPluginResult? = CDVPluginResult(status: CDVCommandStatus_OK)
+                    result?.keepCallback = true
                     commandDelegate?.send(result, callbackId: callbackId)
                 }
             }
@@ -231,8 +231,8 @@ extension TealiumPlugin {
                     return
                 }
                 guard let payload = response.payload else { return }
-                let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: payload)
-                result.keepCallback = true
+                let result: CDVPluginResult? = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: payload)
+                result?.keepCallback = true
                 commandDelegate.send(result, callbackId: callbackId)
             }
         }
