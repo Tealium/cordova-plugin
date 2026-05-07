@@ -40,9 +40,8 @@ extension TealiumPlugin {
             localConfig.consentLoggingEnabled =  dictionary[.consentLoggingEnabled] as? Bool ?? true
             localConfig.onConsentExpiration = {
                 consentExpiryCallbackIds.forEach { callbackId in
-                    let result: CDVPluginResult? = CDVPluginResult(status: CDVCommandStatus_OK)
-                    result?.keepCallback = true
-                    commandDelegate?.send(result, callbackId: callbackId)
+                    let result = CDVPluginResult(status: CDVCommandStatus_OK)
+                    commandDelegate?.sendListenerResult(result, callbackId: callbackId)
                 }
             }
         }
@@ -231,9 +230,8 @@ extension TealiumPlugin {
                     return
                 }
                 guard let payload = response.payload else { return }
-                let result: CDVPluginResult? = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: payload)
-                result?.keepCallback = true
-                commandDelegate.send(result, callbackId: callbackId)
+                let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: payload)
+                commandDelegate.sendListenerResult(result, callbackId: callbackId)
             }
         }
             
@@ -322,5 +320,15 @@ class VisitorDelegate: VisitorServiceDelegate {
             Visitor.currentVisit: visit.compactMapValues { $0 }
         ]
         return visitor.compactMapValues({$0})
+    }
+}
+
+extension CDVCommandDelegate {
+    /// Utility method to send results to listeners that must keep the callback alive.
+    /// Result is optional for backwards compatibility with Cordova 7.
+    func sendListenerResult(_ result: CDVPluginResult?, callbackId: String) {
+        guard let result else { return }
+        result.keepCallback = true
+        self.send(result, callbackId: callbackId)
     }
 }
