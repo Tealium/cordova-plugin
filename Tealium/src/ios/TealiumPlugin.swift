@@ -200,19 +200,19 @@ public class TealiumPlugin: NSObject {
     public static func removeListeners() {
         visitorServiceCallbackIds.forEach { callbackId in
             let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-            commandDelegate?.sendListenerResult(result, callbackId: callbackId)
+            commandDelegate?.send(result, callbackId: callbackId)
         }
         visitorServiceCallbackIds.removeAll()
         
         consentExpiryCallbackIds.forEach { callbackId in
             let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-            commandDelegate?.sendListenerResult(result, callbackId: callbackId)
+            commandDelegate?.send(result, callbackId: callbackId)
         }
         consentExpiryCallbackIds.removeAll()
         
         visitorIdCallbackIds.forEach { callbackId in
             let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-            commandDelegate?.sendListenerResult(result, callbackId: callbackId)
+            commandDelegate?.send(result, callbackId: callbackId)
         }
         visitorIdCallbackIds.removeAll()
     }
