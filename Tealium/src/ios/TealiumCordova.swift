@@ -6,7 +6,14 @@
 //
 
 import Foundation
+#if canImport(Cordova)
+import Cordova
+#endif
+#if canImport(TealiumSwift)
 import TealiumSwift
+#else
+import TealiumCore
+#endif
 
 @objc(TealiumCordova)
 class TealiumCordova: CDVPlugin {

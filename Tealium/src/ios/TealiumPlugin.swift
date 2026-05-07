@@ -6,10 +6,22 @@
 //
 
 import Foundation
+#if canImport(Cordova)
+import Cordova
+#endif
+#if canImport(TealiumSwift)
 import TealiumSwift
+#else
+import TealiumCore
+import TealiumCollect
+import TealiumTagManagement
+import TealiumLifecycle
+import TealiumRemoteCommands
+import TealiumVisitorService
+#endif
 
 @objc
-class TealiumPlugin: NSObject {
+public class TealiumPlugin: NSObject {
     
     
     static var tealium: Tealium?
