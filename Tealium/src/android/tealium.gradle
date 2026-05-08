@@ -19,8 +19,9 @@ android {
     }
 
     packaging {
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
+        resources {
+            excludes += ['META-INF/NOTICE', 'META-INF/LICENSE']
+        }
     }
     sourceSets {
         main.java {

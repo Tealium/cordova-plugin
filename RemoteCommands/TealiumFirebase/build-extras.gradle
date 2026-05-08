@@ -4,8 +4,9 @@ android {
         targetSdkVersion 34
     }
 
-   packagingOptions {
-       exclude 'META-INF/NOTICE'
-       exclude 'META-INF/LICENSE'
+   packaging {
+        resources {
+            excludes += ['META-INF/NOTICE', 'META-INF/LICENSE']
+        } 
    }
 }
