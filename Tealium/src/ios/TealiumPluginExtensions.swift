@@ -6,7 +6,19 @@
 //
 
 import Foundation
+#if canImport(Cordova)
+import Cordova
+#endif
+#if canImport(TealiumSwift)
 import TealiumSwift
+#else
+import TealiumCore
+import TealiumCollect
+import TealiumTagManagement
+import TealiumLifecycle
+import TealiumRemoteCommands
+import TealiumVisitorService
+#endif
 
 extension TealiumPlugin {
     
@@ -29,8 +41,7 @@ extension TealiumPlugin {
             localConfig.onConsentExpiration = {
                 consentExpiryCallbackIds.forEach { callbackId in
                     let result = CDVPluginResult(status: CDVCommandStatus_OK)
-                    result.keepCallback = true
-                    commandDelegate?.send(result, callbackId: callbackId)
+                    commandDelegate?.sendListenerResult(result, callbackId: callbackId)
                 }
             }
         }
@@ -220,8 +231,7 @@ extension TealiumPlugin {
                 }
                 guard let payload = response.payload else { return }
                 let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: payload)
-                result.keepCallback = true
-                commandDelegate.send(result, callbackId: callbackId)
+                commandDelegate.sendListenerResult(result, callbackId: callbackId)
             }
         }
             
@@ -310,5 +320,15 @@ class VisitorDelegate: VisitorServiceDelegate {
             Visitor.currentVisit: visit.compactMapValues { $0 }
         ]
         return visitor.compactMapValues({$0})
+    }
+}
+
+extension CDVCommandDelegate {
+    /// Utility method to send results to listeners that must keep the callback alive.
+    /// Result is optional for backwards compatibility with Cordova 7.
+    func sendListenerResult(_ result: CDVPluginResult?, callbackId: String) {
+        guard let result else { return }
+        result.keepCallback = true
+        self.send(result, callbackId: callbackId)
     }
 }

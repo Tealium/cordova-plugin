@@ -6,7 +6,14 @@
 //
 
 import Foundation
+#if canImport(Cordova)
+import Cordova
+#endif
+#if canImport(TealiumSwift)
 import TealiumSwift
+#else
+import TealiumCore
+#endif
 
 @objc(TealiumCordova)
 class TealiumCordova: CDVPlugin {
@@ -112,8 +119,7 @@ class TealiumCordova: CDVPlugin {
         TealiumPlugin.addRemoteCommand(id: id, callbackId: command.callbackId, path: path, url: url)
         
         let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-        result.keepCallback = true
-        self.commandDelegate.send(result, callbackId: command.callbackId)
+        self.commandDelegate.sendListenerResult(result, callbackId: command.callbackId)
     }
 
     @objc(removeRemoteCommand:)
@@ -200,8 +206,7 @@ class TealiumCordova: CDVPlugin {
         TealiumPlugin.setConsentExpiryListener(callbackId: callbackId)
         
         let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-        result.keepCallback = true
-        self.commandDelegate.send(result, callbackId: command.callbackId)
+        self.commandDelegate.sendListenerResult(result, callbackId: command.callbackId)
     }
     
     @objc(setVisitorServiceListener:)
@@ -212,8 +217,7 @@ class TealiumCordova: CDVPlugin {
         TealiumPlugin.setVisitorServiceListener(callbackId: callbackId)
         
         let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-        result.keepCallback = true
-        self.commandDelegate.send(result, callbackId: command.callbackId)
+        self.commandDelegate.sendListenerResult(result, callbackId: command.callbackId)
     }
     
     @objc(setVisitorIdListener:)
@@ -224,8 +228,7 @@ class TealiumCordova: CDVPlugin {
         TealiumPlugin.setVisitorIdListener(callbackId: callbackId)
         
         let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-        result.keepCallback = true
-        self.commandDelegate.send(result, callbackId: command.callbackId)
+        self.commandDelegate.sendListenerResult(result, callbackId: command.callbackId)
     }
     
     @objc(removeListeners:)
