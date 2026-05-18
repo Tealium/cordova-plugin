@@ -1,8 +1,8 @@
-repositories{    
-  jcenter()
-   maven {
-            url "https://maven.tealiumiq.com/android/releases/"
-        }
+repositories {
+    mavenCentral()
+    maven {
+        url = "https://maven.tealiumiq.com/android/releases/"
+    }
 }
 
 dependencies {
@@ -10,16 +10,17 @@ dependencies {
 }
 
 android {
-  defaultConfig {
-  }
-
-  packagingOptions {
-    exclude 'META-INF/NOTICE'
-    exclude 'META-INF/LICENSE'
-  }
-  sourceSets {
-    main.java {
-      srcDirs += 'src/main/kotlin'
+    defaultConfig {
     }
-  }
+
+    packaging {
+        resources {
+            excludes += ['META-INF/NOTICE', 'META-INF/LICENSE']
+        }
+    }
+    sourceSets {
+        main.java {
+            srcDirs += 'src/main/kotlin'
+        }
+    }
 }

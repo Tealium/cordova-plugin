@@ -14,6 +14,7 @@ const val GET_CONSENT_CATEGORIES = "getConsentCategories"
 const val SET_CONSENT_CATEGORIES = "setConsentCategories"
 const val JOIN_TRACE = "joinTrace"
 const val LEAVE_TRACE = "leaveTrace"
+const val HANDLE_DEEP_LINK = "handleDeepLink"
 const val GET_VISITOR_ID = "getVisitorId"
 const val RESET_VISITOR_ID = "resetVisitorId"
 const val CLEAR_STORED_VISITOR_IDS = "clearStoredVisitorIds"
@@ -65,6 +66,7 @@ const val KEY_TAG_MANAGEMENT_OVERRIDE_URL = "overrideTagManagementURL"
 const val KEY_QR_TRACE_ENABLED = "qrTraceEnabled"
 
 const val KEY_DEEPLINK_TRACKING_ENABLED = "deepLinkTrackingEnabled"
+const val KEY_SEND_DEEPLINK_EVENT = "sendDeepLinkEvent"
 
 const val KEY_LOG_LEVEL = "logLevel"
 

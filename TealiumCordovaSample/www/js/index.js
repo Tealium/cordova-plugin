@@ -64,8 +64,10 @@ function initializeTealium() {
             lifecycleAutotrackingEnabled: true,
             batchingEnabled: false, 
             visitorServiceEnabled: true, 
-            useRemoteLibrarySettings: false,
+            useRemoteLibrarySettings: true,
             visitorIdentityKey: "user_identity",
+            deepLinkTrackingEnabled: true,
+            sendDeepLinkEvent: true,
             remoteCommands: createRemoteCommands()
         };
 

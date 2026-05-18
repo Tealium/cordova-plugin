@@ -6,10 +6,22 @@
 //
 
 import Foundation
+#if canImport(Cordova)
+import Cordova
+#endif
+#if canImport(TealiumSwift)
 import TealiumSwift
+#else
+import TealiumCore
+import TealiumCollect
+import TealiumTagManagement
+import TealiumLifecycle
+import TealiumRemoteCommands
+import TealiumVisitorService
+#endif
 
 @objc
-class TealiumPlugin: NSObject {
+public class TealiumPlugin: NSObject {
     
     
     static var tealium: Tealium?
@@ -23,8 +35,7 @@ class TealiumPlugin: NSObject {
     static var visitorServiceDelegate: VisitorServiceDelegate = VisitorDelegate(didUpdate: { visitor in
         visitorServiceCallbackIds.forEach { callbackId in
             let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: visitor)
-            result?.keepCallback = true
-            commandDelegate?.send(result, callbackId: callbackId)
+            commandDelegate?.sendListenerResult(result, callbackId: callbackId)
         }
     })
     
@@ -68,8 +79,7 @@ class TealiumPlugin: NSObject {
             tealium?.onVisitorId?.subscribe { id in
                 visitorIdCallbackIds.forEach { callbackId in
                     let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: id)
-                    result?.keepCallback = true
-                    commandDelegate?.send(result, callbackId: callbackId)
+                    commandDelegate?.sendListenerResult(result, callbackId: callbackId)
                 }
             }
             completion(true)
@@ -153,6 +163,13 @@ class TealiumPlugin: NSObject {
     public static func leaveTrace() {
         tealium?.leaveTrace()
     }
+
+    @objc
+    public static func handleDeepLink(uri: String) {
+        if let url = URL(string: uri) {
+            tealium?.handleDeepLink(url)
+        }
+    }
     
     @objc
     public static func resetVisitorId() {
@@ -183,21 +200,18 @@ class TealiumPlugin: NSObject {
     public static func removeListeners() {
         visitorServiceCallbackIds.forEach { callbackId in
             let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-            result?.keepCallback = false
             commandDelegate?.send(result, callbackId: callbackId)
         }
         visitorServiceCallbackIds.removeAll()
         
         consentExpiryCallbackIds.forEach { callbackId in
             let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-            result?.keepCallback = false
             commandDelegate?.send(result, callbackId: callbackId)
         }
         consentExpiryCallbackIds.removeAll()
         
         visitorIdCallbackIds.forEach { callbackId in
             let result = CDVPluginResult(status: CDVCommandStatus_NO_RESULT)
-            result?.keepCallback = false
             commandDelegate?.send(result, callbackId: callbackId)
         }
         visitorIdCallbackIds.removeAll()

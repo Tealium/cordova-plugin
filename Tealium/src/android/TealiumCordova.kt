@@ -1,6 +1,7 @@
 package com.tealium.cordova
 
 import android.app.Application
+import android.net.Uri
 import com.tealium.core.Logger
 import com.tealium.core.Tealium
 import com.tealium.core.consent.ConsentCategory
@@ -99,6 +100,12 @@ class TealiumCordova @JvmOverloads constructor(
             }
             LEAVE_TRACE -> {
                 leaveTrace()
+            }
+            HANDLE_DEEP_LINK -> {
+                val uri = args?.optString(0) ?: ""
+                if (!uri.isEmpty()) {
+                    handleDeepLink(uri)
+                }
             }
             GET_VISITOR_ID -> {
                 getVisitorId(callbackContext)
@@ -364,6 +371,10 @@ class TealiumCordova @JvmOverloads constructor(
 
     fun leaveTrace() {
         tealium?.leaveTrace()
+    }
+
+    fun handleDeepLink(uri: String) {
+        tealium?.handleDeepLink(Uri.parse(uri))
     }
 
     fun getVisitorId(callbackContext: CallbackContext?) {

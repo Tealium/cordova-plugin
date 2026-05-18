@@ -5,3 +5,6 @@ platforms/
 package-lock.json
 *GoogleService-Info.plist
 *google-services.json
+.build/
+.swiftpm/
+Package.resolved
