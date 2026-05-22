@@ -20,7 +20,7 @@
     </js-module>
 
     <!-- ios -->
-    <platform name="ios">
+    <platform name="ios" package="swift">
         <plugins-plist key="TealiumFirebase" string="TealiumFirebase" />
         <config-file target="config.xml" parent="/*">
             <preference name="deployment-target" value="15.0" />
@@ -36,9 +36,6 @@
         <framework src="CoreTelephony.framework" />
         <framework src="SystemConfiguration.framework" />
         <podspec>
-          <config>
-            <source url="https://github.com/CocoaPods/Specs.git"/>
-          </config>
           <pods use-frameworks="true">
             <pod name="TealiumFirebase" spec="~> 4.0"/>
             <pod name="Firebase" spec="~> 12.0"/>
